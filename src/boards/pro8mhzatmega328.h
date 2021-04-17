@@ -75,6 +75,7 @@
 // Value 30000 was determined empirically.
 #define LMIC_CLOCK_ERROR_PPM 30000
 
+// Pin mappings for LoRa tranceiver
 const lmic_pinmap lmic_pins = {
     .nss = 10,
     .rxtx = LMIC_UNUSED_PIN,

@@ -107,6 +107,7 @@
 // Board appears to work better with clock error enabled (value 4000 empirically determined).
 #define LMIC_CLOCK_ERROR_PPM 4000
 
+// Pin mappings for LoRa tranceiver
 const lmic_pinmap lmic_pins = {
     .nss = PA15,
     .rxtx = PA1,

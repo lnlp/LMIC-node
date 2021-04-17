@@ -82,6 +82,7 @@
 // Value is defined in parts per million (of MAX_CLOCK_ERROR).
 // #define LMIC_CLOCK_ERROR_PPM 0
 
+// Pin mappings for LoRa tranceiver
 const lmic_pinmap lmic_pins = {
     .nss = 18,
     .rxtx = LMIC_UNUSED_PIN,
