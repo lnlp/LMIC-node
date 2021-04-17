@@ -7,7 +7,7 @@
 .pioenvs
 .piolibdeps
 
-# Exclude all contens from any keyfiles folder
+# Exclude all contents from any keyfiles folder
 keyfiles/**
 # Except following example file
 !keyfiles/lorawan-keys_example.h
