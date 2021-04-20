@@ -1,6 +1,6 @@
 /*******************************************************************************
  * 
- *  File:         ttgo_tbeam_v07.h
+ *  File:         ttgo_tbeam.h
  * 
  *  Description:  Board Support File for TTGO T-Beam (aka T22) v0.7.
  * 
@@ -49,7 +49,7 @@
  *                TX    <――――――――――>  12  
  * 
  *  Definitions:  LMIC-node
- *                    board:         ttgo_tbeam_v07
+ *                    board:         ttgo_tbeam
  *                PlatformIO
  *                    board:         ttgo-t-beam
  *                    platform:      espressif32
@@ -61,12 +61,12 @@
 
 #pragma once
 
-#ifndef TTGO_TBEAM_V07_H_
-#define TTGO_TBEAM_V07_H_
+#ifndef TTGO_TBEAM_H_
+#define TTGO_TBEAM_H_
 
 #include "lmic-node.h"
 
-#define DEVICEID_DEFAULT "ttgo-tbeam-v07"  // Default deviceid value
+#define DEVICEID_DEFAULT "ttgo-tbeam"  // Default deviceid value
 
 // Wait for Serial
 // Can be useful for boards with MCU with integrated USB support.
@@ -130,4 +130,4 @@ bool boardInit(InitType initType)
 }
 
 
-#endif  // TTGO_TBEAM_V07_H_
+#endif  // TTGO_TBEAM_H_

@@ -1,6 +1,6 @@
 /*******************************************************************************
  * 
- *  File:         ttgo_tbeam_v10.h
+ *  File:         ttgo_tbeam_v1.h
  * 
  *  Description:  Board Support File for TTGO T-Beam V1.0 (aka T22_08).
  * 
@@ -63,7 +63,7 @@
  *                USR_SW  <――――――――――>  39  (KEY_BUILTIN)
  * 
  *  Definitions:  LMIC-node
- *                    board:         ttgo_tbeam_v10
+ *                    board:         ttgo_tbeam_v1
  *                PlatformIO
  *                    board:         ttgo-t-beam
  *                    platform:      espressif32
@@ -75,13 +75,13 @@
 
 #pragma once
 
-#ifndef TTGO_TBEAM_V10_H_
-#define TTGO_TBEAM_V10_H_
+#ifndef TTGO_TBEAM_V1_H_
+#define TTGO_TBEAM_V1_H_
 
 #include "axp20x.h"
 #include "lmic-node.h"
 
-#define DEVICEID_DEFAULT "ttgo-tbeam-v10"  // Default deviceid value 
+#define DEVICEID_DEFAULT "ttgo-tbeam-v1"  // Default deviceid value 
 
 // Wait for Serial
 // Can be useful for boards with MCU with integrated USB support.
@@ -167,4 +167,4 @@ bool boardInit(InitType initType)
 }
 
 
-#endif  // TTGO_TBEAM_V10_H_
+#endif  // TTGO_TBEAM_V1_H_
