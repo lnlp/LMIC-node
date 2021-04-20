@@ -70,6 +70,9 @@
  *                D-    <――――――――――>  PA11 / 9
  *                D+    <――――――――――>  PA12 / 8      
  * 
+ *  Docs:         https://docs.platformio.org/en/latest/boards/ststm32/bluepill_f103c8.html
+ *                https://docs.platformio.org/en/latest/boards/ststm32/bluepill_f103c8_128k.html
+ *
  *  Identifiers:  LMIC-node
  *                    board-id:       bluepill_f103c8          (64k version)
  *                                    bluepill_f103c8_128k    (128k version)

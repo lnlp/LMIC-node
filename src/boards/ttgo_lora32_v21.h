@@ -41,7 +41,9 @@
  *                DIO1  <――――――――――>  33         (LORA_D1)
  *                DIO2  <――――――――――>  32         (LORA_D2)
  * 
- *  Definitions:  LMIC-node
+ *  Docs:         https://docs.platformio.org/en/latest/boards/espressif32/ttgo-lora32-v21.html
+ *
+ *  Identifiers:  LMIC-node
  *                    board:         ttgo_lora32_v21
  *                PlatformIO
  *                    board:         ttgo-lora32-v21

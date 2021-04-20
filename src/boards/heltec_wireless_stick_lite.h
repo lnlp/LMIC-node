@@ -55,7 +55,9 @@
  *                -----               ----
  *                VExt  <――――――――――>  21 (Vext, SDA) Active-low
  * 
- *  Definitions:  LMIC-node:
+ *  Docs:         https://docs.platformio.org/en/latest/boards/espressif32/heltec_wireless_stick_lite.html
+ *
+ *  Identifiers:  LMIC-node:
  *                    board-id:      heltec_wireless_stick_lite
  *                PlatformIO
  *                    board:         heltec_wireless_stick_lite

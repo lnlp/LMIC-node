@@ -47,7 +47,9 @@
  *                DIO1  <――――――――――>  33  (DIO1)
  *                DIO2  <――――――――――>  32  (DIO2)
  * 
- *  Definitions:  LMIC-node:
+ *  Docs:         https://docs.platformio.org/en/latest/boards/espressif32/heltec_wifi_lora_32.html
+ *
+ *  Identifiers:  LMIC-node:
  *                    board-id:      heltec_wifi_lora_32
  *                PlatformIO
  *                    board:         heltec_wifi_lora_32
@@ -55,18 +57,6 @@
  *                Arduino
  *                    board:         ARDUINO_HELTEC_WIFI_LORA_32
  *                    architecture:  ARDUINO_ARCH_ESP32 
- * 
- *  Warning:      In the Arduino BSP the values of SDA and SCL are incorrectly 
- *                defined for this board. This requires special precautions.
- *                SDA is defined as GPIO21 and SCL as GPIO22 but these are not
- *                the pins where the display is connected to.
- * 
- *                 When initializing the Wire (I2C) interface with Wire.begin()
- *                 without parameters this will by default use pin definitions SDA and SCL.
- *                 Most libraries (including U8x8) will call Wire.begin() without parameters.
- *                 It is not possible to change the pins of the Wire interface 
- *                 after it has been initialized. Therefore the Wire interface must be 
- *                 initialized with the correct pins before initializing any other library.
  * 
  ******************************************************************************/
 

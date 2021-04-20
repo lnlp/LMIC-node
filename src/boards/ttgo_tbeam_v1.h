@@ -62,7 +62,9 @@
  *                ------                ----
  *                USR_SW  <――――――――――>  39  (KEY_BUILTIN)
  * 
- *  Definitions:  LMIC-node
+ *  Docs:         https://docs.platformio.org/en/latest/boards/espressif32/ttgo-t-beam.html
+ *
+ *  Identifiers:  LMIC-node
  *                    board:         ttgo_tbeam_v1
  *                PlatformIO
  *                    board:         ttgo-t-beam

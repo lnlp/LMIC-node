@@ -2,7 +2,7 @@
  * 
  *  File:          pro8mhzatmega328.h
  * 
- *  Description:   Board Support File for Arduino Pro Mini ATmega328 8MHz 
+ *  Description:   Board Support File for Arduino Pro Mini ATmega328 3.3V 8MHz 
  *                 with external SPI LoRa module.
  * 
  *  Copyright:     Copyright (c) 2021 Leonel Lopes Parente
@@ -45,7 +45,9 @@
  *                DIO1  <――――――――――>   9
  *                DIO2                 -  Not needed for LoRa.
  * 
- *  Definitions:  LMIC-node
+ *  Docs:         https://docs.platformio.org/en/latest/boards/atmelavr/pro8MHzatmega328.html
+ *
+ *  Identifiers:  LMIC-node
  *                    board:         pro8mhzatmega328
  *                PlatformIO
  *                    board:         pro8MHzatmega328

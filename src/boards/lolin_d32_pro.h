@@ -43,7 +43,9 @@
  *                DIO1  <――――――――――>  34
  *                DIO2                 -  Not needed for LoRa.
  * 
- *  Definitions:  LMIC-node
+ *  Docs:         https://docs.platformio.org/en/latest/boards/espressif32/lolin_d32_pro.html
+ *
+ *  Identifiers:  LMIC-node
  *                    board-id:      lolin_d32_pro
  *                PlatformIO
  *                    board:         lolin_d32_pro

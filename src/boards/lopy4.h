@@ -83,6 +83,8 @@
  *                RX    <――――――――――>   3  (RX) pin labeled '0' on the PCB.
  *                TX    <――――――――――>   1  (TX) pin labeled '1' on the PCB.
  * 
+ *  Docs:         https://docs.platformio.org/en/latest/boards/espressif32/lopy4.html
+ *
  *  Identifiers:  LMIC-node
  *                    board-id:      lopy4
  *                PlatformIO

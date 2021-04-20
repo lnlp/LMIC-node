@@ -2,7 +2,7 @@
  * 
  *  File:         nodemcuv2.h
  * 
- *  Function:     Board Support File for NodeMCU V2 (aka v1.0) with
+ *  Function:     Board Support File for NodeMCU V2 (aka NodeMCU 1.0) with
  *                external SPI LoRa module.
  * 
  *  Copyright:    Copyright (c) 2021 Leonel Lopes Parente
@@ -47,7 +47,9 @@
  *                DIO1  <――――――――――>  D2 /  6  (SDA)
  *                DIO2                 -       Not needed for LoRa.
  * 
- *  Definitions:  LMIC-node
+ *  Docs:         https://docs.platformio.org/en/latest/boards/espressif8266/nodemcuv2.html
+ *
+ *  Identifiers:  LMIC-node
  *                    board:         nodemcuv2
  *                PlatformIO
  *                    board:         nodemcuv2

@@ -42,7 +42,9 @@
  *                DIO1  <---------->   5  ██ NOT WIRED on PCB for versions < 1.3 ██
  *                DIO2                 -  Not needed for LoRa
  * 
- *  Definitions:   LMIC-node
+ *  Docs:         https://docs.platformio.org/en/latest/boards/atmelavr/lora32u4II.html
+ *
+ *  Identifiers:   LMIC-node
  *                     board-id:      lora32u4II
  *                 PlatformIO
  *                     board:         lora32u4II

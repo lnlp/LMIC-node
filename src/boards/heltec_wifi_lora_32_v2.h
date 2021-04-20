@@ -53,6 +53,8 @@
  *                -----               ----
  *                VExt  <――――――――――>  21 (Vext, SDA) Active-low
  * 
+ *  Docs:         https://docs.platformio.org/en/latest/boards/espressif32/heltec_wifi_lora_32_V2.html
+ *
  *  Identifiers:  LMIC-node:
  *                    board-id:      heltec_wifi_lora_32_v2
  *                PlatformIO

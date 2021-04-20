@@ -76,6 +76,8 @@
  *                ------              ----
  *                USER  <――――――――――>  PB2  /  6  (USER_BTN)
  * 
+ *  Docs:         https://docs.platformio.org/en/latest/boards/ststm32/disco_l072cz_lrwan1.html
+ *
  *  Definitions:  LMIC-node
  *                    board-id:      disco_l072cz_lrwan1
  *                PlatformIO

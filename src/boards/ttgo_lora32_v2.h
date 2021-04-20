@@ -47,6 +47,8 @@
  *                DIO1  <---------->  33  ██ NOT WIRED on PCB ██
  *                DIO2                 -  Not needed for LoRa
  * 
+ *  Docs:         https://docs.platformio.org/en/latest/boards/espressif32/ttgo-lora32-v2.html
+ *
  *  Identifiers:  LMIC-node
  *                    board:         ttgo_lora32_v2
  *                PlatformIO

@@ -49,7 +49,9 @@
  *                DIO1  <――――――――――>  PA07 /  9
  *                DIO2                -          Not needed for LoRa.
  * 
- *  Definitions:  LMIC-node
+ *  Docs:         https://docs.platformio.org/en/latest/boards/atmelsam/zeroUSB.html
+ *
+ *  Identifiers:  LMIC-node
  *                    board:         zerousb
  *                PlatformIO
  *                    board:         zeroUSB

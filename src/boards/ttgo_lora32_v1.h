@@ -60,7 +60,9 @@
  *                -------             ---- 
  *                VBAT  <――――――――――>  35  Battery voltage via 50% voltage divider
  * 
- *  Definitions:  LMIC-node
+ *  Docs:         https://docs.platformio.org/en/latest/boards/espressif32/ttgo-lora32-v1.html
+ *
+ *  Identifiers:  LMIC-node
  *                    board:         ttgo_lora32_v1
  *                PlatformIO
  *                    board:         ttgo-lora32-v1

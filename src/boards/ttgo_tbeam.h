@@ -48,7 +48,9 @@
  *                RX    <――――――――――>  15
  *                TX    <――――――――――>  12  
  * 
- *  Definitions:  LMIC-node
+ *  Docs:         https://docs.platformio.org/en/latest/boards/espressif32/ttgo-t-beam.html
+ *
+ *  Identifiers:  LMIC-node
  *                    board:         ttgo_tbeam
  *                PlatformIO
  *                    board:         ttgo-t-beam

@@ -42,6 +42,8 @@
  *                DIO1  <――――――――――>  35
  *                DIO2                 -  Not needed for LoRa.
  * 
+ *  Docs:         https://docs.platformio.org/en/latest/boards/espressif32/nodemcu-32s.html
+ *
  *  Identifiers:  LMIC-node
  *                    board:         nodemcu_32s
  *                PlatformIO

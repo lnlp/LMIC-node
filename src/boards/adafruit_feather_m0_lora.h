@@ -45,7 +45,11 @@
  *                DIO0  <――――――――――>   3
  *                DIO1  <---------->   5  ██ NOT WIRED on PCB ██
  *                DIO2                 -  Not needed for LoRa
+ *
+ *  Docs:         https://docs.platformio.org/en/latest/boards/atmelsam/adafruit_feather_m0.html 
  * 
+ *  Docs:         
+ *
  *  Identifiers:  LMIC-node
  *                    board-id:      adafruit_feather_m0_lora
  *                PlatformIO
