@@ -262,7 +262,7 @@ The user code sections are marked as follows:
 //  ▀▀▀ ▀▀▀ ▀▀▀ ▀ ▀   ▀▀▀ ▀▀▀ ▀▀  ▀▀▀   ▀▀  ▀▀▀ ▀▀▀ ▀▀▀ ▀ ▀
 
 
-const uint16_t payloadBufferLength = 4;    // Adjust to fit max payload length
+const uint8_t payloadBufferLength = 4;    // Adjust to fit max payload length
 
 
 //  █ █ █▀▀ █▀▀ █▀▄   █▀▀ █▀█ █▀▄ █▀▀   █▀▀ █▀█ █▀▄
