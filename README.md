@@ -792,7 +792,7 @@ When using **MCCI LMIC** (set as default for 32-bit boards):
 **Step 2:** In platformio.ini select you LoRaWAN region.
 
 When using **Classic LMIC** (set as default for 8-bit boards):  
-**Step 2**: If your region is not CFG_eu868, select your region in config.h. See [IBM LMIC framework settings](#432-ibm-lmic-framework).
+**Step 2**: If your region is not CFG_eu868, select your region in config.h. See [IBM LMIC framework settings](#432-ibm-lmic-framework-settings).
 
 ### 5.3 Provide the LoRaWAN keys for your node
 
