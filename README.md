@@ -375,7 +375,7 @@ A BSF acts like a mini Board Support Package (BSP). A BSF adds functionality on 
 
 A BSF has the same name as the board-id and is suffixed with `.h` extension. BSF's are located in the `src/boards` folder.
 
-A BSF contains important information about a board (including connection/wiring details) and provides the following functionality:
+A BSF contains important information about a board (including connection/wiring details), contains a URL to PlatformIO's documentation for the board and provides the following functionality:
 
 - Defines the default device-id.
 - Defines 'wait for serial port' timeout default value (if needed).
