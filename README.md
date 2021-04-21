@@ -112,7 +112,7 @@ The following is required to use LMIC-node:
 If PlatformIO is freshly installed the downloading may take some time. Once installed it will be possible to work offline.
 - **USB cable**. For boards without onboard USB also a **USB to serial adapter** is needed (for STM32 optionally a STLink programmer).
 - **Wiring**: Some LoRa development boards require manual wiring of LoRa DIO1 (see table below). When using a development board with external LoRa module then everything must be manually wired. For wiring details see the board's Board Support File (BSF).
-- **Node registration**: A node (end device) must be created/registered in The Things Network (TTN) Console before it can be used. The LoRaWAN keys for the device must be copied from the TTN Console to file `lorawan-keys.h`. Registration is not further described here. See the [TTN documentation](https://www.thethingsnetwork.org/docs/index.html) and visit the [TTN Forum](https://www.thethingsnetwork.org/forum/) for more information.
+- **Node registration**: A node (end device) must be created/registered in The Things Network (TTN) Console before it can be used. The LoRaWAN keys for the device must be copied from the TTN Console to file `lorawan-keys.h`. Registration is not further described here. For more information see [The Things Network documentation](https://www.thethingsnetwork.org/docs/index.html), [The Things Stack documentation](https://www.thethingsindustries.com/docs) and [The Things Network Forum](https://www.thethingsnetwork.org/forum/).
 - **Skills**: You should already be familiar with compiling and uploading basic Arduino sketches to your board and how to use a serial monitor.
 
 **Display**:  
