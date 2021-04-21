@@ -1,27 +1,34 @@
-This repository contains the LMIC-node application, an example LoRaWAN application for a node for The Things Network.  
+This repository contains LMIC-node, an example LoRaWAN application for a node for The Things Network.  
 Get your node quickly up and running with LMIC-node.
 
 # LMIC-node
 [![GitHub release](https://img.shields.io/github/release/lnlp/LMIC-node.svg)](https://github.com/lnlp/LMIC-node/releases/latest) [![GitHub commits](https://img.shields.io/github/commits-since/lnlp/LMIC-node/v1.0.0.svg)](https://github.com/lnlp/LMIC-node/compare/v1.0.0...main)  
 One example to rule them all
 
-
-
 ## Contents
 
 - [1 Introduction](#1-introduction)
-  - [1.1 Functionality](#11-functionality)
+  - [1.1 What does it do?](#11-what-does-it-do)
   - [1.2 Implemented features](#12-implemented-features)
   - [1.3 Requirements](#13-requirements)
 - [2 Supported Boards](#2-supported-boards)
   - [2.1 LoRa development boards](#21-lora-development-boards)
   - [2.2 Development boards with external SPI LoRa module](#22-development-boards-with-external-spi-lora-module)
 - [3 Details](#3-details)
-  - [3.1 Board-id](#31-board-id)
-  - [3.1 Device-id](#31-device-id)
-  - [3.2 platformio.ini](#32-platformioini)
-  - [3.3 lorawan-keys.h](#33-lorawan-keysh)
-  - [3.4 Board Support Files (BSF)](#34-board-support-files-bsf)
+  - [3.1 Uplink messages](#31-uplink-messages)
+  - [3.2 Downlink messages](#32-downlink-messages)
+    - [3.2.1  Reset-counter downlink command](#321--reset-counter-downlink-command)
+  - [3.3 Status information](#33-status-information)
+    - [3.3.1 Serial port and display](#331-serial-port-and-display)
+    - [3.3.2 LED](#332-led)
+  - [3.4 User modifiable code](#34-user-modifiable-code)
+  - [3.5 Board-id](#35-board-id)
+  - [3.6 Device-id](#36-device-id)
+  - [3.7 platformio.ini](#37-platformioini)
+  - [3.8 lorawan-keys.h](#38-lorawan-keysh)
+  - [3.9 Board Support Files (BSF)](#39-board-support-files-bsf)
+  - [3.10 Payload formatters](#310-payload-formatters)
+    - [3.10.1 Uplink decoder](#3101-uplink-decoder)
 - [4 Settings](#4-settings)
   - [4.1 Board selection](#41-board-selection)
   - [4.2 Common settings](#42-common-settings)
@@ -35,6 +42,7 @@ One example to rule them all
   - [5.2 Select your LoRaWAN region](#52-select-your-lorawan-region)
   - [5.3 Provide the LoRaWAN keys for your node](#53-provide-the-lorawan-keys-for-your-node)
   - [5.4 Compile and upload](#54-compile-and-upload)
+  - [5.5 Add uplink decoder function in TTN Console](#55-add-uplink-decoder-function-in-ttn-console)
 - [6 Some tips](#6-some-tips)
   - [6.1 Serial Monitor](#61-serial-monitor)
   - [6.2 Antenna](#62-antenna)
@@ -57,33 +65,41 @@ Basic steps to get a node up and running with LMIC-node:
 - Provide the LoRaWAN keys for your node (end device) in `lorawan-keys.h`.
 - Compile and upload the firmware and you're ready to go!
 
-### 1.1 Functionality
+### 1.1 What does it do?
 
-LMIC-node uses a counter to simulate a real sensor. The counter gets automatically incremented each time its value is read. The counter value is periodically read and then transmitted via an uplink message to The Things Network (TTN). In addition LMIC-node also implements a downlink command to reset the counter. The command is sent from the backend to the node via a downlink message. When the 'reset counter' command is received the counter on the node will be reset. The uplink messages can be viewed in the TTN Console. It is also possible to send the 'reset counter' downlink message to the node from the console. The effect of resetting the counter can be watched in the console as arriving uplink messages will show the new counter value.
+- LMIC-node uses a counter to simulate a real sensor. The counter gets automatically incremented each time its value is read. The counter value is periodically (`DO_WORK_INTERVAL_SECONDS`) read and then transmitted via an uplink message to The Things Network (TTN).
+- In addition LMIC-node also implements a downlink command to reset the counter. The command is sent to the node via a downlink message. When the 'reset counter' command is received by the node it will reset the counter value.
+- While all this is happening LMIC-node outputs status information to the serial port for viewing on the serial monitor and also outputs information to the display (if present). The status information will show time, events (e.g. EV_JOINED, EV_TXCOMPLETE), uplink and downlink framecounters, RSSI and SNR of received downlink messages and when a downlink contains data the data will be displayed as bytes.
+- The uplink messages can be viewed in the TTN Console. It is also possible to send the 'reset counter' downlink message from the console to the node. The effect of resetting the counter can be watched on the console as arriving uplink messages will show the new counter value.  
+
+Once the node is up and running you can start to explore and customize the source code to your own needs, e.g. add support for sensors. It is always easier to start with something that already works and then continue from there. Have fun!
 
 ### 1.2 Implemented features
 
-- Support for many popular (LoRa) development boards.
-- Cross-platform, works on ATmega328, ATmega32u4, SAMD21, ESP32, ESP8266 and STM32 boards.
-- Requires only some configuration, but no programming or modification of source code to get it up and running.
-- Configuration is done in a single project configuration file: `platformio.ini`.
 - Send uplink messages.
 - Receive downlink messages.
 - Implements a downlink command.
+- Provide detailed status feedback via serial port, LED and OLED display.  
+*Each of these output channels can be separately enabled/disabled (e.g. to save memory or power).*
 - Supports both OTAA and ABP activation. Simply switch via configuration option.
-- Supports two different LMIC libraries: MCCI LoRaWAN LMIC library and IBM LMIC framework.
 - LoRaWAN keys are placed in a separate file: `lorawan-keys.h`.
   - Protection against accidentally uploading LoRaWAN keys to public Git(Hub) repositories.
   - Easy to swap LoRaWAN keys for testing or for use with multiple devices.
-- Detailed status feedback via serial port, LED and OLED display.  
-*Each of these output channels can be separately enabled/disabled (e.g. to save memory or power).*
+- Requires only some configuration, but no programming or modification of source code to get it up and running.
+- Configuration is done in a single project configuration file: `platformio.ini`.
+- User modifiable code is clearly marked in the source code.
+- Supports two different LMIC libraries: MCCI LoRaWAN LMIC library and IBM LMIC framework.
+- Support for many popular (LoRa) development boards.
+- Cross-platform, tested on STM32, SAMD21, ESP32, ESP8266, ATmega32u4 and ATmega328 boards.
 - Hardware dependencies are handled in separate Board Support Files (BSF).
+- Built-in 'wait for serial port ready' with adjustable timeout and countdown visible on display.  
+*Useful when using the serial monitor with boards with MCU with integrated USB support.*
 - Abstraction of the serial port so code can print to `serial` without needing to know if it must print to `Serial` or `SerialUSB`.
 - Use correct GPIO pins for onboard LED, display, LoRa hardware, I2C and SPI ports even if these are incorrectly defined in the BSP.
 - Avoid hardware conflicts i.e. GPIO's shared between onboard LED, I2C, SPI and/or Vext.
 - Explicitly initialize I2C and SPI interfaces with correct pins if default pins are incorrectly defined in the BSP.
-- Built-in 'wait for serial port' support with countdown (visible on display). Useful for microcontrollers with integrated USB support.
-- When using LMIC debugging, output is automatically routed to the correct serial port (no need to specify `Serial` or `SerialUSB` port manually).
+- When using LMIC debugging, output is automatically routed to the correct serial port.
+*No need to set the `LMIC_PRINTF_TO` parameter to `Serial` or `SerialUSB` manually.*
 
 
 ### 1.3 Requirements
@@ -99,13 +115,16 @@ If PlatformIO is freshly installed the downloading may take some time. Once inst
 - **Node registration**: A node (end device) must be created/registered in The Things Network (TTN) Console before it can be used. The LoRaWAN keys for the device must be copied from the TTN Console to file `lorawan-keys.h`. Registration is not further described here. See the [TTN documentation](https://www.thethingsnetwork.org/docs/index.html) and visit the [TTN Forum](https://www.thethingsnetwork.org/forum/) for more information.
 - **Skills**: You should already be familiar with compiling and uploading basic Arduino sketches to your board and how to use a serial monitor.
 
-Display: LMIC-node supports the following display type: SSD1306 128x64 I2C OLED. These are the displays used on Heltec Wifi LoRa 32 and TTGO LoRa32 boards. When connecting an external display use this type. Use of other I2C displays is possible but requires modification of LMIC-node which is not further described here.
+**Display**:  
+LMIC-node supports the following display type: SSD1306 128x64 I2C OLED. These are the displays used on Heltec Wifi LoRa 32 and TTGO LoRa32 boards. When connecting an external display use this type. Use of other I2C displays is possible but requires modification of LMIC-node which is not further described here.
+
+Not yet a requirement but this document assumes that you will be using The Things Network V3 as The Things Network V2 will cease operation by the end of 2021 and should not be used for new development.
 
 ## 2 Supported Boards
 
-The following tables list the boards supported by LMIC-node.
+The following tables list the boards currently supported by LMIC-node.
 
-Explanation of columns: MCU: microcontroller. Wiring required: yes means manual wiring of DIO1 is needed. USB: has onboard USB. LED: yes: onboard LED is usable, no: not usable. Display: yes means has onboard display. Board-id: board identifier used in platformio.ini and used for BSF.
+Explanation of columns: MCU: microcontroller. Wiring required: yes means manual wiring of DIO1 is required. USB: has onboard USB. LED: yes: has onboard LED *and* is usable. Display: yes means has onboard display. Board-id: board identifier as used by LMIC-node.
 ### 2.1 LoRa development boards
 
 The following LoRa development boards have onboard LoRa support. Most have onboard USB that supports automatic firmware upload and serial over USB for serial monitoring. Some boards require manual wiring of the LoRa DIO1 port. For boards without onboard display an external display can be optionally connected. For details and wiring instructions see the board's BSP.
@@ -157,14 +176,108 @@ _\*6_: These boards have onboard USB but by default do not support firmware uplo
 
 ## 3 Details
 
-### 3.1 Board-id
+
+### 3.1 Uplink messages
+
+The counter is implemented as an unsigned 16 bit integer.
+The uplink payload consists of the counter value, 2 bytes in msb format (most significant byte first).
+The frame port number used for uplink messages is 10.
+Why 10? Because it shows that other port numbers than the default number 1 can be used.
+
+
+### 3.2 Downlink messages
+
+There are two types of downlink messages. Downlink messages containing user data and downlink messages containing MAC commands. MAC commands are sent by the network server to set or query network related settings.
+
+When a downlink message is received its RSSI and SNR values will be displayed as well as the port number. If the port number is 0 and no data is shown then a MAC command was received.
+
+If the port number is greater than 0 and user data was received the data will be displayed as a sequence of byte values. Contents of downlink data will only be output to the serial port and not to the display because the display is too small to fit all information on a single screen.
+
+#### 3.2.1  Reset-counter downlink command
+
+The reset-counter downlink uses 100 as frame port number.
+The reset command is represented by a single byte with hex value 0xC0 (for Counter 0).
+When a downlink message is received on port 100, the length of the data is 1 byte and the value is 0xC0 then the `resetCounter()` will be called and the counter will be reset to 0. If the received payload data is longer than a single byte, the reset-counter command will not be performed.
+### 3.3 Status information
+
+The following status information is shown:
+
+#### 3.3.1 Serial port and display
+
+At the start:
+
+- Timeout countdown value while waiting for serial port to become ready is shown on the display.  
+*This value is only shown for boards where `WAITFOR_SERIAL_SECONDS_DEFAULT` is defined in the BSF with a value unequal to 0.*
+
+In the header:
+
+- Program title "LMIC-node".
+- Device-id.
+- DoWork job time interval (DO_WORK_INTERVAL_SECONDS).
+- If OTAA or ABP activation is used *(serial port only)*.
+
+Continuously:
+
+- During transmission of uplink and downlink messages a transmit symbol will be shown in the top-right of the display.
+- A notification when the doWork job is started.
+- A notification when the counter is read, with its value.
+- A notification "packet queued" when an uplink message is scheduled.
+- A notification if a packet cannot be scheduled because transmission or reception of another message is still pending.
+- An error message if scheduling of an uplink message failed.
+- Events generated by the LMIC library (e.g. EV_JOINED, EV_TXCOMPLETE).
+- When event EV_TXCOMPLETE is received the uplink and downlink framecounters are printed.
+- For each downlink message the following will be shown:
+  - Message that downlink was received
+  - RSSI and SNR values
+  - Frame port number
+  - If data was received the length is shown
+  - If data was received the data is shown as a sequence of byte vales *(serial port only)*
+  - Message if reset-counter command was received
+- Notification when counter is reset.
+
+For events and notification a timestamp (`ostime`) will be shown.
+
+#### 3.3.2 LED
+
+During transmission of uplink and downlink messages the LED will be on and on other moments it will be off (similar to the transmit symbol on the display).
+
+### 3.4 User modifiable code
+
+LMIC-node will work out of the box without having to do any programming or modifying of source code. However, LMIC-node will only do a few tricks: Send counter value via uplink messages, handle reset-counter downlink command and show detailed status information.
+
+To make LMIC-node do other, more useful things e.g. reading values from a temperature and humidity sensor or from a water-level sensor and sending these via uplink messages, requires modifying and extending the source code.
+
+Most of the source code is boiler plate code that does not need to be changed.
+Code for things like adding support for sensors or implement other downlink commands is called *user code*. Two sections in the source code are marked as *user code*. Try to put your user code in these sections (this will prevent accidentally messing things up).
+
+If you are aware of what you are doing you are of course free to change every single line of code to your needs, but if this is new to you it might be safer to restrict modifications to the user code area's.
+
+Reading sensors (etc), preparing uplink payload and scheduling an uplink message for transmission can be done in function `processWork()`. Handling of downlink messages and adding your own downlink commands can be done in function `processDownlink()`.
+
+The user code sections are marked as follows:
+
+```cpp
+//  █ █ █▀▀ █▀▀ █▀▄   █▀▀ █▀█ █▀▄ █▀▀   █▀▄ █▀▀ █▀▀ ▀█▀ █▀█
+//  █ █ ▀▀█ █▀▀ █▀▄   █   █ █ █ █ █▀▀   █▀▄ █▀▀ █ █  █  █ █
+//  ▀▀▀ ▀▀▀ ▀▀▀ ▀ ▀   ▀▀▀ ▀▀▀ ▀▀  ▀▀▀   ▀▀  ▀▀▀ ▀▀▀ ▀▀▀ ▀ ▀
+
+
+const uint16_t payloadBufferLength = 4;    // Adjust to fit max payload length
+
+
+//  █ █ █▀▀ █▀▀ █▀▄   █▀▀ █▀█ █▀▄ █▀▀   █▀▀ █▀█ █▀▄
+//  █ █ ▀▀█ █▀▀ █▀▄   █   █ █ █ █ █▀▀   █▀▀ █ █ █ █
+//  ▀▀▀ ▀▀▀ ▀▀▀ ▀ ▀   ▀▀▀ ▀▀▀ ▀▀  ▀▀▀   ▀▀▀ ▀ ▀ ▀▀    
+```
+
+### 3.5 Board-id
 
 LMIC-node uses a _board-id_ to identify a specific type of board. _board-id_ is similar to PlatformIO's _board_ but latter is limited to BSP's defined in Arduino cores. Unfortunately there does not exist a dedicated BSP for each board supported by LMIC-node. Therefore LMIC-node defines its own board identifiers.
 
 A Board Support Package (BSP) provides support for a specific board and provides standard pin definitions for a board. BSP's are part of an Arduino core, which contains a BSP for each supported board.
 
 _board-id_ is kept identical or as similar as possible to PlatformIO's _board_. For simplicity and consistency _board-id_ only uses underscores and lowercase characters (e.g. heltec_wifi_lora_32_v2 and ttgo_lora32_v2) while PlatformIO's _board_ uses both hyphens and underscores and mixed case characters (e.g. heltec_wifi_lora_32_V2 and ttgo-lora32-v2). Where needed _board-id_ adds a version suffix (if a matching BSP does not yet exist) e.g. ttgo_tbeam_v1 (v1 stands for version 1.0), because there is only one single T-Beam BSP (and one PlatformIO board) for the T-Beam while there are important hardware differences between versions 0.x and 1.0 of the T-Beam board.
-### 3.1 Device-id
+### 3.6 Device-id
 
 LMIC-node uses a device-id to identify a device. The device-id is used for display purposes in status information that is output to the serial port and display. Device-id's allow different devices to be easily recognized when they have different device-id's, because their device-id is shown on the display (if present) and/or serial monitor (serial port). The length of a device-id should be limited to max 16 characters long, otherwise it will not fit on a display.
 
@@ -177,7 +290,7 @@ lorawan-keys.h can contain both the keys used OTAA activation as well as the key
 Tip: For testing purposes it is possible to create two different devices in the TTN console for the same hardware device, one for OTAA activation and the other for ABP activation. Both sets of keys can be added to lorawan-keys.h and for both a different device-id can be added to lorawan-keys.h. This way a single hardware device can be used for both OTAA and ABP (only one at a time). All that to needs to be done to switch the device from OTAA to ABP is to enable the `-D ABP_ACTIVATION` setting in the `[common]` section in platformio.ini (and vice versa) and then recompile and upload the firmware.
 
 
-### 3.2 platformio.ini
+### 3.7 platformio.ini
 
 `platformio.ini` is the project configuration file. This file contains all configuration settings like program options, names of libraries and build options. It contains below sections:
 
@@ -203,7 +316,7 @@ Tip: For testing purposes it is possible to create two different devices in the 
 
 Comments in platformio.ini start with a semicolon ( ; ) character. To uncomment a line  remove the semicolon prefix. To comment a line add a semicolon prefix.
 
-### 3.3 lorawan-keys.h
+### 3.8 lorawan-keys.h
 
 File `lorawan-keys.h` contains the LoRaWAN keys for a node. The keys are placed in a separate file for:
 
@@ -254,7 +367,7 @@ All files with name pattern `*lorawan-keys.h` and all files in folder `keyfiles`
 
 `loarawan-keys_example.h` is included as example for `lorawan-keys.h`.
 
-### 3.4 Board Support Files (BSF)
+### 3.9 Board Support Files (BSF)
 
 A Board Support File (BSF) isolates hardware dependencies for a board into a single file: the BSF. There is a separate BSF per board type.
 
@@ -310,6 +423,34 @@ bool boardInit(InitType initType)
     return success;
 }
 ```
+
+### 3.10 Payload formatters
+
+Payload formatter functions are located in the `payload-formatters` folder.
+#### 3.10.1 Uplink decoder
+
+LMIC-node comes with a JavaScript payload formatter function for decoding the uplink messages so the counter value gets displayed in 'Live data' on the TTN Console. The `decodeUplink()` function can be found in file `lmic-node-uplink-formatters.js` located in the `payload-formatters` folder and is shown below:
+
+```js
+function decodeUplink(input) {
+    var data = {};
+    var warnings = [];
+
+    if (input.fPort == 10) {
+        data.counter = (input.bytes[0] << 8) + input.bytes[1];
+    }
+    else {
+        warnings.push("Unsupported fPort");
+    }
+    return {
+        data: data,
+        warnings: warnings
+    };
+}
+```
+
+In the TTN Console this function should be added to the device (or application) as uplink payload formatter function.
+When this function is installed, the counter value will become visible in uplink messages in 'Live data' on the TTN Console.
 
 ## 4 Settings
 
@@ -412,6 +553,9 @@ Be aware that the serial port must not only be ready but also a serial monitor n
 ; Perform PlatformIO: Clean after changing library version and
 ; in case of issues remove the old version from .pio/libdeps/*.
 
+; If LMIC_DEBUG_LEVEL is set to value > 0 then LMIC_PRINTF_TO will 
+; be automatically set to serial (do not set it explicitly).  
+
 lib_deps =
     ; Only ONE of below LMIC libraries should be enabled.
     mcci-catena/MCCI LoRaWAN LMIC library           ; MCCI LMIC library (latest release)
@@ -424,11 +568,11 @@ build_flags =
     ; Ping and beacons not supported for class A, disable to save memory.
     -D DISABLE_PING
     -D DISABLE_BEACONS
- 
+
     ; If LMIC_DEBUG_LEVEL is set to value > 0 then LMIC_PRINTF_TO will 
     ; be automatically set to serial (do not set it explicitly).
     ; -D LMIC_DEBUG_LEVEL=1            ; 0, 1 or 2
-
+    
     ; -D CFG_sx1272_radio=1            ; Use for SX1272 radio
     -D CFG_sx1276_radio=1              ; Use for SX1276 radio
     -D USE_ORIGINAL_AES                ; Faster but larger, see docs
@@ -451,8 +595,7 @@ build_flags =
 
 **Regional setting**
 --- Regional settings --- is where the regional setting needs to be selected.
-Uncomment the line with the needed region setting (and comment any other region setting).  
-Only one region must be selected. By default CFG_eu868 (Europe) is selected.
+Uncomment the line with the appropriate region setting (and comment the other region settings). Only one region may be selected. By default CFG_eu868 (Europe) is selected.
 
 **LMIC_DEBUG_LEVEL**  
 This can be uncommented to allow debug information from the LMIC library to be printed.
@@ -466,16 +609,18 @@ For more information see the MCCI LoRaWAN LMIC library documentation.
 #### 4.3.2 IBM LMIC framework settings
 
 ```ini
-[classic_lmic]    
 ; IMPORTANT:
 ; This library was recently deprecated and is no longer maintained.
-
+; It is not fully LoRaWAN compliant (e.g. in handling of MAC commands)
+; and is therefore less suitable for use with The Things Network V3.
+;
 ; Region, radio and debug settings CANNOT be changed in platformio.ini.
 ; They must be configured in file: config.h in the following location:
 ; .pio/libdeps/<board-id>/IBM LMIC framework/src/lmic
-
+;
 ; When making changes to config.h: 
 ; CONFIG.H MUST BE CHANGED FOR EACH BOARD SEPARATELY!
+; (By default libraries are installed per project per build config/board.)
 
 ; If LMIC_DEBUG_LEVEL is set to value > 0 then LMIC_PRINTF_TO will 
 ; be automatically set to serial (do not set it explicitly).  
@@ -487,8 +632,8 @@ build_flags =
     ; DEFAULT VALUES defined in config.h:
     ; CFG_sx1276_radio 1
     ; CFG_eu868 1
-    ; LMIC_DEBUG_LEVEL 0   
-    ;
+    ; LMIC_DEBUG_LEVEL 0 
+
     ; Ping and beacons not supported for class A, disable to save memory.
     -D DISABLE_PING
     -D DISABLE_BEACONS
@@ -526,7 +671,7 @@ lib_deps =
 build_flags =
     ${common.build_flags}
     ${classic_lmic.build_flags}
-    ; ${mcci_lmic.lib_deps}  ; MCCI LMIC better LoRaWAN compliance but uses more memory 
+    ; ${mcci_lmic.build_flags}  ; MCCI LMIC better LoRaWAN compliance but uses more memory 
     -D BSFILE=\"boards/lora32u4II.h\"
     -D MONITOR_SPEED=${common.monitor_speed}
     -D USE_SERIAL
@@ -560,7 +705,7 @@ build_flags =
     ; -D USE_DISPLAY         ; Requires external I2C OLED display
 ```
 
-By default all USE\_ options for a board are enabled. If the option is not enabled by default then it is either not supported or in case of USE_DISPLAY requires an external display to be connected. The USE_DISPLAY option can then be enabled after the display is connected.
+By default all USE\_ options for a board are enabled. If the option is not enabled by default then it is either not supported (e.g. due to hardware conflict) or in case of USE_DISPLAY requires an external display to be connected. The USE_DISPLAY option can then be enabled after the display is connected.
 
 Each of these options uses memory. In case of memory constrainted 8-bit boards disabling some of these option may free some memory for other use (e.g. use MCCI LIMIC library or enable LMIC debugging).
 
@@ -579,7 +724,7 @@ For some boards it may be necessary to change the upload protocol, e.g. for blue
 **LMIC library**  
 By default all boards with 32-bit MCU are configured to use the MCCI LoRaWAN LMIC library (MCCI LMIC) because this is the library to use. It is the most LoRaWAN compliant LMIC library for Arduino and it is actively maintained.  
 
- By default all boards with 8-bit MCU are configured to use the IBM LMIC framework library (Classic LMIC). These boards have limited memory capacity and Classic LMIC uses less memory than MCCI LMIC. From LoRaWAN compliance and improved functionality MCCI LMIC is preferred but with MCCI LMIC is is not possible to use all LMIC-node features on these 8-bit boards.
+ By default all boards with 8-bit MCU are configured to use the IBM LMIC framework library (Classic LMIC). These boards have limited memory capacity and Classic LMIC uses less memory than MCCI LMIC. From LoRaWAN compliance and improved functionality perspective MCCI LMIC is preferred but with MCCI LMIC it is not possible to use all LMIC-node features on these 8-bit boards.
 
  Two use an LMIC library two entries are required, one for `lib_deps` and one for `build_flags`. For the 8-bit boards these are included for both the Classic LMIC and MCCI LMIC libraries but the ones for MCCI LMIC are disabled (commented).
  To use the MCCI LMIC library instead of the Classic LMIC library, the entries for Classic LMIC must be disabled (commented) and the entries for MCCI LMIC must be enabled.
@@ -590,7 +735,7 @@ lib_deps =
     ; ${mcci_lmic.lib_deps}  ; MCCI LMIC better LoRaWAN compliance but uses more memory
 build_flags =
     ${classic_lmic.build_flags}
-    ; ${mcci_lmic.lib_deps}  ; MCCI LMIC better LoRaWAN compliance but uses more memory
+    ; ${mcci_lmic.build_flags}  ; MCCI LMIC better LoRaWAN compliance but uses more memory
 ```
 
 The other entries in the board sections should stay unchanged.
@@ -667,8 +812,15 @@ When using **Classic LMIC** (set as default for 8-bit boards):
 
 **Your node should now be up and running.**
 
-**ENJOY!**
+The node will be running but to be able to see the counter value in uplink messages displayed on the console, an uplink decoder function needs to be installed (see next step).
 
+### 5.5 Add uplink decoder function in TTN Console
+
+**Step 5**: In the TTN Console, add the `decodeUplink()` JavaScript function as uplink payload formatter to the device. As formatter type select `JavaScript` and the function must be pasted in the field `Formatter parameter`.
+
+The `decodeUplink()` JavaScript function can be found in file `lmic-node-uplink-formatters.js` which is located in folder `payload-formatters`.
+
+When this function is installed, the counter value will be shown in uplink messages in 'Live data' on the TTN Console.
 
 ## 6 Some tips
 
