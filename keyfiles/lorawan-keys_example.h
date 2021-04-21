@@ -48,7 +48,7 @@
 
 // -----------------------------------------------------------------------------
 
-// Optional: If DEVICEID_ABP is defined it will be used instead of the default defined in the BSF.
+// Optional: If DEVICEID_ABP is defined it will be used for ABP instead of the default defined in the BSF.
 // #define ABP_DEVICEID "<deviceid>"
 
 // Keys required for ABP activation:
