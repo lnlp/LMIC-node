@@ -863,18 +863,19 @@ These boards should work but some may need some extra attention (see _remarks_ b
 
 - Adafruit Feather M0 RFMx LoRa
 - Heltec Wireless Stick and Wireless Stick Lite  
-_It is assumed that the onboard LED is active-high (like the WiFi LoRa 32 boards).
-If incorrect then in the BSF file in the led constructor activeLevel should be changed to EasyLed::ActiveLevel::Low)._  
+_It is assumed that the onboard LED is active-high (like the WiFi LoRa 32 boards).  
+If incorrect then in BSF file in the led constructor change activeLevel to EasyLed::ActiveLevel::Low._  
 - BSFrance LoRa32u4 II PCB versions 1.1 and 1.3  
 _PCB versions 1.0 and 1.2 were tested._  
 - TTGO LoRa32 V1.3  
 _It is unknown if this board has an onboard LED and if it is usable. USE_LED is therefore disabled._
-- TTGO LoRa32 V2.1.6
-_Unknown if LED_BUILTIN is active-low or active-high. Assuming active-low just like v2._
+- TTGO LoRa32 V2.1.6  
+_Unknown if LED_BUILTIN is active-low or active-high. Active-low is assumed just like v2.  
+If incorrect then in BSF file in the led constructor change activeLevel to EasyLed::ActiveLevel::High._
 - Lolin D32  
 _Lolin D32 Pro was tested which is very similar._
 - TTGO T-Beam V1.1  
-_T-Beam V1.1 may work by using board ID ttgo_tbeam_v1_0 but this has not been tested.
+_T-Beam V1.1 may work by using board-id ttgo_tbeam_v1 but this has not been tested.
 It is currently unknown what the differences between V1.1 and V1.0 are._
 
 ## 8 Example Output
