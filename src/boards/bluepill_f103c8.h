@@ -133,6 +133,10 @@ const lmic_pinmap lmic_pins = {
     U8X8_SSD1306_128X64_NONAME_HW_I2C display(/*rst*/ U8X8_PIN_NONE, /*scl*/ SCL, /*sda*/ SDA);
 #endif
 
+#ifndef STM32_POST_INITSERIAL_DELAY_MS
+    #define STM32_POST_INITSERIAL_DELAY_MS 1500
+#endif
+
 
 bool boardInit(InitType initType)
 {
@@ -155,8 +159,10 @@ bool boardInit(InitType initType)
             
             // Required workaround:
             // Data printed to the serial port during the first second gets lost.
-            // Inserting a 1500 millisecond delay will usually fix this.
-            delay(1500);
+            // Inserting a sufficient delay will usually fix this.
+#ifdef USE_SERIAL
+            delay(STM32_POST_INITSERIAL_DELAY_MS);
+#endif            
             break;           
     }
     return success;
