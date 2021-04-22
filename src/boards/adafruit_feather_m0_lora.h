@@ -14,7 +14,9 @@
  *                It supports automatic firmware upload and serial over USB.
  *                No onboard display. Optionally an external display con be connected.
  * 
- *                ██ DIO1 MUST BE MANUALLY WIRED TO GPIO5 (see below) ██
+ *                ██ DIO1 MUST BE MANUALLY WIRED TO GPIO6 (see below) ██
+ * 
+ *                GPIO6 is what Adafruit uses in their tutorial.
  * 
  *                Connect DIO1 and optional display
  *                according to below connection details.
@@ -43,10 +45,11 @@
  *                NSS   <――――――――――>   8
  *                RST   <――――――――――>   4
  *                DIO0  <――――――――――>   3
- *                DIO1  <---------->   5  ██ NOT WIRED on PCB ██
+ *                DIO1  <---------->   6  ██ NOT WIRED on PCB ██
  *                DIO2                 -  Not needed for LoRa
  *
  *  Docs:         https://docs.platformio.org/en/latest/boards/atmelsam/adafruit_feather_m0.html 
+ *                https://learn.adafruit.com/the-things-network-for-feather/arduino-wiring 
  * 
  *  Docs:         
  *

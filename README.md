@@ -145,7 +145,7 @@ The following LoRa development boards have onboard LoRa support. Most have onboa
 | TTGO T-Beam V0.7                  | ESP32          | no              | yes    | yes     | no      | ttgo_tbeam |
 | TTGO T-Beam V1.0                  | ESP32          | no              | yes    | yes     | no      | ttgo_tbeam_v1 |
 
-_\*1_: DIO1 must be manually wired to GPIO5.  
+_\*1_: DIO1 must be manually wired to GPIO6.  
 _\*2_: For versions 1.0, 1.1 and 1.2 DIO1 must be manually wired to GPIO5 (version 1.3 is already wired on the PCB).  
 _\*3_: DIO1 must be manually wired to GPIO33.  
 _\*4_: Requires USB to Serial adapter or Pycom Expansion Board which is explained further below.  
