@@ -2,7 +2,7 @@ This repository contains LMIC-node, an example LoRaWAN application for a node fo
 Get your node quickly up and running with LMIC-node.
 
 # LMIC-node
-[![GitHub release](https://img.shields.io/github/release/lnlp/LMIC-node.svg)](https://github.com/lnlp/LMIC-node/releases/latest) [![GitHub commits](https://img.shields.io/github/commits-since/lnlp/LMIC-node/v1.0.0.svg)](https://github.com/lnlp/LMIC-node/compare/v1.0.0...main)  
+[![GitHub release](https://img.shields.io/github/release/lnlp/LMIC-node.svg)](https://github.com/lnlp/LMIC-node/releases/latest) [![GitHub commits](https://img.shields.io/github/commits-since/lnlp/LMIC-node/v1.1.0.svg)](https://github.com/lnlp/LMIC-node/compare/v1.1.0...main)  
 One example to rule them all
 
 ## Contents
@@ -896,6 +896,19 @@ To be added.
 <br>
 
 ## 9 Release History
+
+- **v1.1.0 Maintenance release**  
+  - Update README.md and add Release History.
+  - Add support for SX1276 Low port and SX1272 in RSSI calculation.
+  - Add LMIC library and LMIC debug level (if >0) to print output.
+  - Add option to make possible to override in platformio.ini, the value of STM32_POST_INITSERIAL_DELAY_MS defined in BSF of STM32 boards.
+  - Add compile error when ABP is used with Classic LMIC because not compliant, generates downlink message for every uplink message because it does not properly handle MAC commands.
+  - For STM32 BSF's surround postInitSerial delay with #ifdef USE_SERIAL.
+  - In Adafruit Feather M0 LoRa BSF change DIO1 from pin 5 to pin 6 because that is what Adafruit instructs in their tutorial.
+  - Fix ABP_DEVICEID not being used if defined in lorawan-keys.h.
+  - Fix offset for RSSI calculation when using MCCI LMIC.
+  - Fix printEvent() error when no USE_DISPLAY and no USE_SERIAL are defined.
+  - Known issue: The MCCI LoRaWAN LMIC library has a problem with SerialUSB on the Arduino Zero (USB) board so LMIC debug output cannot be used.
 
 - **v1.0.0 Initial release**
   - First release of LMIC-node.
