@@ -98,36 +98,57 @@ int16_t getSnrTenfold()
 {
     // Returns ten times the SNR (dB) value of the last received packet.
     // Ten times to prevent the use of float but keep 1 decimal digit accuracy.
-    // Calculation per SX1276 datasheet (Rev.6) 6.4.
+    // Calculation per SX1276 datasheet rev.7 §6.4, SX1276 datasheet rev.4 §6.4.
     // LMIC.snr contains value of PacketSnr, which is 4 times the actual SNR value.
     return (LMIC.snr * 10) / 4;
 }
 
 
-int16_t getRssi(int16_t snr)
+int16_t getRssi(int8_t snr)
 {
     // Returns correct RSSI (dBm) value of the last received packet.
-    // Calculation per SX1276 datasheet (Rev.6) 5.5.5.
-    // Correct calculation of RSSI depends on whether the HF or LF port is used.
-    // Note: Below code assumes that only HF port is used and only SX1276 is used (not SX1272)
-    //       if not then the values will be less reliable.
+    // Calculation per SX1276 datasheet rev.7 §5.5.5, SX1272 datasheet rev.4 §5.5.5.
 
-    const int16_t rssiOffset = -157;    // For HF port use -157, for LF port use -164.
-    
-    // LMIC.rssi contains modified value of PacketRssi.
-    // Revert modification (applied in lmic/radio.c) to get PacketRssi.
-    // (Purpose of modification is unclear and the magic numbers seem undocumented.)
-    int16_t packetRssi = LMIC.rssi + 125 - 64;
+    #define RSSI_OFFSET            64
+    #define SX1276_FREQ_LF_MAX     525000000     // per datasheet 6.3
+    #define SX1272_RSSI_ADJUST     -139
+    #define SX1276_RSSI_ADJUST_LF  -164
+    #define SX1276_RSSI_ADJUST_HF  -157
 
     int16_t rssi;
-    if (snr < 0)
-    {
-        rssi = rssiOffset + packetRssi + snr;
-    }
-    else
-    {
-        rssi = rssiOffset + (16 / 15.0 * packetRssi);
-    }
+
+    #ifdef MCCI_LMIC
+
+        rssi = LMIC.rssi - RSSI_OFFSET;
+
+    #else
+        int16_t rssiAdjust;
+        #ifdef CFG_sx1276_radio
+            if (LMIC.freq > SX1276_FREQ_LF_MAX)
+            {
+                rssiAdjust = SX1276_RSSI_ADJUST_HF;
+            }
+            else
+            {
+                rssiAdjust = SX1276_RSSI_ADJUST_LF;   
+            }
+        #else
+            // CFG_sx1272_radio    
+            rssiAdjust = SX1272_RSSI_ADJUST;
+        #endif    
+        
+        // Revert modification (applied in lmic/radio.c) to get PacketRssi.
+        int16_t packetRssi = LMIC.rssi + 125 - RSSI_OFFSET;
+        if (snr < 0)
+        {
+            rssi = rssiAdjust + packetRssi + snr;
+        }
+        else
+        {
+            rssi = rssiAdjust + (16 * packetRssi) / 15;
+        }
+    #endif
+
     return rssi;
 }
 
@@ -142,7 +163,7 @@ void printEvent(ostime_t timestamp,
         if (target == PrintTarget::All || target == PrintTarget::Display)
         {
             display.clearLine(TIME_ROW);
-            display.setCursor(0, TIME_ROW);
+            display.setCursor(COL_0, TIME_ROW);
             display.print(F("Time:"));                 
             display.print(timestamp); 
             display.clearLine(EVENT_ROW);
@@ -150,7 +171,7 @@ void printEvent(ostime_t timestamp,
             {
                 display.clearLine(STATUS_ROW);    
             }
-            display.setCursor(0, EVENT_ROW);               
+            display.setCursor(COL_0, EVENT_ROW);               
             display.print(message);
         }
     #endif  
@@ -179,7 +200,9 @@ void printEvent(ostime_t timestamp,
 
 void printEvent(ostime_t timestamp, ev_t ev, PrintTarget target = PrintTarget::All, bool clearDisplayStatusRow = true)
 {
-    printEvent(timestamp, lmicEventNames[ev], target, clearDisplayStatusRow, true);
+    #if defined(USE_DISPLAY) || defined(USE_SERIAL)
+        printEvent(timestamp, lmicEventNames[ev], target, clearDisplayStatusRow, true);
+    #endif
 }
 
 
@@ -189,7 +212,7 @@ void printFrameCounters(PrintTarget target = PrintTarget::All)
         if (target == PrintTarget::Display || target == PrintTarget::All)
         {
             display.clearLine(FRMCNTRS_ROW);
-            display.setCursor(0, FRMCNTRS_ROW);
+            display.setCursor(COL_0, FRMCNTRS_ROW);
             display.print(F("Up:"));
             display.print(LMIC.seqnoUp);
             display.print(F(" Dn:"));
@@ -201,9 +224,9 @@ void printFrameCounters(PrintTarget target = PrintTarget::All)
         if (target == PrintTarget::Serial || target == PrintTarget::All)
         {
             printSpaces(serial, MESSAGE_INDENT);
-            serial.print(F("Up#: "));
+            serial.print(F("Up: "));
             serial.print(LMIC.seqnoUp);
-            serial.print(F(",  Dn#: "));
+            serial.print(F(",  Down: "));
             serial.println(LMIC.seqnoDn);        
         }
     #endif        
@@ -247,8 +270,8 @@ void printDownlinkInfo()
         // bool ackReceived = LMIC.txrxFlags & TXRX_ACK;
 
         int16_t snrTenfold = getSnrTenfold();
-        int16_t snr = snrTenfold / 10;
-        int16_t snrDecimalFraction = snrTenfold % 10;
+        int8_t snr = snrTenfold / 10;
+        int8_t snrDecimalFraction = snrTenfold % 10;
         int16_t rssi = getRssi(snr);
 
         uint8_t fPort = 0;        
@@ -259,7 +282,7 @@ void printDownlinkInfo()
 
         #ifdef USE_DISPLAY
             display.clearLine(EVENT_ROW);        
-            display.setCursor(0, EVENT_ROW);
+            display.setCursor(COL_0, EVENT_ROW);
             display.print(F("RX P:"));
             display.print(fPort);
             if (dataLength != 0)
@@ -268,7 +291,7 @@ void printDownlinkInfo()
                 display.print(LMIC.dataLen);                       
             }
             display.clearLine(STATUS_ROW);        
-            display.setCursor(0, STATUS_ROW);
+            display.setCursor(COL_0, STATUS_ROW);
             display.print(F("RSSI"));
             display.print(rssi);
             display.print(F(" SNR"));
@@ -312,14 +335,16 @@ void printHeader(void)
 {
     #ifdef USE_DISPLAY
         display.clear();
-        display.setCursor(0, HEADER_ROW);
+        display.setCursor(COL_0, HEADER_ROW);
         display.print(F("LMIC-node"));
-        // OTAA is default so is not shown here
         #ifdef ABP_ACTIVATION
-            display.print(F(" ABP"));
-        #endif    
-        display.drawString(0, DEVICEID_ROW, deviceId);
-        display.setCursor(0, INTERVAL_ROW);
+            display.drawString(ABPMODE_COL, HEADER_ROW, "ABP");
+        #endif
+        #ifdef CLASSIC_LMIC
+            display.drawString(CLMICSYMBOL_COL, HEADER_ROW, "*");
+        #endif
+        display.drawString(COL_0, DEVICEID_ROW, deviceId);
+        display.setCursor(COL_0, INTERVAL_ROW);
         display.print(F("Interval:"));
         display.print(doWorkIntervalSeconds);
         display.print("s");
@@ -327,17 +352,27 @@ void printHeader(void)
 
     #ifdef USE_SERIAL
         serial.println(F("\n\nLMIC-node\n"));
-        serial.print(F("Device-id:   "));
+        serial.print(F("Device-id:     "));
         serial.println(deviceId);            
-        serial.print(F("Activation:  "));
+        serial.print(F("LMIC library:  "));
+        #ifdef MCCI_LMIC  
+            serial.println(F("MCCI"));
+        #else
+            serial.println(F("Classic [Deprecated]")); 
+        #endif
+        serial.print(F("Activation:    "));
         #ifdef OTAA_ACTIVATION  
             serial.println(F("OTAA"));
         #else
             serial.println(F("ABP")); 
         #endif
-        serial.print(F("Interval:    "));  
-        serial.print(doWorkIntervalSeconds);  
-        serial.println(F(" seconds"));  
+        #if defined(LMIC_DEBUG_LEVEL) && LMIC_DEBUG_LEVEL > 0
+            serial.print(F("LMIC debug:    "));  
+            serial.println(LMIC_DEBUG_LEVEL);
+        #endif
+        serial.print(F("Interval:      "));
+        serial.print(doWorkIntervalSeconds);
+        serial.println(F(" seconds"));
     #endif
 }     
 
@@ -463,7 +498,7 @@ void initLmic() {
         LMIC_setClockError(clockError);
 
         #ifdef USE_SERIAL
-            serial.print(F("\nClock Error: "));
+            serial.print(F("Clock Error:   "));
             serial.print(LMIC_CLOCK_ERROR_PPM);
             serial.print(" ppm (");
             serial.print(clockError);
@@ -661,6 +696,7 @@ void processWork(ostime_t doWorkJobTimeStamp)
     // The counter is increased automatically by getCounterValue()
     // and can be reset with a 'reset counter' command downlink message.
     
+    // Collect input data
     uint16_t counterValue = getCounterValue();
     ostime_t timestamp = os_getTime();
 
@@ -669,7 +705,7 @@ void processWork(ostime_t doWorkJobTimeStamp)
         // This allows to keep the 3rd row empty which makes the
         // information better readable on the small display.
         display.clearLine(INTERVAL_ROW);
-        display.setCursor(0, INTERVAL_ROW);
+        display.setCursor(COL_0, INTERVAL_ROW);
         display.print("I:");
         display.print(doWorkIntervalSeconds);
         display.print("s");        
@@ -677,7 +713,7 @@ void processWork(ostime_t doWorkJobTimeStamp)
         display.print(counterValue);
     #endif
     #ifdef USE_SERIAL
-        printEvent(timestamp, "Data read", PrintTarget::Serial);
+        printEvent(timestamp, "Input data collected", PrintTarget::Serial);
         printSpaces(serial, MESSAGE_INDENT);
         serial.print(F("COUNTER value: "));
         serial.println(counterValue);
@@ -767,7 +803,7 @@ void setup()
         #endif
         #ifdef USE_DISPLAY
             // Following mesage shown only if failure was unrelated to I2C.
-            display.setCursor(0, FRMCNTRS_ROW);
+            display.setCursor(COL_0, FRMCNTRS_ROW);
             display.print(F("HW init failed"));
         #endif
         abort();

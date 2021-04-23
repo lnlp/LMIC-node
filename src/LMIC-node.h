@@ -61,59 +61,28 @@ void processDownlink(ostime_t eventTimestamp, uint8_t fPort, uint8_t* data, uint
     #define CLASSIC_LMIC
 #endif    
 
-// Determine if a valid region is defined.
-// This actually has little effect because
-// CLASSIC LMIC: defines CFG_eu868 by default,
-// MCCI LMIC: if no region is defined it
-// sets CFG_eu868 as default.
-#if ( \
-    ( defined(CLASSIC_LMIC) \
-      && !( defined(CFG_eu868) \
-            || defined(CFG_us915) ) ) \
-    || \
-    ( defined(MCCI_LMIC) \
-      && !( defined(CFG_as923) \
-            || defined(CFG_as923jp) \
-            || defined(CFG_au915) \
-            || defined(CFG_eu868) \
-            || defined(CFG_in866) \
-            || defined(CFG_kr920) \
-            || defined(CFG_us915) ) ) \
-)
-    #Error No valid region defined
-#endif    
-
-#include BSFILE             // Include Board Support File
-#include "../keyfiles/lorawan-keys.h"
-
-#ifdef OTAA_ACTIVATION
-    #if !defined(OTAA_DEVEUI) || !defined(OTAA_APPEUI) || !defined(OTAA_APPKEY)
-        #error One or more LoRaWAN keys (OTAA_DEVEUI, OTAA_APPEUI, OTAA_APPKEY) are not defined.
-    #endif 
-#else
-    // ABP activation
-    #if !defined(ABP_DEVADDR) || !defined(ABP_NWKSKEY) || !defined(ABP_APPSKEY)
-        #error One or more LoRaWAN keys (ABP_DEVADDR, ABP_NWKSKEY, ABP_APPSKEY) are not defined.
-    #endif
+#if !defined(ABP_ACTIVATION) && !defined(OTAA_ACTIVATION)
+    #define OTAA_ACTIVATION
 #endif
 
+
+#include BSFILE // Include Board Support File
+#include "../keyfiles/lorawan-keys.h"
+
+
 #if defined(LMIC_DEBUG_LEVEL) && LMIC_DEBUG_LEVEL > 0
-    #ifdef LMIC_PRINTF_TO
-        #undef LMIC_PRINTF_TO
+    // Do not overrule if already defined
+    #ifndef LMIC_PRINTF_TO
+        #define LMIC_PRINTF_TO serial
     #endif
-    #define LMIC_PRINTF_TO serial
 #endif
     
 #if defined(ABP_ACTIVATION) && defined(OTAA_ACTIVATION)
     #error Only one of ABP_ACTIVATION and OTAA_ACTIVATION can be defined.
 #endif
 
-#if !defined(ABP_ACTIVATION) && !defined(OTAA_ACTIVATION)
-    #define OTAA_ACTIVATION
-#endif
-
-#if defined(ABP_ACTIVATION) && defined(DEVICEID_ABP)
-    const char deviceId[] = DEVICEID_ABP;
+#if defined(ABP_ACTIVATION) && defined(ABP_DEVICEID)
+    const char deviceId[] = ABP_DEVICEID;
 #elif defined(DEVICEID)
     const char deviceId[] = DEVICEID;
 #else
@@ -134,6 +103,44 @@ void processDownlink(ostime_t eventTimestamp, uint8_t fPort, uint8_t* data, uint
     #define WAITFOR_SERIAL_S 0
 #endif 
 
+#if defined(ABP_ACTIVATION) && defined(CLASSIC_LMIC)
+    #error Do NOT use ABP activation when using the deprecated IBM LMIC framework library. \
+           On The Things Network V3 this will cause a downlink message for EACH uplink message \
+           because it does properly handle MAC commands. 
+#endif
+
+#ifdef OTAA_ACTIVATION
+    #if !defined(OTAA_DEVEUI) || !defined(OTAA_APPEUI) || !defined(OTAA_APPKEY)
+        #error One or more LoRaWAN keys (OTAA_DEVEUI, OTAA_APPEUI, OTAA_APPKEY) are not defined.
+    #endif 
+#else
+    // ABP activation
+    #if !defined(ABP_DEVADDR) || !defined(ABP_NWKSKEY) || !defined(ABP_APPSKEY)
+        #error One or more LoRaWAN keys (ABP_DEVADDR, ABP_NWKSKEY, ABP_APPSKEY) are not defined.
+    #endif
+#endif
+
+// Determine if a valid region is defined.
+// This actually has little effect because
+// CLASSIC LMIC: defines CFG_eu868 by default,
+// MCCI LMIC: if no region is defined it
+// sets CFG_eu868 as default.
+#if ( \
+    ( defined(CLASSIC_LMIC) \
+      && !( defined(CFG_eu868) \
+            || defined(CFG_us915) ) ) \
+    || \
+    ( defined(MCCI_LMIC) \
+      && !( defined(CFG_as923) \
+            || defined(CFG_as923jp) \
+            || defined(CFG_au915) \
+            || defined(CFG_eu868) \
+            || defined(CFG_in866) \
+            || defined(CFG_kr920) \
+            || defined(CFG_us915) ) ) \
+)
+    #Error No valid LoRaWAN region defined
+#endif   
 
 #ifndef LMIC_MCCI
     #define LMIC_ERROR_SUCCESS 0
@@ -217,19 +224,25 @@ void processDownlink(ostime_t eventTimestamp, uint8_t fPort, uint8_t* data, uint
 
 #ifdef USE_DISPLAY 
     uint8_t transmitSymbol[8] = {0x18, 0x18, 0x00, 0x24, 0x99, 0x42, 0x3c, 0x00}; 
-    #define LAST_COL     15
-    #define HEADER_ROW    0
-    #define DEVICEID_ROW  1
-    #define INTERVAL_ROW  2
-    #define TIME_ROW      4
-    #define EVENT_ROW     5
-    #define STATUS_ROW    6
-    #define FRMCNTRS_ROW  7
-    #define ROW_0         0
-    #define ROW_1         1
-    #define ROW_2         2
-    #define ROW_3         3
-    #define ROW_4         4
+    #define ROW_0             0
+    #define ROW_1             1
+    #define ROW_2             2
+    #define ROW_3             3
+    #define ROW_4             4
+    #define ROW_5             5
+    #define ROW_6             6
+    #define ROW_7             7    
+    #define HEADER_ROW        ROW_0
+    #define DEVICEID_ROW      ROW_1
+    #define INTERVAL_ROW      ROW_2
+    #define TIME_ROW          ROW_4
+    #define EVENT_ROW         ROW_5
+    #define STATUS_ROW        ROW_6
+    #define FRMCNTRS_ROW      ROW_7
+    #define COL_0             0
+    #define ABPMODE_COL       10
+    #define CLMICSYMBOL_COL   14
+    #define TXSYMBOL_COL      15
 
     void initDisplay()
     {
@@ -241,11 +254,11 @@ void processDownlink(ostime_t eventTimestamp, uint8_t fPort, uint8_t* data, uint
     {
         if (visible)
         {
-            display.drawTile(LAST_COL, ROW_0, 1, transmitSymbol);
+            display.drawTile(TXSYMBOL_COL, ROW_0, 1, transmitSymbol);
         }
         else
         {
-            display.drawGlyph(LAST_COL, ROW_0, char(0x20));
+            display.drawGlyph(TXSYMBOL_COL, ROW_0, char(0x20));
         }
     }    
 #endif // USE_DISPLAY
