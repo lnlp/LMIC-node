@@ -105,7 +105,7 @@ void processDownlink(ostime_t eventTimestamp, uint8_t fPort, uint8_t* data, uint
 
 #if defined(ABP_ACTIVATION) && defined(CLASSIC_LMIC)
     #error Do NOT use ABP activation when using the deprecated IBM LMIC framework library. \
-           On The Things Network V3 this will cause a downlink message for EACH uplink message \
+           On The Things Network V3 this will cause a downlink message for EVERY uplink message \
            because it does properly handle MAC commands. 
 #endif
 
