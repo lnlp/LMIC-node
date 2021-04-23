@@ -661,7 +661,7 @@ File `config.h` is located in these folders: `.pio/libdeps/<board-id>/IBM LMIC f
 
 Above settings cannot be changed in platformio.ini because they are defined in config.h in the library source code. The settings must be changed separately per board because PlatformIO downloads libraries separately for each board.
 
-**Do NOT use ABP activation when using the IBM LMIC framework library. On The Things Network V3 this will cause a downlink message for EVERY uplink message because it does properly handle MAC commands.**
+**Do NOT use ABP activation when using the IBM LMIC framework library. On The Things Network V3 this will cause a downlink message for EVERY uplink message because it does NOT properly handle MAC commands.**
 
 ### 4.4 Board specific settings
 
