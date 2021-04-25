@@ -129,7 +129,7 @@ The following tables list the boards currently supported by LMIC-node.
 Explanation of columns: MCU: microcontroller. Wiring required: yes means manual wiring of DIO1 is required. USB: has onboard USB. LED: yes: has onboard LED *and* is usable. Display: yes means has onboard display. Board-id: board identifier as used by LMIC-node.
 ### 2.1 LoRa development boards
 
-The following LoRa development boards have onboard LoRa support. Most have onboard USB that supports automatic firmware upload and serial over USB for serial monitoring. Some boards require manual wiring of the LoRa DIO1 port. For boards without onboard display an external display can be optionally connected. For details and wiring instructions see the board's BSP.
+The following LoRa development boards have onboard LoRa support. Most have onboard USB that supports automatic firmware upload and serial over USB for serial monitoring. Some boards require manual wiring of the LoRa DIO1 port. For boards without onboard display an external display can be optionally connected. For details and wiring instructions see the board's BSF.
 
 | Board name                        | MCU            | Wiring required | USB    | LED     | Display | Board-id |
 | ----------                        | ---            | ---             | ---    | ---     | ---     | --- |  
@@ -157,7 +157,7 @@ _\*5_: Display (64x32) not supported by LMIC-node because resolution is too smal
 
 The following development boards require an external SX127x or RFM9x SPI LoRa module.
 Most boards have onboard USB that supports automatic firmware upload and serial over USB for serial monitoring.
-An external display can be optionally connected. For details and wiring instructions see the board's BSP.
+An external display can be optionally connected. For details and wiring instructions see the board's BSF.
 
 | Board name                        | MCU            | Wiring required | USB     | LED | Display | Board-id |
 | ----------                        | ---            | ---             | ---     | --- | ---     | -------- |
@@ -199,7 +199,7 @@ If the port number is greater than 0 and user data was received the data will be
 
 The reset-counter downlink uses 100 as frame port number.
 The reset command is represented by a single byte with hex value 0xC0 (for Counter 0).
-When a downlink message is received on port 100, the length of the data is 1 byte and the value is 0xC0 then the `resetCounter()` will be called and the counter will be reset to 0. If the received payload data is longer than a single byte, the reset-counter command will not be performed.
+When a downlink message is received on port 100, the length of the data is 1 byte and the value is 0xC0 then the `resetCounter()` function will be called and the counter will be reset to 0. If the received payload data is longer than a single byte then the reset-counter command will not be performed.
 ### 3.3 Status information
 
 The following status information is shown:
@@ -260,7 +260,7 @@ To make LMIC-node do other, more useful things e.g. reading values from a temper
 Most of the source code is boiler plate code that does not need to be changed.
 Code for things like adding support for sensors or implement other downlink commands is called *user code*. Two sections in the source code are marked as *user code*. Try to put your user code in these sections (this will prevent accidentally messing things up).
 
-If you are aware of what you are doing you are of course free to change every single line of code to your needs, but if this is new to you it might be safer to restrict modifications to the user code area's.
+If you are aware of what you are doing you are of course free to change every single line of code to your needs, but if this is new to you it might be safer to restrict modifications to the user code sections.
 
 Reading sensors (etc), preparing uplink payload and scheduling an uplink message for transmission can be done in function `processWork()`. Handling of downlink messages and adding your own downlink commands can be done in function `processDownlink()`.
 
@@ -286,18 +286,21 @@ LMIC-node uses a _board-id_ to identify a specific type of board. _board-id_ is 
 
 A Board Support Package (BSP) provides support for a specific board and provides standard pin definitions for a board. BSP's are part of an Arduino core, which contains a BSP for each supported board.
 
-_board-id_ is kept identical or as similar as possible to PlatformIO's _board_. For simplicity and consistency _board-id_ only uses underscores and lowercase characters (e.g. heltec_wifi_lora_32_v2 and ttgo_lora32_v2) while PlatformIO's _board_ uses both hyphens and underscores and mixed case characters (e.g. heltec_wifi_lora_32_V2 and ttgo-lora32-v2). Where needed _board-id_ adds a version suffix (if a matching BSP does not yet exist) e.g. ttgo_tbeam_v1 (v1 stands for version 1.0), because there is only one single T-Beam BSP (and one PlatformIO board) for the T-Beam while there are important hardware differences between versions 0.x and 1.0 of the T-Beam board.
+_board-id_ is kept identical or as similar as possible to PlatformIO's _board_. For simplicity and consistency _board-id_ only uses underscores and lowercase characters (e.g. heltec_wifi_lora_32_v2 and ttgo_lora32_v2) while PlatformIO's _board_ uses both hyphens and underscores and mixed case characters (e.g. heltec_wifi_lora_32_V2 and ttgo-lora32-v2). Where needed _board-id_ adds a version suffix (if a matching BSP does not yet exist) e.g. ttgo_tbeam_v1 (v1 stands for version 1.0), because there is only one single T-Beam BSP (and one PlatformIO board) for the T-Beam while there are important hardware differences between versions 0.x and 1.0 of the T-Beam board.  
+_(lora32u4II is an exception, it uses uppercase 'II' because this is a roman number.)_ 
+
+
 ### 3.6 Device-id
 
 LMIC-node uses a device-id to identify a device. The device-id is used for display purposes in status information that is output to the serial port and display. Device-id's allow different devices to be easily recognized when they have different device-id's, because their device-id is shown on the display (if present) and/or serial monitor (serial port). The length of a device-id should be limited to max 16 characters long, otherwise it will not fit on a display.
 
 When creating a device in the TTN console one must specify a unique device identifier for the device. The device-id used in LMIC-node is only used for display purposes (and is not the same as the device identifier in the TTN Console) but it is useful to use the same device-id for LMIC-node as the device identifier in the TTN console (or at least make it similar). That will make it easier to recognize traffic in the TTN console because the device identifier displayed on the console and the device-id displayed on the node's display (or serial monitor) will match.
 
-In the BSF a default device-id (DEVICEID_DEFAULT) is defined per board type. The default device-id can be overriden by defining DEVICEID in lorawan-keys.h, or defining ABP_DEVICEID in lorawan-keys.h. Latter will be used only if DEVICEID is not defined and ABP activation is used.
+In the BSF a default device-id (DEVICEID_DEFAULT) is defined per board type. The default device-id can be overriden by defining DEVICEID in lorawan-keys.h, or defining ABP_DEVICEID in lorawan-keys.h. If defined latter will be used when ABP activation is used.
 
-lorawan-keys.h can contain both the keys used OTAA activation as well as the keys for ABP activation. These keys are different and have different names. Only the keys for the used actvation type (OTAA or ABP) need to be specified.
+lorawan-keys.h can contain both the keys used for OTAA activation as well as the keys used for ABP activation. Keys used for OTAA and ABP are different and they have different names. Only the keys for the used actvation type (OTAA or ABP) need to be specified.
 
-Tip: For testing purposes it is possible to create two different devices in the TTN console for the same hardware device, one for OTAA activation and the other for ABP activation. Both sets of keys can be added to lorawan-keys.h and for both a different device-id can be added to lorawan-keys.h. This way a single hardware device can be used for both OTAA and ABP (only one at a time). All that to needs to be done to switch the device from OTAA to ABP is to enable the `-D ABP_ACTIVATION` setting in the `[common]` section in platformio.ini (and vice versa) and then recompile and upload the firmware.
+Tip: For testing purposes it is possible to create two different devices in the TTN console for the same hardware device, one for OTAA activation and the other for ABP activation. Both sets of keys can be added to lorawan-keys.h and for both a different device-id can be added to lorawan-keys.h. This way a single hardware device can be used for both OTAA and ABP (only one at a time). All that to needs to be done to switch the device from OTAA to ABP is to enable the `-D ABP_ACTIVATION` setting in the `[common]` section in platformio.ini (or vice versa) and then recompile and upload the firmware.
 
 
 ### 3.7 platformio.ini
@@ -305,7 +308,7 @@ Tip: For testing purposes it is possible to create two different devices in the 
 `platformio.ini` is the project configuration file. This file contains all configuration settings like program options, names of libraries and build options. It contains below sections:
 
 - **[platformio]**  
-  Contains a list of board-id's ('environment definitions').  
+  Contains a list of board names and their corresponding board-id ('environment definitions').  
   This is used to select a board (by uncommenting the line with the board-id to be selected).
 
 - **[common]**  
@@ -313,11 +316,14 @@ Tip: For testing purposes it is possible to create two different devices in the 
 
 - **[mcci_lmic]**  
   Contains MCCI LoRaWAN LMIC library specific settings.  
-  MCCI LoRaWAN LMIC library is used for most boards except for boards with 8-bit AVR MCU.
+  MCCI LoRaWAN LMIC library is used for boards with 32-bit MCU.
 
 - **[classic_lmic]**  
   Contains IBM LMIC framework library specific settings.  
-  This is only used for boards with 8-bit AVR MCU.
+  IBM LMIC framework is used for boards with 8-bit AVR MCU.  
+  These boards have less available memory and Classic LMIC uses less memory resources than MCCI LMIC.  
+  It is not possible to use LMIC-node with MCCI LMIC on these boards due to insufficient memory.  
+**Be aware that Classic LMIC is not fully LoRaWAN compliant and should not be used with ABP activation on The Things Network V3. IBM LMIC framework (Clasic LMIC) was recently deprecated and is not further maintained.**
 
 - **[env:_\<board-id\>_]**  
   Board specific sections (called _Environments_ in PlatformIO terminology). E.g. [env:lolin32]. A board specific section contains settings that are specific for one type of board.   It contain settings like which LMIC library to use and program options like USE_SERIAL, USE_LED and USE_DISPLAY.  
@@ -352,7 +358,7 @@ The keys use three different formats (lsb, msb and uint32_t). lsb: least signifi
 
 // -----------------------------------------------------------------------------
 
-// Optional: If DEVICEID_ABP is defined it will be used for ABP instead of the default defined in the BSF.
+// Optional: If ABP_DEVICEID is defined it will be used for ABP instead of the default defined in the BSF.
 // #define ABP_DEVICEID "<abp-deviceid>"
 
 // Keys required for ABP activation:
@@ -435,6 +441,7 @@ bool boardInit(InitType initType)
 ### 3.10 Payload formatters
 
 Payload formatter functions are located in the `payload-formatters` folder.
+
 #### 3.10.1 Uplink decoder
 
 LMIC-node comes with a JavaScript payload formatter function for decoding the uplink messages so the counter value gets displayed in 'Live data' on the TTN Console. The `decodeUplink()` function can be found in folder `payload-formatters` in file `lmic-node-uplink-formatters.js`.
@@ -542,7 +549,7 @@ Be aware that this is also the interval that uplink messages will be sent. The i
 If enabled will use ABP activation instead of OTAA activation (default).
 
 **WAITFOR_SERIAL_SECONDS**  
-Can be used to overrule the default value defined in BSP for testing purposes but normally not needed to change this. This setting only has effect for boards where a default value (>0) is already defined and will not have effect for other boards.
+Can be used to overrule the default value defined in BSF for testing purposes but normally not needed to change this. This setting only has effect for boards where a default value (>0) is already defined and will not have effect for other boards.
 'Wait for serial' only is useful when USB functionality is provided by the MCU.
 
 A 'wait for serial' delay of 10 seconds is configured by default in boards where USB support is integrated into the MCU (instead of using onboard USB to serial).
@@ -554,7 +561,7 @@ Be aware that the serial port must not only be ready but also a serial monitor n
 
 **STM32_POST_INITSERIAL_DELAY_MS**
 For STM32 boards a delay is inserted after initializing the serial port. This is a workaround to prevent that the first output send to the serial port gets lost.
-This value is defined in STM32 boards BSF but can be overridden in platformio.ini.
+This value is defined in STM32 boards BSF but can be overridden in platformio.ini (the override option was added for testing purposes).
 
 ### 4.3 LoRaWAN library settings
 
@@ -661,7 +668,8 @@ File `config.h` is located in these folders: `.pio/libdeps/<board-id>/IBM LMIC f
 
 Above settings cannot be changed in platformio.ini because they are defined in config.h in the library source code. The settings must be changed separately per board because PlatformIO downloads libraries separately for each board.
 
-**Do NOT use ABP activation when using the IBM LMIC framework library. On The Things Network V3 this will cause a downlink message for EVERY uplink message because it does NOT properly handle MAC commands.**
+**Do NOT use ABP activation when using the IBM LMIC framework library. 
+On The Things Network V3 this will cause a downlink message for EVERY uplink message because it does NOT properly handle MAC commands.**
 
 ### 4.4 Board specific settings
 
@@ -719,24 +727,24 @@ build_flags =
     ; -D USE_DISPLAY             ; Requires external I2C OLED display
 ```
 
-By default all USE\_ options for a board are enabled. If the option is not enabled by default then it is either not supported (e.g. due to hardware conflict) or in case of USE_DISPLAY requires an external display to be connected. The USE_DISPLAY option can then be enabled after the display is connected.
+By default all USE\_ options for a board are enabled. If the option is not enabled by default then it is either not supported (e.g. due to hardware conflict) or in case of USE_DISPLAY requires an external display to be connected. In latter case the USE_DISPLAY option can be enabled after an external display is connected.
 
-Each of these options uses memory. In case of memory constrainted 8-bit boards disabling some of these option may free some memory for other use (e.g. use MCCI LIMIC library or enable LMIC debugging).
+Each of these options uses memory. In case of memory constrainted 8-bit boards disabling some of these option may free some memory for other use.
 
 **USE_SERIAL**  
 If enabled status output will be send to the serial port to be viewed on serial monitor.
 
 **USE_LED**  
-If enabled it will use the onboard LED. The board will be lit during Tx/Rx transmission and is off otherwise. For some boards the onboard LED cannot be used because of a hardware conflict, because the LED type is not supported (e.g. WS2812 RGB LED) or because there is no onboard user LED. If the onboard LED cannot be used then this option is disabled by default and the line will be commented to make this clear.
+If enabled it will use the onboard LED. The LED will be on during Tx/Rx transmission and off otherwise. For some boards the onboard LED cannot be used because of a hardware conflict, because the LED type is not supported (e.g. WS2812 RGB LED) or because there is no onboard user LED. If the onboard LED cannot be used then this option is disabled by default and the line will be commented to make this clear.
 
 **USE_DISPLAY**  
 If enabled status output will be send to the display.
 
 **upload_protocol**  
-For some boards it may be necessary to change the upload protocol, e.g. for bluepill change it from `stlink` to `serial` if firmware is uploaded via USB to serial adapter instead of using a STLink programmer.
+For some boards it may be necessary to change the upload protocol, e.g. for bluepill change it from `stlink` to `serial` if a USB to serial adapter is used for upload instead of a STLink programmer.
 
 **LMIC library**  
-By default all boards with 32-bit MCU are configured to use the MCCI LoRaWAN LMIC library (MCCI LMIC) because this is the library to use. It is the most LoRaWAN compliant LMIC library for Arduino and it is actively maintained.  
+By default all boards with 32-bit MCU are configured to use the MCCI LoRaWAN LMIC library (MCCI LMIC) because this is the library that should be used. It is the most LoRaWAN compliant LMIC library for Arduino and it is actively maintained.  
 
  By default all boards with 8-bit MCU are configured to use the IBM LMIC framework library (Classic LMIC). These boards have limited memory capacity and Classic LMIC uses less memory than MCCI LMIC. Because of better LoRaWAN compliance and improved functionality MCCI LMIC is preferred but there is not enough memory to use LMIC-node with MCCI LMIC on these boards.
 
@@ -843,7 +851,7 @@ For boards with MCU with built-in USB support LMIC-node by default waits with a 
 
 ### 6.3 Distance to gateway
 
-- The distance between the node and a gateway should be 3 meters at minimum. If less than 3 meters this may cause communication issues.
+- The distance between the node and a gateway should be 3 meters at minimum. If the distance is less than 3 meters this can cause RF communication issues.
 
 ## 7 Additional information
 
@@ -861,7 +869,8 @@ The following external libraries are used:
 ### 7.2 Known issues
 
 The MCCI LoRaWAN LMIC library has a problem with SerialUSB on the Arduino Zero (USB) board.
-When defining `LMIC_DEBUG_LEVEL` with a value > 0, `LMIC_PRINTF_TO` will automatically be set to `serial` (which automatically points to SerialUSB) but no debug information arrives on the serial monitor. If `LMIC_PRINTF_TO` is set to `SerialUSB` in `platformio.ini` (`-D LMIC_PRINTF_TO=SerialUSB`) then the compiler gives an error that something is missing in the MCCI LMIC library. So it is currently not possible to print MCCI LMIC debug information for this board.
+When defining `LMIC_DEBUG_LEVEL` with a value > 0, `LMIC_PRINTF_TO` will automatically be set to `serial` (which automatically points to SerialUSB) but no debug information arrives on the serial monitor. If (as alternative, to set LMIC_PRINTF_TO manually) `LMIC_PRINTF_TO` is set to `SerialUSB` in `platformio.ini` (`-D LMIC_PRINTF_TO=SerialUSB`) then the compiler gives an error that something is missing in the MCCI LMIC library. So it is currently not possible to print MCCI LMIC debug information for this board.
+
 ### 7.3 Not yet tested
 
 All supported boards have been tested except for below boards for which hardware was not available.
@@ -887,9 +896,11 @@ It is currently unknown what the differences between V1.1 and V1.0 are._
 ## 8 Example output
 
 Below are some examples of status output from serial monitor and display.
+
 ### 8.1 Serial Monitor
 
 To be added.
+
 ### 8.2 Display
 
 To be added.
