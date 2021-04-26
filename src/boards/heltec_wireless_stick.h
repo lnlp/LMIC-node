@@ -97,11 +97,7 @@ const lmic_pinmap lmic_pins = {
     .rssi_cal = 10,
     .spi_freq = 8000000     /* 8 MHz */
 #endif    
-};
-
-#ifdef USE_DISPLAY
-    #error Onboard display is not supported because resolution is too low.
-#endif    
+}; 
 
 #ifdef USE_SERIAL
     HardwareSerial& serial = Serial;
@@ -112,6 +108,7 @@ const lmic_pinmap lmic_pins = {
 #endif
 
 #ifdef USE_DISPLAY
+    #error Invalid option: USE_DISPLAY. Onboard display is not supported because resolution is too low.
     // Create U8x8 instance for SSD1306 OLED display (no reset) using hardware I2C.
     U8X8_SSD1306_64X32_NONAME_HW_I2C display(/*rst*/ U8X8_PIN_NONE, /*scl*/ 15, /*sda*/ 4);
 #endif

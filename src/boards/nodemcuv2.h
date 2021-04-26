@@ -109,7 +109,7 @@ const lmic_pinmap lmic_pins = {
 #endif
 
 #ifdef USE_DISPLAY
-    #error "Display and I2C interface cannot be used with this board due to shortage of GPIO pins."
+    #error "Invalid option: USE_DISPLAY. I2C and display are not supported due to shortage of available GPIO pins."
 #endif
 
 

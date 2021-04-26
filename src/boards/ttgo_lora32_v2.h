@@ -93,7 +93,7 @@ const lmic_pinmap lmic_pins = {
 };
 
 #if defined(USE_DISPLAY) && defined(USE_LED) && LED_PIN == LED_ONBOARD
-    #error USE_DISPLAY and USE_LED cannot be used together for onboard LED
+    #error Invalid option: USE_DISPLAY and USE_LED cannot be used together.
 #endif    
 
 #ifdef USE_SERIAL

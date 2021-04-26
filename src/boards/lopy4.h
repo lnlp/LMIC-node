@@ -13,7 +13,7 @@
  *  Description:  This Board has no onboard USB and no onboard display.
  *                Optionally an external display can be connected.
  *                Has onboard LED but this is a special WS2812 RGB LED which requires
- *                a separate library and is currently not supported in LMIC-node.
+ *                a separate library and is currently not supported by LMIC-node.
  *
  *                The standard SPI pins defined in the BSP do not match the 
  *                GPIO pins that the SX1276 LoRa chip is connected to.
@@ -134,9 +134,7 @@ const lmic_pinmap lmic_pins = {
 #endif    
 
 #ifdef USE_LED
-    // Using onboard LED is currently not supported for this board
-    // because it is not a standard LED but a WS2812 RGB LED.
-    #error "USE_LED is not supported for this board."
+    #error "Invalid option: USE_LED. Onboard WS2812 RGB LED is not supported."
 #endif
 
 #ifdef USE_DISPLAY

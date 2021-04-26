@@ -11,6 +11,7 @@
  * 
  *  Description:  This Board has no onboard USB and no onboard display.
  *                Optionally an external display can be connected.
+ *                Onboard LED cannot be used due to hardware conflict.
  * 
  *                For firmware upload and serial monitor use a USB to serial 
  *                adapter that supports DTR (for automatic firmware upload).
@@ -27,7 +28,6 @@
  *                ----                ----  
  *                LED   <――――――――――>  13  (LED_BUILTIN) (SCK) Active-high, 
  *                                        Useless, shared with SCK.
- *                LED_EXTERNAL <--->   6  Optional external LED.
  * 
  *                I2C [display]       GPIO  
  *                ---                 ---- 
@@ -95,16 +95,9 @@ const lmic_pinmap lmic_pins = {
     HardwareSerial& serial = Serial;
 #endif  
 
-#define LED_EXTERNAL 6
-// #define LED LED_EXTERNAL
-#define LED LED_BUILTIN
-
 #ifdef USE_LED
-    #if LED == LED_BUILTIN
-        #error Cannot use LED_BUILTIN because it conflicts with SPI (alternative: use external LED).
-    #else
-        EasyLed led(LED, EasyLed::ActiveLevel::High);
-    #endif
+    #error Invalid option: USE_LED. Onboard LED cannot be used due to hardware conflict.
+    // EasyLed led(<external LED GPIO>, EasyLed::ActiveLevel::Low);
 #endif
 
 #ifdef USE_DISPLAY

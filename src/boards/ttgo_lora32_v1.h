@@ -19,11 +19,12 @@
  *                the I2C Wire object is explicitly initialized with the
  *                correct pins (see boardInit() below).
  * 
- *                LED_BUILTIN is defined in BSP but schematic diagram and
- *                and pinout diagram show no onboard user LED.
- *                Based on documentation USE_LED is not supported for this board.
+ *                Schematic diagram and and pinout diagram show no onboard 
+ *                user programmable LED while LED_BUILTIN is defined in BSP.
+ *                Definition in BSP is incorrect.
  * 
  *                OLED_RST and LORA_RST are defined in BSP but neither is connected to GPIO.
+ *                Definitions in BSP are incorrect.               
  * 
  *                CONNECTIONS AND PIN DEFINITIONS:
  *                
@@ -32,8 +33,7 @@
  * 
  *                Leds                GPIO 
  *                ----                ----
- *                LED   <――――――――――>  2  Defined in BSP as LED_BUILTIN, however:
- *                                       According to documentation this board has no LED.
+ *                LED                 -            Incorrectly defined in BSP as LED_BUILTIN (2).
  * 
  *                I2C/Display         GPIO
  *                ---                 ---- 
@@ -110,8 +110,8 @@ const lmic_pinmap lmic_pins = {
 #endif  
 
 #ifdef USE_LED
-    #error Unknown if this board has a user LED therefore USE_LED is not supported.
-    // EasyLed led(LED_BUILTIN, EasyLed::ActiveLevel::Low);  // Or active-high?
+    #error Invalid option: USE_LED. This board has no onboard user LED.
+    // EasyLed led(<external LED GPIO>, EasyLed::ActiveLevel::Low);
 #endif
 
 #ifdef USE_DISPLAY
