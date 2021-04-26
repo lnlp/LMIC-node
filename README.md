@@ -7,54 +7,56 @@ One example to rule them all
 
 ## Contents
 
-- [1 Introduction](#1-introduction)
-  - [1.1 What does it do?](#11-what-does-it-do)
-  - [1.2 Implemented features](#12-implemented-features)
-  - [1.3 Requirements](#13-requirements)
-- [2 Supported Boards](#2-supported-boards)
-  - [2.1 LoRa development boards](#21-lora-development-boards)
-  - [2.2 Development boards with external SPI LoRa module](#22-development-boards-with-external-spi-lora-module)
-- [3 Details](#3-details)
-  - [3.1 Uplink messages](#31-uplink-messages)
-  - [3.2 Downlink messages](#32-downlink-messages)
-    - [3.2.1  Reset-counter downlink command](#321--reset-counter-downlink-command)
-  - [3.3 Status information](#33-status-information)
-    - [3.3.1 Serial port and display](#331-serial-port-and-display)
-    - [3.3.2 LED](#332-led)
-  - [3.4 User modifiable code](#34-user-modifiable-code)
-  - [3.5 Board-id](#35-board-id)
-  - [3.6 Device-id](#36-device-id)
-  - [3.7 platformio.ini](#37-platformioini)
-  - [3.8 lorawan-keys.h](#38-lorawan-keysh)
-  - [3.9 Board Support Files (BSF)](#39-board-support-files-bsf)
-  - [3.10 Payload formatters](#310-payload-formatters)
-    - [3.10.1 Uplink decoder](#3101-uplink-decoder)
-- [4 Settings](#4-settings)
-  - [4.1 Board selection](#41-board-selection)
-  - [4.2 Common settings](#42-common-settings)
-  - [4.3 LoRaWAN library settings](#43-lorawan-library-settings)
-    - [4.3.1 MCCI LoRaWAN LMIC library settings](#431-mcci-lorawan-lmic-library-settings)
-    - [4.3.2 IBM LMIC framework settings](#432-ibm-lmic-framework-settings)
-  - [4.4 Board specific settings](#44-board-specific-settings)
-  - [4.5 Board Support Files](#45-board-support-files)
-- [5 Instructions](#5-instructions)
-  - [5.1 Select your board](#51-select-your-board)
-  - [5.2 Select your LoRaWAN region](#52-select-your-lorawan-region)
-  - [5.3 Provide the LoRaWAN keys for your node](#53-provide-the-lorawan-keys-for-your-node)
-  - [5.4 Compile and upload](#54-compile-and-upload)
-  - [5.5 Add uplink decoder function in TTN Console](#55-add-uplink-decoder-function-in-ttn-console)
-- [6 Some tips](#6-some-tips)
-  - [6.1 Serial Monitor](#61-serial-monitor)
-  - [6.2 Antenna](#62-antenna)
-  - [6.3 Distance to gateway](#63-distance-to-gateway)
-- [7 Additional information](#7-additional-information)
-  - [7.1 External libraries](#71-external-libraries)
-  - [7.2 Known issues](#72-known-issues)
-  - [7.3 Not yet tested](#73-not-yet-tested)
-- [8 Example output](#8-example-output)
-  - [8.1 Serial Monitor](#81-serial-monitor)
-  - [8.2 Display](#82-display)
-- [9 Release History](#9-release-history)
+- [LMIC-node](#lmic-node)
+  - [Contents](#contents)
+  - [1 Introduction](#1-introduction)
+    - [1.1 What does it do?](#11-what-does-it-do)
+    - [1.2 Implemented features](#12-implemented-features)
+    - [1.3 Requirements](#13-requirements)
+  - [2 Supported Boards](#2-supported-boards)
+    - [2.1 LoRa development boards](#21-lora-development-boards)
+    - [2.2 Development boards with external SPI LoRa module](#22-development-boards-with-external-spi-lora-module)
+  - [3 Details](#3-details)
+    - [3.1 Uplink messages](#31-uplink-messages)
+    - [3.2 Downlink messages](#32-downlink-messages)
+      - [3.2.1  Reset-counter downlink command](#321--reset-counter-downlink-command)
+    - [3.3 Status information](#33-status-information)
+      - [3.3.1 Serial port and display](#331-serial-port-and-display)
+      - [3.3.2 LED](#332-led)
+    - [3.4 User modifiable code](#34-user-modifiable-code)
+    - [3.5 Board-id](#35-board-id)
+    - [3.6 Device-id](#36-device-id)
+    - [3.7 platformio.ini](#37-platformioini)
+    - [3.8 lorawan-keys.h](#38-lorawan-keysh)
+    - [3.9 Board Support Files (BSF)](#39-board-support-files-bsf)
+    - [3.10 Payload formatters](#310-payload-formatters)
+      - [3.10.1 Uplink decoder](#3101-uplink-decoder)
+  - [4 Settings](#4-settings)
+    - [4.1 Board selection](#41-board-selection)
+    - [4.2 Common settings](#42-common-settings)
+    - [4.3 LoRaWAN library settings](#43-lorawan-library-settings)
+      - [4.3.1 MCCI LoRaWAN LMIC library settings](#431-mcci-lorawan-lmic-library-settings)
+      - [4.3.2 IBM LMIC framework settings](#432-ibm-lmic-framework-settings)
+    - [4.4 Board specific settings](#44-board-specific-settings)
+    - [4.5 Board Support Files](#45-board-support-files)
+  - [5 Instructions](#5-instructions)
+    - [5.1 Select your board](#51-select-your-board)
+    - [5.2 Select your LoRaWAN region](#52-select-your-lorawan-region)
+    - [5.3 Provide the LoRaWAN keys for your node](#53-provide-the-lorawan-keys-for-your-node)
+    - [5.4 Compile and upload](#54-compile-and-upload)
+    - [5.5 Add uplink decoder function in TTN Console](#55-add-uplink-decoder-function-in-ttn-console)
+  - [6 Some tips](#6-some-tips)
+    - [6.1 Serial Monitor](#61-serial-monitor)
+    - [6.2 Antenna](#62-antenna)
+    - [6.3 Distance to gateway](#63-distance-to-gateway)
+  - [7 Additional information](#7-additional-information)
+    - [7.1 External libraries](#71-external-libraries)
+    - [7.2 Known issues](#72-known-issues)
+    - [7.3 Not yet tested](#73-not-yet-tested)
+  - [8 Example output](#8-example-output)
+    - [8.1 Serial Monitor](#81-serial-monitor)
+    - [8.2 Display](#82-display)
+  - [9 Release History](#9-release-history)
 
 ## 1 Introduction
 
@@ -131,27 +133,28 @@ Explanation of columns: MCU: microcontroller. Wiring required: yes means manual 
 
 The following LoRa development boards have onboard LoRa support. Most have onboard USB that supports automatic firmware upload and serial over USB for serial monitoring. Some boards require manual wiring of the LoRa DIO1 port. For boards without onboard display an external display can be optionally connected. For details and wiring instructions see the board's BSF.
 
-| Board name                        | MCU            | Wiring required | USB    | LED     | Display | Board-id |
-| ----------                        | ---            | ---             | ---    | ---     | ---     | --- |  
-| Adafruit Feather M0 RFMx LoRa     | SAMD21         | yes _\*1_       | yes    | yes     | no      | adafruit_feather_m0_lora |
-| ST B-L072Z-LRWAN1 Discovery kit   | STM32L072CZ    | no              | yes    | yes     | no      | discovery_l072z_lrwan1 |
-| Heltec WiFi LoRa 32 V2            | ESP32          | no              | yes    | yes     | yes     | heltec_wifilora32_v2 |
-| Heltec WiFi LoRa 32 (1.x)         | ESP32          | no              | yes    | yes     | yes     | heltec_wifilora32 |
-| Heltec Wireless Stick             | ESP32          | no              | yes    | yes     | yes _\*5_ | heltec_wireless_stick |
-| Heltec Wireless Stick Lite        | ESP32          | no              | yes    | yes     | no      | heltec_wireless_stick_lite |
-| Pycom LoPy4                       | ESP32          | no              | no _\*4_ | no      | no      | lopy4 |
-| BSFrance LoRa32u4 II              | ATmega32u4     | yes _\*2_       | yes    | yes     | no      | lora32u4II |
-| TTGO LoRa32 V1.3                  | ESP32          | no              | yes    | unknown | yes     | ttgo_lora32_v1 |
-| TTGO LoRa32 V2.0                  | ESP32          | yes _\*3_       | yes    | no      | yes     | ttgo_lora32_v2 |
-| TTGO LoRa32 V2.1.6                | ESP32          | no              | yes    | no      | yes     | ttgo_lora32_v21 |
-| TTGO T-Beam V0.7                  | ESP32          | no              | yes    | yes     | no      | ttgo_tbeam |
-| TTGO T-Beam V1.0                  | ESP32          | no              | yes    | yes     | no      | ttgo_tbeam_v1 |
+| Board name                        | MCU            | Wiring required | USB      | LED      | Display   | Board-id |
+| ----------                        | ---            | ---             | ---      | ---      | ---       | --- |  
+| Adafruit Feather M0 RFMx LoRa     | SAMD21         | yes _\*1_       | yes      | yes      | no        | adafruit_feather_m0_lora |
+| ST B-L072Z-LRWAN1 Discovery kit   | STM32L072CZ    | no              | yes      | yes      | no        | discovery_l072z_lrwan1 |
+| Heltec WiFi LoRa 32 V2            | ESP32          | no              | yes      | yes      | yes       | heltec_wifilora32_v2 |
+| Heltec WiFi LoRa 32 (1.x)         | ESP32          | no              | yes      | yes      | yes       | heltec_wifilora32 |
+| Heltec Wireless Stick             | ESP32          | no              | yes      | yes      | yes _\*6_ | heltec_wireless_stick |
+| Heltec Wireless Stick Lite        | ESP32          | no              | yes      | yes      | no        | heltec_wireless_stick_lite |
+| Pycom LoPy4                       | ESP32          | no              | no _\*4_ | no       | no        | lopy4 |
+| BSFrance LoRa32u4 II              | ATmega32u4     | yes _\*2_       | yes      | yes      | no        | lora32u4II |
+| TTGO LoRa32 V1.3                  | ESP32          | no              | yes      | no       | yes       | ttgo_lora32_v1 |
+| TTGO LoRa32 V2.0                  | ESP32          | yes _\*3_       | yes      | no _\*5_ | yes       | ttgo_lora32_v2 |
+| TTGO LoRa32 V2.1.6                | ESP32          | no              | yes      | no       | yes       | ttgo_lora32_v21 |
+| TTGO T-Beam V0.7                  | ESP32          | no              | yes      | yes      | no        | ttgo_tbeam |
+| TTGO T-Beam V1.0                  | ESP32          | no              | yes      | no       | no        | ttgo_tbeam_v1 |
 
 _\*1_: DIO1 must be manually wired to GPIO6.  
 _\*2_: For versions 1.0, 1.1 and 1.2 DIO1 must be manually wired to GPIO5 (version 1.3 is already wired on the PCB).  
 _\*3_: DIO1 must be manually wired to GPIO33.  
 _\*4_: Requires USB to Serial adapter or Pycom Expansion Board which is explained further below.  
-_\*5_: Display (64x32) not supported by LMIC-node because resolution is too small.
+_\*5_: Either display (I2C) or LED can be used but not both at the same time. LED is default disabled.  
+_\*6_: Display (64x32) not supported by LMIC-node because resolution is too small.
 
 ### 2.2 Development boards with external SPI LoRa module
 
@@ -159,21 +162,21 @@ The following development boards require an external SX127x or RFM9x SPI LoRa mo
 Most boards have onboard USB that supports automatic firmware upload and serial over USB for serial monitoring.
 An external display can be optionally connected. For details and wiring instructions see the board's BSF.
 
-| Board name                        | MCU            | Wiring required | USB     | LED | Display | Board-id |
-| ----------                        | ---            | ---             | ---     | --- | ---     | -------- |
-| Black Pill STM32F103C8 128k       | STM32F103C8T6  | yes             | yes _\*6_ | yes | no      | blackpill_f103c8_128k |
-| Black Pill STM32F103C8 64k        | STM32F103C8T6  | yes             | yes _\*6_ | yes | no      | blackill_f103c8 |
-| Blue Pill STM32F103C8 128k        | STM32F103C8T6  | yes             | yes _\*6_ | yes | no      | bluepill_f103c8_128k |
-| Blue Pill STM32F103C8 64k         | STM32F103C8T6  | yes             | yes _\*6_ | yes | no      | bluepill_f103c8 |
-| Lolin D32 Pro                     | ESP32          | yes             | yes     | yes | no      | lolin_d32_pro |
-| Lolin D32                         | ESP32          | yes             | yes     | yes | no      | lolin_d32 |
-| Lolin32                           | ESP32          | yes             | yes     | yes | no      | lolin32 |
-| NodeMCU-32S                       | ESP32          | yes             | yes     | yes | no      | nodemcu_32 |
-| NodeMCU V2 (aka v1.0)             | ESP8266        | yes             | yes     | yes | no      | nodemcuv2 |
-| Arduino Pro Mini (ATmega328 8mHz) | ATmega328      | yes             | yes     | no  | no      | pro8mhzatmega328 |
-| Arduino Zero (USB)                | SAMD21         | yes             | yes     | yes | no      | zerousb |
+| Board name                        | MCU            | Wiring required | USB       | LED | Display | Board-id |
+| ----------                        | ---            | ---             | ---       | --- | ---     | -------- |
+| Black Pill STM32F103C8 128k       | STM32F103C8T6  | yes             | yes _\*7_ | yes | no      | blackpill_f103c8_128k |
+| Black Pill STM32F103C8 64k        | STM32F103C8T6  | yes             | yes _\*7_ | yes | no      | blackill_f103c8 |
+| Blue Pill STM32F103C8 128k        | STM32F103C8T6  | yes             | yes _\*7_ | yes | no      | bluepill_f103c8_128k |
+| Blue Pill STM32F103C8 64k         | STM32F103C8T6  | yes             | yes _\*7_ | yes | no      | bluepill_f103c8 |
+| Lolin D32 Pro                     | ESP32          | yes             | yes       | yes | no      | lolin_d32_pro |
+| Lolin D32                         | ESP32          | yes             | yes       | yes | no      | lolin_d32 |
+| Lolin32                           | ESP32          | yes             | yes       | yes | no      | lolin32 |
+| NodeMCU-32S                       | ESP32          | yes             | yes       | yes | no      | nodemcu_32 |
+| NodeMCU V2 (aka v1.0)             | ESP8266        | yes             | yes       | yes | no      | nodemcuv2 |
+| Arduino Pro Mini (ATmega328 8mHz) | ATmega328      | yes             | yes       | no  | no      | pro8mhzatmega328 |
+| Arduino Zero (USB)                | SAMD21         | yes             | yes       | yes | no      | zerousb |
 
-_\*6_: These boards have onboard USB but by default do not support firmware upload over USB or serial over USB. For upload use a STLink programmer or USB to serial adapter.
+_\*7_: These boards have onboard USB but by default do not support firmware upload over USB or serial over USB. For upload use a STLink programmer or USB to serial adapter.
 
 
 ## 3 Details

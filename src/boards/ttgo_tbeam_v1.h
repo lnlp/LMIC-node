@@ -2,7 +2,7 @@
  * 
  *  File:         ttgo_tbeam_v1.h
  * 
- *  Description:  Board Support File for TTGO T-Beam V1.0 (aka T22_08).
+ *  Description:  Board Support File for TTGO T-Beam (aka T22) V1.0.
  * 
  *  Copyright:    Copyright (c) 2021 Leonel Lopes Parente
  * 
@@ -13,7 +13,7 @@
  *  Description:  This board has onboard USB (provided by onboard USB to serial).
  *                It supports automatic firmware upload and serial over USB. 
  *                No onboard display. Optionally an external display con be connected.
- *                Also has onboard GPS which is not used by LMIC-node.
+ *                No onboard user programmable LED. Onboard GPS not used by LMIC-node.
  * 
  *                This board uses an AXP192 power management chip to power
  *                onboard components and the +3.3V output pin.
@@ -29,7 +29,7 @@
  * 
  *                Leds                  GPIO 
  *                ----                  ----
- *                LED     <――――――――――>  14  (LED_BUILTIN)  Active-high
+ *                LED                   -          No onboard user LED
  * 
  *                I2C [display]         GPIO
  *                ----                  ----
@@ -115,7 +115,8 @@ AXP20X_Class axp;
 #endif                                        
 
 #ifdef USE_LED
-    EasyLed led(LED_BUILTIN, EasyLed::ActiveLevel::High);
+    #error Invalid option: USE_LED. This board has no onboard user LED.
+    // EasyLed led(<external LED GPIO>, EasyLed::ActiveLevel::Low);
 #endif
 
 #ifdef USE_DISPLAY
