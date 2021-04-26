@@ -12,7 +12,7 @@
  * 
  *  Description:  This board has onboard USB (provided by the MCU).
  *                It supports automatic firmware upload and serial over USB.
- *                No onboard display. Optionally an external display con be connected.
+ *                No onboard display. Optionally an external display can be connected.
  * 
  *                ██ DIO1 MUST BE MANUALLY WIRED TO GPIO6 (see below) ██
  * 
@@ -49,9 +49,7 @@
  *                DIO2                 -  Not needed for LoRa
  *
  *  Docs:         https://docs.platformio.org/en/latest/boards/atmelsam/adafruit_feather_m0.html 
- *                https://learn.adafruit.com/the-things-network-for-feather/arduino-wiring 
- * 
- *  Docs:         
+ *                https://learn.adafruit.com/the-things-network-for-feather/arduino-wiring    
  *
  *  Identifiers:  LMIC-node
  *                    board-id:      adafruit_feather_m0_lora
