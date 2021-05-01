@@ -151,7 +151,7 @@ The following LoRa development boards have onboard LoRa support. Most have onboa
 
 _\*1_: DIO1 must be manually wired to GPIO6.  
 _\*2_: For versions 1.0, 1.1 and 1.2 DIO1 must be manually wired to GPIO5 (version 1.3 is already wired on the PCB).  
-_\*3_: DIO1 must be manually wired to GPIO33.  
+_\*3_: DIO1 (sometimes labelled D11 or lora1 on the board) must be manually wired to GPIO33.  
 _\*4_: Requires USB to Serial adapter or Pycom Expansion Board which is explained further below.  
 _\*5_: Either display (I2C) or LED can be used but not both at the same time. LED is default disabled.  
 _\*6_: Display (64x32) not supported by LMIC-node because resolution is too small.
