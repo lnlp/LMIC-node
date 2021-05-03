@@ -66,7 +66,7 @@
 #define NODEMCU_V2_H_
 
 #include <ESP8266WiFi.h>
-#include "lmic-node.h"
+#include "LMIC-node.h"
 
 #define DEVICEID_DEFAULT "nodemcuv2"  // Default deviceid value
 

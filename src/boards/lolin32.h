@@ -61,7 +61,7 @@
 #ifndef LOLIN32_H_
 #define LOLIN32_H_
 
-#include "lmic-node.h"
+#include "LMIC-node.h"
 
 #define DEVICEID_DEFAULT "lolin32"  // Default deviceid value
 

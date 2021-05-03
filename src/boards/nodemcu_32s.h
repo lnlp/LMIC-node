@@ -60,7 +60,7 @@
 #ifndef NODEMCU_32S_H_
 #define NODEMCU_32S_H_
 
-#include "lmic-node.h"
+#include "LMIC-node.h"
 
 #define DEVICEID_DEFAULT "nodemcu-32s"  // Default deviceid value
 

@@ -67,7 +67,7 @@
 #ifndef ADAFRUIT_FEATHER_M0_LORA_H_
 #define ADAFRUIT_FEATHER_M0_LORA_H_
 
-#include "lmic-node.h"
+#include "LMIC-node.h"
 
 #define DEVICEID_DEFAULT "feather-m0"  // Default deviceid value
 

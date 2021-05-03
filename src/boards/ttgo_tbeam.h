@@ -66,7 +66,7 @@
 #ifndef TTGO_TBEAM_H_
 #define TTGO_TBEAM_H_
 
-#include "lmic-node.h"
+#include "LMIC-node.h"
 
 #define DEVICEID_DEFAULT "ttgo-tbeam"  // Default deviceid value
 

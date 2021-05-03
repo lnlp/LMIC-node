@@ -60,7 +60,7 @@
 #ifndef BSFRANCE_LORA32U4II_H_
 #define BSFRANCE_LORA32U4II_H_
 
-#include "lmic-node.h"
+#include "LMIC-node.h"
 
 #define DEVICEID_DEFAULT "lora32u4II"  // Default deviceid value
 

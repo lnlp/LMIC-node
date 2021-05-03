@@ -67,7 +67,7 @@
 #ifndef ARDUINO_ZERO_USB_H_
 #define ARDUINO_ZERO_USB_H_
 
-#include "lmic-node.h"
+#include "LMIC-node.h"
 
 #define DEVICEID_DEFAULT "zero-usb"  // Default deviceid value
 

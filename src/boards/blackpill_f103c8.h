@@ -91,7 +91,7 @@
 #ifndef BLACKPILL_F103C8_H_
 #define BLACKPILL_F103C8_H_
 
-#include "lmic-node.h"
+#include "LMIC-node.h"
 
 #define DEVICEID_DEFAULT "blackpill"
 

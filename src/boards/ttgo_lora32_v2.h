@@ -65,7 +65,7 @@
 #ifndef TTGO_LORA32_V2_H_
 #define TTGO_LORA32_V2_H_
 
-#include "lmic-node.h"
+#include "LMIC-node.h"
 
 #define DEVICEID_DEFAULT "ttgo-lora32-v2"  // Default deviceid value
 

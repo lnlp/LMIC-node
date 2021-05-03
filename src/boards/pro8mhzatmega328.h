@@ -63,7 +63,7 @@
 #ifndef ARDUINO_PROMINI_328_8MHZ_H_
 #define ARDUINO_PROMINI_328_8MHZ_H_
 
-#include "lmic-node.h"
+#include "LMIC-node.h"
 
 #define DEVICEID_DEFAULT "pro-mini"  // Default deviceid value
 

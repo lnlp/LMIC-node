@@ -102,7 +102,7 @@
 #define LOPY4_H_
 
 #include <SPI.h>
-#include "lmic-node.h"
+#include "LMIC-node.h"
 
 #define DEVICEID_DEFAULT "lopy4"  // Default deviceid value
 

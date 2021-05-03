@@ -73,7 +73,7 @@
 #ifndef HELTEC_WIRELESS_STICK_LITE_H_
 #define HELTEC_WIRELESS_STICK_LITE_H_
 
-#include "lmic-node.h"
+#include "LMIC-node.h"
 
 #define DEVICEID_DEFAULT "wireless-sticklt"   // Default deviceid value
 

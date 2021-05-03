@@ -95,7 +95,7 @@
 #define DISCO_L072CZ_LRWAN1_H_
 
 #include <SPI.h>
-#include "lmic-node.h"
+#include "LMIC-node.h"
 
 #define DEVICEID_DEFAULT "l072cz-lrwan1"  // Default deviceid value
 

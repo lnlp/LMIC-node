@@ -81,7 +81,7 @@
 #define TTGO_TBEAM_V1_H_
 
 #include "axp20x.h"
-#include "lmic-node.h"
+#include "LMIC-node.h"
 
 #define DEVICEID_DEFAULT "ttgo-tbeam-v1"  // Default deviceid value 
 

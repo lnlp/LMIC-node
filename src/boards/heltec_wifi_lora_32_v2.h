@@ -71,7 +71,7 @@
 #ifndef HELTEC_WIFILORA32_V2_H_
 #define HELTEC_WIFILORA32_V2_H_
 
-#include "lmic-node.h"
+#include "LMIC-node.h"
 
 #define DEVICEID_DEFAULT "wifi-lora-32-v2"   // Default deviceid value
 
