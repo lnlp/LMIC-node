@@ -29,6 +29,7 @@ One example to rule them all
   - [3.9 Board Support Files (BSF)](#39-board-support-files-bsf)
   - [3.10 Payload formatters](#310-payload-formatters)
     - [3.10.1 Uplink decoder](#3101-uplink-decoder)
+  - [3.11 External libraries](#311-external-libraries)
 - [4 Settings](#4-settings)
   - [4.1 Board selection](#41-board-selection)
   - [4.2 Common settings](#42-common-settings)
@@ -43,14 +44,15 @@ One example to rule them all
   - [5.3 Provide the LoRaWAN keys for your node](#53-provide-the-lorawan-keys-for-your-node)
   - [5.4 Compile and upload](#54-compile-and-upload)
   - [5.5 Add uplink decoder function in TTN Console](#55-add-uplink-decoder-function-in-ttn-console)
-- [6 Some tips](#6-some-tips)
-  - [6.1 Serial Monitor](#61-serial-monitor)
-  - [6.2 Antenna](#62-antenna)
-  - [6.3 Distance to gateway](#63-distance-to-gateway)
-- [7 Additional information](#7-additional-information)
-  - [7.1 External libraries](#71-external-libraries)
-  - [7.2 Known issues](#72-known-issues)
-  - [7.3 Not yet tested](#73-not-yet-tested)
+- [6 Additional information](#6-additional-information)
+  - [6.1 Pinout diagrams](#61-pinout-diagrams)
+  - [6.2 The Things Network Forum](#62-the-things-network-forum)
+  - [6.3 Not yet tested](#63-not-yet-tested)
+  - [6.4 Known issues](#64-known-issues)
+- [7 Tips](#7-tips)
+  - [7.1 Serial Monitor](#71-serial-monitor)
+  - [7.2 Antenna](#72-antenna)
+  - [7.3 Distance to gateway](#73-distance-to-gateway)
 - [8 Example output](#8-example-output)
   - [8.1 Serial Monitor](#81-serial-monitor)
   - [8.2 Display](#82-display)
@@ -140,12 +142,12 @@ The following LoRa development boards have onboard LoRa support. Most have onboa
 | Heltec Wireless Stick             | ESP32          | no              | yes      | yes      | yes _\*6_ | heltec_wireless_stick |
 | Heltec Wireless Stick Lite        | ESP32          | no              | yes      | yes      | no        | heltec_wireless_stick_lite |
 | Pycom LoPy4                       | ESP32          | no              | no _\*4_ | no       | no        | lopy4 |
-| BSFrance LoRa32u4 II V1.0 - v1.3  | ATmega32u4     | yes _\*2_       | yes      | yes      | no        | lora32u4II |
+| BSFrance LoRa32u4 II<br>*versions v1.0, v1.1, v1.2 and v1.3*  | ATmega32u4     | yes _\*2_       | yes      | yes      | no        | lora32u4II |
 | TTGO LoRa32 V1.3                  | ESP32          | no              | yes      | no       | yes       | ttgo_lora32_v1 |
 | TTGO LoRa32 V2.0                  | ESP32          | yes _\*3_       | yes      | no _\*5_ | yes       | ttgo_lora32_v2 |
 | TTGO LoRa32 V2.1.6                | ESP32          | no              | yes      | no       | yes       | ttgo_lora32_v21 |
-| TTGO T-Beam V0.5 - V0.7           | ESP32          | no              | yes      | yes      | no        | ttgo_tbeam |
-| TTGO T-Beam V1.0, V1.1            | ESP32          | no              | yes      | no       | no        | ttgo_tbeam_v1 |
+| TTGO T-Beam<br>*versions v0.5, v0.6 and v0.7* | ESP32          | no              | yes      | yes      | no        | ttgo_tbeam |
+| TTGO T-Beam<br>*versions v1.0 and v1.1*       | ESP32          | no              | yes      | no       | no        | ttgo_tbeam_v1 |
 
 _\*1_: DIO1 must be manually wired to GPIO6.  
 _\*2_: For versions 1.0, 1.1 and 1.2 DIO1 must be manually wired to GPIO5 (version 1.3 is already wired on the PCB).  
@@ -467,6 +469,18 @@ function decodeUplink(input) {
 
 In the TTN Console this function should be added to the device (or application) as uplink payload formatter function.
 When this function is installed, the counter value will become visible in uplink messages in 'Live data' on the TTN Console.
+
+
+### 3.11 External libraries
+
+LMIC-node uses the following external libraries:
+
+| Library name | Category | Repository URL |
+| --- | --- | --- |
+| MCCI LoRaWAN LMIC library | LoRaWAN | https://github.com/mcci-catena/arduino-lmic |
+| IBM LMIC framework | LoRaWAN | https://github.com/matthijskooijman/arduino-lmic |
+| U8g2 | Display | https://github.com/olikraus/u8g2 |
+| EasyLed | LED | https://github.com/lnlp/EasyLed |
 
 ## 4 Settings
 
@@ -833,46 +847,22 @@ The `decodeUplink()` function can be found in folder `payload-formatters` in fil
 
 When this function is installed, the counter value will be shown in uplink messages in 'Live data' on the TTN Console.
 
-## 6 Some tips
+## 6 Additional information
 
-### 6.1 Serial Monitor
+### 6.1 Pinout diagrams
 
-If a development board has a MCU with built-in USB support (e.g. ATmega32u4 and SAMD21) and the serial monitor is connected, resetting the board (e.g. with onboard reset button) will temporarily disconnect the serial port and crash the serial monitor. The serial monitor will then have to be manually restarted and the output will be lost. For boards that use a USB to serial adapter (either onboard or external) this problem does not exist.
+Pinout diagrams for most supported boards can be found here: https://github.com/lnlp/pinout-diagrams
 
-To prevent issues with the serial monitor it is best to start the serial monitor _before_ uploading a new sketch. After uploading, PlatformIO will automatically switch back from the upload window to the serial monitor and the serial monitor will contine without crashing. If you connect the serial monitor after uploading you will most probably lose the first output, in which case you may be tempted to press the reset button to restart the output, but in case of MCU with built-in USB support this will only crash the serial monitor.
+### 6.2 The Things Network Forum
 
-For boards with MCU with built-in USB support LMIC-node by default waits with a 10 seconds timeout for the serial port to become ready so the first output does not get lost. If not yet connected the serial monitor needs to be connected (or restarted) within these 10 seconds. The countdown stops when the serial port becomes ready or when the countdown ends (whichever is first). The value of the countdown period can be changed as needed by enabling and changing the value of (`WAITFOR_SERIAL_SECONDS` in `platformio.ini`). A value 0 will disable the 'wait for serial' countdown, a value of -1 will wait indefinitely and not contiunue until the serial port is ready. The serial port is detected as ready only when a serial monitor is connected.
+The following topics on The Things Network Forum contain useful additional information:
 
-### 6.2 Antenna
+- [Big ESP32 SX127x topic part 3](https://www.thethingsnetwork.org/forum/t/big-esp32-sx127x-topic-part-3/18436)
+- [TTGO T-Beam](https://www.thethingsnetwork.org/forum/t/ttgo-t-beam/15297)
+- [Big STM32 boards topic](https://www.thethingsnetwork.org/forum/t/big-stm32-boards-topic/13391)
+- [Big LoRa32u4 boards topic](https://www.thethingsnetwork.org/forum/t/big-lora32u4-boards-topic/15273)
 
-- **The antenna should always be connected when the device is powered!**  
-  Powering the board with antenna disconnected may damage the LoRa radio.  
-
-- For best results the antenna should be used in upright (vertical) position.
-
-### 6.3 Distance to gateway
-
-- The distance between the node and a gateway should be 3 meters at minimum. If the distance is less than 3 meters this can cause RF communication issues.
-
-## 7 Additional information
-
-### 7.1 External libraries
-
-The following external libraries are used:
-
-| Library name | Category | Repository URL |
-| --- | --- | --- |
-| MCCI LoRaWAN LMIC library | LoRaWAN | https://github.com/mcci-catena/arduino-lmic |
-| IBM LMIC framework | LoRaWAN | https://github.com/matthijskooijman/arduino-lmic |
-| U8g2 | Display | https://github.com/olikraus/u8g2 |
-| EasyLed | LED | https://github.com/lnlp/EasyLed |
-
-### 7.2 Known issues
-
-The MCCI LoRaWAN LMIC library has a problem with SerialUSB on the Arduino Zero (USB) board.
-When defining `LMIC_DEBUG_LEVEL` with a value > 0, `LMIC_PRINTF_TO` will automatically be set to `serial` (which automatically points to SerialUSB) but no debug information arrives on the serial monitor. If (as alternative, to set LMIC_PRINTF_TO manually) `LMIC_PRINTF_TO` is set to `SerialUSB` in `platformio.ini` (`-D LMIC_PRINTF_TO=SerialUSB`) then the compiler gives an error that something is missing in the MCCI LMIC library. So it is currently not possible to print MCCI LMIC debug information for this board.
-
-### 7.3 Not yet tested
+### 6.3 Not yet tested
 
 All supported boards have been tested except for below boards for which hardware was not available.
 These boards should work but some may need some extra attention (see _remarks_ below).  
@@ -894,6 +884,31 @@ _Lolin D32 Pro was tested which is very similar._
 _T-Beam V1.1 may work by using board-id ttgo_tbeam_v1 but this has not been tested.
 It is currently unknown what the differences between V1.1 and V1.0 are._
 
+### 6.4 Known issues
+
+The MCCI LoRaWAN LMIC library has a problem with SerialUSB on the Arduino Zero (USB) board.
+When defining `LMIC_DEBUG_LEVEL` with a value > 0, `LMIC_PRINTF_TO` will automatically be set to `serial` (which automatically points to SerialUSB) but no debug information arrives on the serial monitor. If (as alternative, to set LMIC_PRINTF_TO manually) `LMIC_PRINTF_TO` is set to `SerialUSB` in `platformio.ini` (`-D LMIC_PRINTF_TO=SerialUSB`) then the compiler gives an error that something is missing in the MCCI LMIC library. So it is currently not possible to print MCCI LMIC debug information for this board.
+## 7 Tips
+
+### 7.1 Serial Monitor
+
+If a development board has a MCU with built-in USB support (e.g. ATmega32u4 and SAMD21) and the serial monitor is connected, resetting the board (e.g. with onboard reset button) will temporarily disconnect the serial port and crash the serial monitor. The serial monitor will then have to be manually restarted and the output will be lost. For boards that use a USB to serial adapter (either onboard or external) this problem does not exist.
+
+To prevent issues with the serial monitor it is best to start the serial monitor _before_ uploading a new sketch. After uploading, PlatformIO will automatically switch back from the upload window to the serial monitor and the serial monitor will contine without crashing. If you connect the serial monitor after uploading you will most probably lose the first output, in which case you may be tempted to press the reset button to restart the output, but in case of MCU with built-in USB support this will only crash the serial monitor.
+
+For boards with MCU with built-in USB support LMIC-node by default waits with a 10 seconds timeout for the serial port to become ready so the first output does not get lost. If not yet connected the serial monitor needs to be connected (or restarted) within these 10 seconds. The countdown stops when the serial port becomes ready or when the countdown ends (whichever is first). The value of the countdown period can be changed as needed by enabling and changing the value of (`WAITFOR_SERIAL_SECONDS` in `platformio.ini`). A value 0 will disable the 'wait for serial' countdown, a value of -1 will wait indefinitely and not contiunue until the serial port is ready. The serial port is detected as ready only when a serial monitor is connected.
+
+### 7.2 Antenna
+
+- **The antenna should always be connected when the device is powered!**  
+  Powering the board with antenna disconnected may damage the LoRa radio.  
+
+- For best results the antenna should be used in upright (vertical) position.
+
+### 7.3 Distance to gateway
+
+- The distance between the node and a gateway should be 3 meters at minimum. If the distance is less than 3 meters this can cause RF communication issues.
+
 ## 8 Example output
 
 Below are some examples of status output from serial monitor and display.
@@ -905,7 +920,6 @@ To be added.
 ### 8.2 Display
 
 To be added.
-<br>
 
 ## 9 Release History
 
