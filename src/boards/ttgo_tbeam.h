@@ -2,7 +2,7 @@
  * 
  *  File:         ttgo_tbeam.h
  * 
- *  Description:  Board Support File for TTGO T-Beam (aka T22) v0.7.
+ *  Description:  Board Support File for TTGO T-Beam (aka T22) V0.5, V0.6 and V0.7.
  * 
  *  Copyright:    Copyright (c) 2021 Leonel Lopes Parente
  * 
