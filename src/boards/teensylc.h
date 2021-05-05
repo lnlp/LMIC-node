@@ -40,9 +40,9 @@
  *                                    connected to 13;
  *                NSS   <――――――――――>  10
  *                RST   <――――――――――>  9
- *                DIO0  <――――――――――>  2
- *                DIO1  <――――――――――>  3
- *                DIO2                4          Not needed for LoRa.
+ *                DIO0  <――――――――――>  8
+ *                DIO1  <――――――――――>  7
+ *                DIO2                -          Not needed for LoRa.
  * 
  *  Docs:         https://docs.platformio.org/en/latest/boards/teensy/teensylc.html
  *
@@ -81,7 +81,7 @@ const lmic_pinmap lmic_pins = {
     .nss = 10,
     .rxtx = LMIC_UNUSED_PIN,
     .rst = 9,
-    .dio = { /*dio0*/ 2, /*dio1*/ 3, /*dio2*/ 4 }
+    .dio = { /*dio0*/ 8, /*dio1*/ 7, /*dio2*/ LMIC_UNUSED_PIN, }
 #ifdef MCCI_LMIC
     ,
     .rxtx_rx_active = 0,
