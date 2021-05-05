@@ -28,8 +28,8 @@
  * 
  *                I2C [display]       GPIO  
  *                ---                 ----
- *                SDA   <――――――――――>  
- *                SCL   <――――――――――> 
+ *                SDA   <――――――――――>  6                 pin 9
+ *                SCL   <――――――――――>  7                 pin 10 
  *
  *                SPI/LoRa module     GPIO
  *                ---                 ----
@@ -37,9 +37,9 @@
  *                MISO  <――――――――――>  4          (MISO) pin 6
  *                SCK   <――――――――――>  2          (SCK)  pin 4
  *                NSS   <――――――――――>  5                 pin 7
- *                RST   <――――――――――>  6                 pin 9
- *                DIO0  <――――――――――>  7                 pin 10
- *                DIO1  <――――――――――>  8                 pin 11
+ *                RST   <――――――――――>  10                pin 14
+ *                DIO0  <――――――――――>  11                pin 15
+ *                DIO1  <――――――――――>  12                pin 16
  *                DIO2                -          Not needed for LoRa.
  * 
  *  Docs:         https://docs.platformio.org/en/latest/boards/
@@ -78,8 +78,8 @@
 const lmic_pinmap lmic_pins = {
     .nss = 5,
     .rxtx = LMIC_UNUSED_PIN,
-    .rst = 6,
-    .dio = { /*dio0*/ 7, /*dio1*/ 8, /*dio2*/ 9 }
+    .rst = 10,
+    .dio = { /*dio0*/ 11, /*dio1*/ 12, /*dio2*/ LMIC_UNUSED_PIN }
 #ifdef MCCI_LMIC
     ,
     .rxtx_rx_active = 0,
@@ -98,7 +98,7 @@ const lmic_pinmap lmic_pins = {
 
 #ifdef USE_DISPLAY
     // Create U8x8 instance for SSD1306 OLED display (no reset) using hardware I2C.
-    U8X8_SSD1306_128X64_NONAME_HW_I2C display(/*rst*/ U8X8_PIN_NONE, /*scl*/ SCL, /*sda*/ SDA);
+    U8X8_SSD1306_128X64_NONAME_HW_I2C display(/*rst*/ U8X8_PIN_NONE, /*scl*/ 7, /*sda*/ 6);
 #endif
 
 
