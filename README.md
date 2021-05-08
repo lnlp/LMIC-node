@@ -886,7 +886,7 @@ All supported boards have been tested except below boards for which hardware was
 - BSFrance LoRa32u4 II v1.1 and v1.3 *(v1.0 and v1.2 were tested)*.
 - TTGO LoRa32 v1.3.
 - TTGO LoRa32 v2.1.6.  
-- Lolin D32 *(Lolink D32 Pro was tested)*.
+- Lolin D32 *(Lolin D32 Pro was tested)*.
 - TTGO T-Beam V1.1 *(T-Beam v1.0 was tested)*.
 
 ### 6.4 Known issues
