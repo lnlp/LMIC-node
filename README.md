@@ -936,7 +936,63 @@ Below are some examples of status output from serial monitor and display.
 
 ### 8.1 Serial Monitor
 
-To be added.
+Example output from Raspberry Pi Pico with RFM95 SPI LoRa module.  
+This is the first serial output after reset. It shows a join, the first two uplinks, then an uplink followed by a downlink containing a counter reset command, and then the next uplink where it is visible that the counter value has been reset. After the third uplink it shows that two downlinks have been received. One was for the reset counter command, the other downlink was for a MAC command that cannot be captured here because the sequence of up and downlinks all occur before the EV_TXCOMPLETE event is generated.
+
+```text
+LMIC-node
+
+Device-id:     rpi-pico  
+LMIC library:  MCCI      
+Activation:    OTAA      
+Interval:      60 seconds
+
+000000087349:  doWork job started
+000000090391:  Input data collected
+               COUNTER value: 1    
+000000091107:  Packet queued
+000000092608:  Event: EV_JOINING
+000000478864:  Event: EV_TXSTART
+000000801406:  Event: EV_JOINED
+               Network Id: 19
+               Device Address: 260BB630
+               Application Session Key: D0-24-1D-E6-CE-7B-8B-24-4B-B3-92-D9-83-59-B8-F8
+               Network Session Key:     9F-39-29-CE-14-FE-C1-53-63-32-4A-3E-D7-8B-5C-5B
+000000803598:  Event: EV_TXSTART
+000001184741:  Event: EV_TXCOMPLETE
+               Up: 1,  Down: 0     
+
+000003837350:  doWork job started
+000003840391:  Input data collected
+               COUNTER value: 2    
+000003841129:  Packet queued
+000003842736:  Event: EV_TXSTART
+000004223911:  Event: EV_TXCOMPLETE
+               Up: 2,  Down: 0     
+
+000007587350:  doWork job started
+000007590391:  Input data collected
+               COUNTER value: 3    
+000007591099:  Packet queued
+000007592698:  Event: EV_TXSTART
+000007912325:  Event: EV_TXCOMPLETE
+               Up: 3,  Down: 2     
+               Downlink received
+               RSSI: -79 dBm,  SNR: 6.2 dB
+               Port: 100
+               Length: 1
+               Data: C0
+               Reset cmd received
+000007916349:  Counter reset
+
+000011337351:  doWork job started
+000011340391:  Input data collected
+               COUNTER value: 1    
+000011341136:  Packet queued
+000011342754:  Event: EV_TXSTART
+000011723944:  Event: EV_TXCOMPLETE
+               Up: 4,  Down: 2
+```
 
 ### 8.2 Display
 
