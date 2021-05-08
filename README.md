@@ -524,8 +524,8 @@ default_envs =
     ; ttgo_lora32_v1                    ; TTGO LoRa32 v1.3
     ; ttgo_lora32_v2                    ; TTGO LoRa32 v2.0
     ; ttgo_lora32_v21                   ; TTGO LoRa32 v2.1.6
-    ; ttgo_tbeam                        ; TTGO T-Beam v0.5, v0.6, v0.7
-    ; ttgo_tbeam_v1                     ; TTGO T-Beam v1.0, v1.1
+    ; ttgo_t_beam                       ; TTGO T-Beam v0.5, v0.6, v0.7
+    ; ttgo_t_beam_v1                    ; TTGO T-Beam v1.0, v1.1
 
     ; Development boards that require an external SPI LoRa module:
 
@@ -540,6 +540,7 @@ default_envs =
     ; lolin32                           ; Lolin32
     ; nodemcu_32s                       ; NodeMCU-32S
     ; nodemcuv2                         ; NodeMCU V2
+    ; pico                              ; Raspberry Pi Pico
     ; pro8mhzatmega328                  ; Arduino Pro Mini 3.3V 8Mhz
     ; teensylc                          ; Teensy LC
     ; zerousb                           ; Arduino Zero (USB)
