@@ -1,18 +1,20 @@
 /*******************************************************************************
  * 
- *  File:         lolin_d32.h
+ *  File:          bsf_pro8mhzatmega328.h
  * 
- *  Function:     Board Support File for Lolin D32 with external SPI LoRa module.
+ *  Description:   Board Support File for Arduino Pro Mini ATmega328 3.3V 8MHz 
+ *                 with external SPI LoRa module.
  * 
- *  Copyright:    Copyright (c) 2021 Leonel Lopes Parente
+ *  Copyright:     Copyright (c) 2021 Leonel Lopes Parente
  * 
- *  License:      MIT License. See accompanying LICENSE file.
+ *  License:       MIT License. See included LICENSE file.
  * 
- *  Author:       Leonel Lopes Parente
+ *  Description:  This Board has no onboard USB and no onboard display.
+ *                Optionally an external display can be connected.
+ *                Onboard LED cannot be used due to hardware conflict.
  * 
- *  Description:  This board has onboard USB (provided by onboard USB to serial).
- *                It supports automatic firmware upload and serial over USB. 
- *                No onboard display. Optionally an external display can be connected.
+ *                For firmware upload and serial monitor use a USB to serial 
+ *                adapter that supports DTR (for automatic firmware upload).
  * 
  *                Connect the LoRa module and optional display
  *                according to below connection details.
@@ -23,47 +25,47 @@
  *                Board Support Package (BSP) which is part of the Arduino core. 
  * 
  *                Leds                GPIO 
- *                ----                ----
- *                LED   <――――――――――>   5  (LED_BUILTIN) (SS) Active-low
- *                                        Conflicts with SS.
- *  
- *                I2C [display]      GPIO
+ *                ----                ----  
+ *                LED   <――――――――――>  13  (LED_BUILTIN) (SCK) Active-high, 
+ *                                        Useless, shared with SCK.
+ * 
+ *                I2C [display]       GPIO  
  *                ---                 ---- 
- *                SDA   <――――――――――>  21  (SDA)
- *                SCL   <――――――――――>  22  (SCL)
+ *                SDA   <――――――――――>   2  (SDA)
+ *                SCL   <――――――――――>   3  (SCL)
  *
  *                SPI/LoRa module     GPIO
- *                ---                 ----
- *                MOSI  <――――――――――>  23  (MOSI)
- *                MISO  <――――――――――>  19  (MISO)
- *                SCK   <――――――――――>  18  (SCK)
- *                NSS   <――――――――――>  27  Do not use SS because conflicts with LED_BUILTIN.
- *                RST   <――――――――――>  32
- *                DIO0  <――――――――――>  33
- *                DIO1  <――――――――――>  34
+ *                ----                ----
+ *                MOSI  <――――――――――>  11  (MOSI)
+ *                MISO  <――――――――――>  12  (MISO)
+ *                SCK   <――――――――――>  13  (SCK)
+ *                NSS   <――――――――――>  10  (SS)
+ *                RST   <――――――――――>   7
+ *                DIO0  <――――――――――>   8
+ *                DIO1  <――――――――――>   9
  *                DIO2                 -  Not needed for LoRa.
  * 
- *  Docs:         https://docs.platformio.org/en/latest/boards/espressif32/lolin_d32.html
+ *  Docs:         https://docs.platformio.org/en/latest/boards/atmelavr/pro8MHzatmega328.html
  *
  *  Identifiers:  LMIC-node
- *                    board-id:      lolin_d32
+ *                    board:         pro8mhzatmega328
  *                PlatformIO
- *                    board:         lolin_d32
- *                    platform:      espressif32
+ *                    board:         pro8MHzatmega328
+ *                    platform:      atmelavr
  *                Arduino
- *                    board:         ARDUINO_LOLIN_D32
- *                    architecture:  ARDUINO_ARCH_ESP32
+ *                    board:         ARDUINO_AVR_PRO
+ *                    architecture:  ARDUINO_ARCH_AVR
  * 
  ******************************************************************************/
 
 #pragma once
 
-#ifndef LOLIN_D32_H_
-#define LOLIN_D32_H_
+#ifndef BSF_PRO8MHZATMEGA328_H_
+#define BSF_PRO8MHZATMEGA328_H_
 
 #include "LMIC-node.h"
 
-#define DEVICEID_DEFAULT "lolin-d32"  // Default deviceid value
+#define DEVICEID_DEFAULT "pro-mini"  // Default deviceid value
 
 // Wait for Serial
 // Can be useful for boards with MCU with integrated USB support.
@@ -72,28 +74,30 @@
 // LMIC Clock Error
 // This is only needed for slower 8-bit MCUs (e.g. 8MHz ATmega328 and ATmega32u4).
 // Value is defined in parts per million (of MAX_CLOCK_ERROR).
-// #define LMIC_CLOCK_ERROR_PPM 0
+// Value 30000 was determined empirically.
+#define LMIC_CLOCK_ERROR_PPM 30000
 
 // Pin mappings for LoRa tranceiver
 const lmic_pinmap lmic_pins = {
-    .nss = 27,
+    .nss = 10,
     .rxtx = LMIC_UNUSED_PIN,
-    .rst =32,
-    .dio = { /*dio0*/ 33, /*dio1*/ 34, /*dio2*/ LMIC_UNUSED_PIN }
+    .rst = 7,
+    .dio = { /*dio0*/ 8, /*dio1*/ 9, /*dio2*/ LMIC_UNUSED_PIN }
 #ifdef MCCI_LMIC
     ,
     .rxtx_rx_active = 0,
     .rssi_cal = 10,
-    .spi_freq = 8000000     /* 8 MHz */
+    .spi_freq = 1000000     /* 1 MHz */
 #endif    
 };
 
 #ifdef USE_SERIAL
     HardwareSerial& serial = Serial;
-#endif    
+#endif  
 
 #ifdef USE_LED
-    EasyLed led(LED_BUILTIN, EasyLed::ActiveLevel::Low);
+    #error Invalid option: USE_LED. Onboard LED cannot be used due to hardware conflict.
+    // EasyLed led(<external LED GPIO>, EasyLed::ActiveLevel::Low);
 #endif
 
 #ifdef USE_DISPLAY
@@ -127,4 +131,4 @@ bool boardInit(InitType initType)
 }
 
 
-#endif  // LOLIN_D32_H_
+#endif  // BSF_PRO8MHZATMEGA328_H_

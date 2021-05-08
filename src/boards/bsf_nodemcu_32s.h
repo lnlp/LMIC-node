@@ -1,9 +1,8 @@
 /*******************************************************************************
  * 
- *  File:         ttgo_lora32_v216.h
+ *  File:         bsf_nodemcu_32s.h
  * 
- *  Description:  Board Support File for TTGO LoRa32 v2.1.6 
- *                (aka T3 V1.6 and LoRa32 V2.1 release 1.6).
+ *  Function:     Board Support File for NodeMCU-32S with external SPI LoRa module.
  * 
  *  Copyright:    Copyright (c) 2021 Leonel Lopes Parente
  * 
@@ -13,9 +12,10 @@
  * 
  *  Description:  This board has onboard USB (provided by onboard USB to serial).
  *                It supports automatic firmware upload and serial over USB. 
- *                Has onboard display.
+ *                No onboard display. Optionally an external display can be connected.
  * 
- *                LORA_RST is defined in BSP but has incorrect value (12).
+ *                Connect the LoRa module and optional display
+ *                according to below connection details.
  * 
  *                CONNECTIONS AND PIN DEFINITIONS:
  *                
@@ -24,44 +24,45 @@
  * 
  *                Leds                GPIO 
  *                ----                ----
- *                LED   <――――――――――>  25  (LED_BUILTIN) Active-low (?)
+ *                LED   <――――――――――>   2  (LED_BUILTIN)  Active-high
  *  
- *                I2C/Display         GPIO
- *                SDA   <――――――――――>  21  (SDA)  (OLED_SDA)
- *                SCL   <――――――――――>  22  (SCL)  (OLED_SCL)
- *                RST   <――――――――――>  16         (OLED_RST)
+ *                I2C [display]       GPIO
+ *                ---                 ---- 
+ *                SDA   <――――――――――>  21  (SDA)
+ *                SCL   <――――――――――>  22  (SCL)
  *
- *                SPI/LoRa            GPIO
- *                MOSI  <――――――――――>  27  (MOSI) (LORA_MOSI)
- *                MISO  <――――――――――>  19  (MISO) (LORA_MISO)
- *                SCK   <――――――――――>   5  (SCK)  (LORA_SCK)
- *                NSS   <――――――――――>  18  (SS)   (LORA_CS)
- *                RST   <――――――――――>  23         Not LORA_RST
- *                DIO0  <――――――――――>  26         (LORA_IRQ)
- *                DIO1  <――――――――――>  33         (LORA_D1)
- *                DIO2  <――――――――――>  32         (LORA_D2)
+ *                SPI/LoRa module     GPIO
+ *                ---                 ----
+ *                MOSI  <――――――――――>  23  (MOSI)
+ *                MISO  <――――――――――>  19  (MISO)
+ *                SCK   <――――――――――>  18  (SCK)
+ *                NSS   <――――――――――>   5  (SS)
+ *                RST   <――――――――――>  27
+ *                DIO0  <――――――――――>  34
+ *                DIO1  <――――――――――>  35
+ *                DIO2                 -  Not needed for LoRa.
  * 
- *  Docs:         https://docs.platformio.org/en/latest/boards/espressif32/ttgo-lora32-v21.html
+ *  Docs:         https://docs.platformio.org/en/latest/boards/espressif32/nodemcu-32s.html
  *
  *  Identifiers:  LMIC-node
- *                    board:         ttgo_lora32_v21
+ *                    board:         nodemcu_32s
  *                PlatformIO
- *                    board:         ttgo-lora32-v21
+ *                    board:         nodemcu-32s
  *                    platform:      espressif32
- *                Arduino
- *                    board:         ARDUINO_TTGO_LoRa32_v21new
+ *                rduino
+ *                    board:         ARDUINO_NodeMCU_32S
  *                    architecture:  ARDUINO_ARCH_ESP32
  * 
  ******************************************************************************/
 
 #pragma once
 
-#ifndef TTGO_LORA32_V21_H_
-#define TTGO_LORA32_V21_H_
+#ifndef BSF_NODEMCU_32S_H_
+#define BSF_NODEMCU_32S_H_
 
 #include "LMIC-node.h"
 
-#define DEVICEID_DEFAULT "ttgo-lora32-v21"  // Default deviceid value
+#define DEVICEID_DEFAULT "nodemcu-32s"  // Default deviceid value
 
 // Wait for Serial
 // Can be useful for boards with MCU with integrated USB support.
@@ -74,10 +75,10 @@
 
 // Pin mappings for LoRa tranceiver
 const lmic_pinmap lmic_pins = {
-    .nss = 18,
+    .nss = 5,
     .rxtx = LMIC_UNUSED_PIN,
-    .rst = 23,
-    .dio = { /*dio0*/ 26, /*dio1*/ 33, /*dio2*/ 32 }
+    .rst =27,
+    .dio = { /*dio0*/ 34, /*dio1*/ 35, /*dio2*/ LMIC_UNUSED_PIN }
 #ifdef MCCI_LMIC
     ,
     .rxtx_rx_active = 0,
@@ -88,15 +89,15 @@ const lmic_pinmap lmic_pins = {
 
 #ifdef USE_SERIAL
     HardwareSerial& serial = Serial;
-#endif  
+#endif   
 
 #ifdef USE_LED
-    EasyLed led(LED_BUILTIN, EasyLed::ActiveLevel::Low);
+    EasyLed led(LED_BUILTIN, EasyLed::ActiveLevel::High);
 #endif
 
 #ifdef USE_DISPLAY
     // Create U8x8 instance for SSD1306 OLED display (no reset) using hardware I2C.
-    U8X8_SSD1306_128X64_NONAME_HW_I2C display(/*rst*/ OLED_RST, /*scl*/ SCL, /*sda*/ SDA);
+    U8X8_SSD1306_128X64_NONAME_HW_I2C display(/*rst*/ U8X8_PIN_NONE, /*scl*/ SCL, /*sda*/ SDA);
 #endif
 
 
@@ -119,10 +120,10 @@ bool boardInit(InitType initType)
         case InitType::PostInitSerial:
             // Note: If enabled Serial port and display are already initialized here.
             // No actions required for this board.
-            break;        
+            break;           
     }
     return success;
 }
 
 
-#endif  // TTGO_LORA32_V21_H_
+#endif  // BSF_NODEMCU_32S_H_

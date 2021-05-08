@@ -1,6 +1,6 @@
 /*******************************************************************************
  * 
- *  File:         zerousb.h
+ *  File:         bsf_zerousb.h
  * 
  *  Function:     Board Support File for Arduino Zero (USB Native port)
  *                and SAMD21 M0-Mini, with external SPI LoRa module.
@@ -64,8 +64,8 @@
 
 #pragma once
 
-#ifndef ARDUINO_ZERO_USB_H_
-#define ARDUINO_ZERO_USB_H_
+#ifndef BSF_ZEROUSB_H_
+#define BSF_ZEROUSB_H_
 
 #include "LMIC-node.h"
 
@@ -133,4 +133,4 @@ bool boardInit(InitType initType)
 }
 
 
-#endif  // ARDUINO_ZERO_USB_H_
+#endif  // BSF_ZEROUSB_H_

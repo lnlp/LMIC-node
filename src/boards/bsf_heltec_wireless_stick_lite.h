@@ -1,8 +1,8 @@
 /*******************************************************************************
  * 
- *  File:         heltec_wireless_stick.h
+ *  File:         bsf_heltec_wireless_stick_lite.h
  * 
- *  Function:     Board Support File for Heltec Wireless Stick.
+ *  Function:     Board Support File for Heltec Wireless Stick Lite.
  * 
  *  Copyright:    Copyright (c) 2021 Leonel Lopes Parente
  * 
@@ -12,8 +12,7 @@
  * 
  *  Description:  This board has onboard USB (provided by onboard USB to serial).
  *                It supports automatic firmware upload and serial over USB. 
- *                Has onboard display (SSD1306 I2C OLED display 0.49" 64x32).
- *                Display is not supported by LMIC-node because resolution is too low.
+ *                No onboard display. Optionally an external display con be connected.
  * 
  *                The standard I2C pins defined in the BSP do not match the 
  *                GPIO pins that the display is connected to. Therefore the
@@ -21,6 +20,9 @@
  *                correct pins (see boardInit() below).
  * 
  *                WARNING: Vext and the standard I2C SDA pin are both defined as GPIO21.
+ * 
+ *                Connect the LoRa module and optional display
+ *                according to below connection details.
  * 
  *                CONNECTIONS AND PIN DEFINITIONS:
  *                
@@ -31,11 +33,10 @@
  *                ----                ----
  *                LED   <――――――――――>  25  (LED_BUILTIN)  Active-high
  *   
- *                I2C/Display         GPIO
+ *                I2C [display]       GPIO
  *                ----                ----
- *                SDA   <――――――――――>   4  (SDA_OLED) - NOT SDA!
- *                SCL   <――――――――――>  15  (SCL_OLED) - NOT SCL!
- *                RST   <――――――――――>  16  (RST_OLED)
+ *                SDA   <――――――――――>   4  NOT SDA!
+ *                SCL   <――――――――――>  15  NOT SCL!
  *                -                   21  (SDA, Vext) used for VExt!!!
  *                -                   22  (SCL)
  *
@@ -52,29 +53,29 @@
  * 
  *                Other               GPIO
  *                -----               ----
- *                VExt  <――――――――――>  21 (Vext, SDA) Active-low - see remarks
+ *                VExt  <――――――――――>  21 (Vext, SDA) Active-low
  * 
- *  Docs:         https://docs.platformio.org/en/latest/boards/espressif32/heltec_wireless_stick.html
+ *  Docs:         https://docs.platformio.org/en/latest/boards/espressif32/heltec_wireless_stick_lite.html
  *
  *  Identifiers:  LMIC-node:
- *                    board-id:      heltec_wireless_stick
+ *                    board-id:      heltec_wireless_stick_lite
  *                PlatformIO
- *                    board:         heltec_wireless_stick
+ *                    board:         heltec_wireless_stick_lite
  *                    platform:      espressif32
  *                Arduino
- *                    board:         ARDUINO_HELTEC_WIRELESS_STICK
+ *                    board:         ARDUINO_HELTEC_WIRELESS_STICK_LITE
  *                    architecture:  ARDUINO_ARCH_ESP32 
  * 
  ******************************************************************************/
 
 #pragma once
 
-#ifndef HELTEC_WIRELESS_STICK_H_
-#define HELTEC_WIRELESS_STICK_H_
+#ifndef BSF_HELTEC_WIRELESS_STICK_LITE_H_
+#define BSF_HELTEC_WIRELESS_STICK_LITE_H_
 
 #include "LMIC-node.h"
 
-#define DEVICEID_DEFAULT "wireless-stick"   // Default deviceid value
+#define DEVICEID_DEFAULT "wireless-sticklt"   // Default deviceid value
 
 // Wait for Serial
 // Can be useful for boards with MCU with integrated USB support.
@@ -97,20 +98,19 @@ const lmic_pinmap lmic_pins = {
     .rssi_cal = 10,
     .spi_freq = 8000000     /* 8 MHz */
 #endif    
-}; 
+};
 
 #ifdef USE_SERIAL
     HardwareSerial& serial = Serial;
 #endif    
 
 #ifdef USE_LED
-    EasyLed led(LED_BUILTIN, EasyLed::ActiveLevel::High);
+    EasyLed led(25, EasyLed::ActiveLevel::High);
 #endif
 
 #ifdef USE_DISPLAY
-    #error Invalid option: USE_DISPLAY. Onboard display is not supported because resolution is too low.
     // Create U8x8 instance for SSD1306 OLED display (no reset) using hardware I2C.
-    U8X8_SSD1306_64X32_NONAME_HW_I2C display(/*rst*/ U8X8_PIN_NONE, /*scl*/ 15, /*sda*/ 4);
+    U8X8_SSD1306_128X64_NONAME_HW_I2C display(/*rst*/ U8X8_PIN_NONE, /*scl*/ 15, /*sda*/ 4);
 #endif
 
 
@@ -145,4 +145,4 @@ bool boardInit(InitType initType)
 }
 
 
-#endif  // HELTEC_WIRELESS_STICK_H_
+#endif  // BSF_HELTEC_WIRELESS_STICK_LITE_H_

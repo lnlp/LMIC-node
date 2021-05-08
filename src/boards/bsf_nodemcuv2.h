@@ -1,8 +1,9 @@
 /*******************************************************************************
  * 
- *  File:         lolin_d32_pro.h
+ *  File:         bsf_nodemcuv2.h
  * 
- *  Function:     Board Support File for Lolin D32 Pro with external SPI LoRa module.
+ *  Function:     Board Support File for NodeMCU V2 (aka NodeMCU 1.0) with
+ *                external SPI LoRa module.
  * 
  *  Copyright:    Copyright (c) 2021 Leonel Lopes Parente
  * 
@@ -12,10 +13,13 @@
  * 
  *  Description:  This board has onboard USB (provided by onboard USB to serial).
  *                It supports automatic firmware upload and serial over USB. 
- *                No onboard display. Optionally an external display can be connected.
+ *                No onboard display.
  * 
- *                Connect the LoRa module and optional display
- *                according to below connection details.
+ *                Due to the limited amount of available GPIO pins on the ESP8266
+ *                and limitations for some of those pins it is not possible
+ *                to use I2C and an external display.
+ * 
+ *                Connect the LoRa module according to below connection details.
  * 
  *                CONNECTIONS AND PIN DEFINITIONS:
  *                
@@ -24,46 +28,47 @@
  * 
  *                Leds                GPIO 
  *                ----                ----
- *                LED   <――――――――――>   5  (LED_BUILTIN) (SS) Active-low
- *                                        Conflicts with SS.
- *  
- *                I2C [display]       GPIO
+ *                On NodeMCU <―――――>  D0 / 16  (LED_BUILTIN)
+ *                On ESP12E  <―――――>  D4 /  2  On ESP12E module, Active-low.
+ *                                              
+ *                I2C                 GPIO     ██ I2C cannot be used ██
  *                ---                 ---- 
- *                SDA   <――――――――――>  21  (SDA)
- *                SCL   <――――――――――>  22  (SCL)
+ *                SCL   <――――――――――>  D1 /  5  (SCL) is used for DIO0
+ *                SDA   <――――――――――>  D2 /  4  (SDA) is used for DIO1
  *
  *                SPI/LoRa module     GPIO
  *                ---                 ----
- *                MOSI  <――――――――――>  23  (MOSI)
- *                MISO  <――――――――――>  19  (MISO)
- *                SCK   <――――――――――>  18  (SCK)
- *                NSS   <――――――――――>  27  Do not use SS because conflicts with LED_BUILTIN.
- *                RST   <――――――――――>  32
- *                DIO0  <――――――――――>  33
- *                DIO1  <――――――――――>  34
- *                DIO2                 -  Not needed for LoRa.
+ *                NSS   <――――――――――>  D8 / 15  (SS)
+ *                MOSI  <――――――――――>  D7 / 13  (MOSI)
+ *                MISO  <――――――――――>  D6 / 12  (MISO)
+ *                SCK   <――――――――――>  D5 / 14  (SCK)
+ *                RST   <――――――――――>   -       Not connected (or connect to NodeMCU RST)
+ *                DIO0  <――――――――――>  D1 /  5  (SCL)
+ *                DIO1  <――――――――――>  D2 /  6  (SDA)
+ *                DIO2                 -       Not needed for LoRa.
  * 
- *  Docs:         https://docs.platformio.org/en/latest/boards/espressif32/lolin_d32_pro.html
+ *  Docs:         https://docs.platformio.org/en/latest/boards/espressif8266/nodemcuv2.html
  *
  *  Identifiers:  LMIC-node
- *                    board-id:      lolin_d32_pro
+ *                    board:         nodemcuv2
  *                PlatformIO
- *                    board:         lolin_d32_pro
- *                    platform:      espressif32
+ *                    board:         nodemcuv2
+ *                    platform:      espressif8266
  *                Arduino
- *                    board:         ARDUINO_LOLIN_D32_PRO
- *                    architecture:  ARDUINO_ARCH_ESP32
+ *                    board:         ARDUINO_ESP8266_NODEMCU
+ *                    architecture:  ARDUINO_ARCH_ESP8266
  * 
  ******************************************************************************/
 
 #pragma once
 
-#ifndef LOLIN_D32_PRO_H_
-#define LOLIN_D32_PRO_H_
+#ifndef BSF_NODEMCU_V2_H_
+#define BSF_NODEMCU_V2_H_
 
+#include <ESP8266WiFi.h>
 #include "LMIC-node.h"
 
-#define DEVICEID_DEFAULT "lolin-d32-pro"  // Default deviceid value
+#define DEVICEID_DEFAULT "nodemcuv2"  // Default deviceid value
 
 // Wait for Serial
 // Can be useful for boards with MCU with integrated USB support.
@@ -76,18 +81,25 @@
 
 // Pin mappings for LoRa tranceiver
 const lmic_pinmap lmic_pins = {
-    .nss = 27,
+    .nss = 15,
     .rxtx = LMIC_UNUSED_PIN,
-    .rst = 32,
-    .dio = { /*dio0*/ 33, /*dio1*/ 34, /*dio2*/ LMIC_UNUSED_PIN }
+    .rst = LMIC_UNUSED_PIN,
+    .dio = { /*dio0*/ 5, /*dio1*/ 4, /*dio2*/ LMIC_UNUSED_PIN }
 #ifdef MCCI_LMIC
     ,
     .rxtx_rx_active = 0,
     .rssi_cal = 10,
-    .spi_freq = 8000000     /* 8 MHz */
+    .spi_freq = 1000000     /* 1 MHz */
 #endif    
 };
-                                  
+
+#define LORA_NSS      15  //D8
+#define LORA_RST      LMIC_UNUSED_PIN
+#define LORA_DIO0      5  //D1
+#define LORA_DIO1      4  //D2
+#define LORA_DIO2     LMIC_UNUSED_PIN
+#define LORA_RXTX     LMIC_UNUSED_PIN
+
 #ifdef USE_SERIAL
     HardwareSerial& serial = Serial;
 #endif   
@@ -97,8 +109,7 @@ const lmic_pinmap lmic_pins = {
 #endif
 
 #ifdef USE_DISPLAY
-    // Create U8x8 instance for SSD1306 OLED display (no reset) using hardware I2C.
-    U8X8_SSD1306_128X64_NONAME_HW_I2C display(/*rst*/ U8X8_PIN_NONE, /*scl*/ SCL, /*sda*/ SDA);
+    #error "Invalid option: USE_DISPLAY. I2C and display are not supported due to shortage of available GPIO pins."
 #endif
 
 
@@ -127,4 +138,4 @@ bool boardInit(InitType initType)
 }
 
 
-#endif  // LOLIN_D32_PRO_H_
+#endif  // BSF_NODEMCU_V2_H_

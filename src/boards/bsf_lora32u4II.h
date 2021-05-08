@@ -1,6 +1,6 @@
 /*******************************************************************************
  * 
- *  File:         lora32u4II.h
+ *  File:         bsf_lora32u4II.h
  * 
  *  Function:     Board Support File for BSFrance LoRa32u4 II versions 1.0 to 1.3.
  * 
@@ -57,8 +57,8 @@
 
 #pragma once
 
-#ifndef BSFRANCE_LORA32U4II_H_
-#define BSFRANCE_LORA32U4II_H_
+#ifndef BSF_LORA32U4II_H_
+#define BSF_LORA32U4II_H_
 
 #include "LMIC-node.h"
 
@@ -128,4 +128,4 @@ bool boardInit(InitType initType)
 }
 
 
-#endif  // BSFRANCE_LORA32U4II_H_
+#endif  // BSF_LORA32U4II_H_

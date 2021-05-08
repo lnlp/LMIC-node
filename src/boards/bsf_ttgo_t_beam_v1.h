@@ -1,6 +1,6 @@
 /*******************************************************************************
  * 
- *  File:         ttgo_tbeam_v1.h
+ *  File:         bsf_ttgo_t_beam_v1.h
  * 
  *  Description:  Board Support File for TTGO T-Beam (aka T22) V1.0.
  * 
@@ -77,8 +77,8 @@
 
 #pragma once
 
-#ifndef TTGO_TBEAM_V1_H_
-#define TTGO_TBEAM_V1_H_
+#ifndef BSF_TTGO_T_BEAM_V1_H_
+#define BSF_TTGO_T_BEAM_V1_H_
 
 #include "axp20x.h"
 #include "LMIC-node.h"
@@ -170,4 +170,4 @@ bool boardInit(InitType initType)
 }
 
 
-#endif  // TTGO_TBEAM_V1_H_
+#endif  // BSF_TTGO_T_BEAM_V1_H_

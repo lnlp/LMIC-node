@@ -1,6 +1,6 @@
 /*******************************************************************************
  * 
- *  File:         ttgo_lora32_v2.h
+ *  File:         bsf_ttgo_lora32_v2.h
  * 
  *  Description:  Board Support File for TTGO LoRa32 (aka T3) v2.0.
  * 
@@ -62,8 +62,8 @@
 
 #pragma once
 
-#ifndef TTGO_LORA32_V2_H_
-#define TTGO_LORA32_V2_H_
+#ifndef BSF_TTGO_LORA32_V2_H_
+#define BSF_TTGO_LORA32_V2_H_
 
 #include "LMIC-node.h"
 
@@ -135,4 +135,4 @@ bool boardInit(InitType initType)
 }
 
 
-#endif  // TTGO_LORA32_V2_H_
+#endif  // BSF_TTGO_LORA32_V2_H_

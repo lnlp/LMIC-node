@@ -1,8 +1,8 @@
 /*******************************************************************************
  * 
- *  File:         heltec_wifi_lora_32.h
+ *  File:         bsf_heltec_wifi_lora_32_v2.h
  * 
- *  Function:     Board Support File for Heltec Wifi LoRa 32 (1.x versions).
+ *  Function:     Board Support File for Heltec Wifi LoRa 32 V2.
  * 
  *  Copyright:    Copyright (c) 2021 Leonel Lopes Parente
  * 
@@ -19,6 +19,8 @@
  *                the I2C Wire object is explicitly initialized with the
  *                correct pins (see boardInit() below).
  * 
+ *                WARNING: Vext and the standard I2C SDA pin are both defined as GPIO21.
+ * 
  *                CONNECTIONS AND PIN DEFINITIONS:
  *                
  *                Indentifiers between parentheses are defined in the board's 
@@ -27,13 +29,13 @@
  *                Leds                GPIO 
  *                ----                ----
  *                LED   <――――――――――>  25  (LED_BUILTIN)  Active-high
- *  
+ *   
  *                I2C/Display         GPIO
  *                ---                 ---- 
  *                SDA   <――――――――――>   4  (SDA_OLED) - NOT SDA!
  *                SCL   <――――――――――>  15  (SCL_OLED) - NOT SCL!
  *                RST   <――――――――――>  16  (RST_OLED)
- *                -                   21  (SDA)
+ *                -                   21  (SDA) used for VExt!!!
  *                -                   22  (SCL)
  *
  *                SPI/LoRa            GPIO
@@ -44,30 +46,34 @@
  *                NSS   <――――――――――>  18  (SS)
  *                RST   <――――――――――>  14  (RST_LoRa)
  *                DIO0  <――――――――――>  26  (DIO0)
- *                DIO1  <――――――――――>  33  (DIO1)
- *                DIO2  <――――――――――>  32  (DIO2)
+ *                DIO1  <――――――――――>  35  (DIO1)
+ *                DIO2  <――――――――――>  34  (DIO2)
  * 
- *  Docs:         https://docs.platformio.org/en/latest/boards/espressif32/heltec_wifi_lora_32.html
+ *                Other               GPIO
+ *                -----               ----
+ *                VExt  <――――――――――>  21 (Vext, SDA) Active-low
+ * 
+ *  Docs:         https://docs.platformio.org/en/latest/boards/espressif32/heltec_wifi_lora_32_V2.html
  *
  *  Identifiers:  LMIC-node:
- *                    board-id:      heltec_wifi_lora_32
+ *                    board-id:      heltec_wifi_lora_32_v2
  *                PlatformIO
- *                    board:         heltec_wifi_lora_32
+ *                    board:         heltec_wifi_lora_32_V2
  *                    platform:      espressif32
  *                Arduino
- *                    board:         ARDUINO_HELTEC_WIFI_LORA_32
+ *                    board:         ARDUINO_HELTEC_WIFI_LORA_32_V2
  *                    architecture:  ARDUINO_ARCH_ESP32 
  * 
  ******************************************************************************/
 
 #pragma once
 
-#ifndef HELTEC_WIFILORA32_V1_H_
-#define HELTEC_WIFILORA32_V1_H_
+#ifndef BSF_HELTEC_WIFI_LORA_32_V2_H_
+#define BSF_HELTEC_WIFI_LORA_32_V2_H_
 
 #include "LMIC-node.h"
 
-#define DEVICEID_DEFAULT "wifi-lora-32"  // Default deviceid value
+#define DEVICEID_DEFAULT "wifi-lora-32-v2"   // Default deviceid value
 
 // Wait for Serial
 // Can be useful for boards with MCU with integrated USB support.
@@ -83,7 +89,7 @@ const lmic_pinmap lmic_pins = {
     .nss = 18,
     .rxtx = LMIC_UNUSED_PIN,
     .rst =14,
-    .dio = { /*dio0*/ 26, /*dio1*/ 33, /*dio2*/ 32 }
+    .dio = { /*dio0*/ 26, /*dio1*/ 35, /*dio2*/ 34 }
 #ifdef MCCI_LMIC
     ,
     .rxtx_rx_active = 0,
@@ -97,7 +103,7 @@ const lmic_pinmap lmic_pins = {
 #endif    
 
 #ifdef USE_LED
-    EasyLed led(25, EasyLed::ActiveLevel::High);
+    EasyLed led(LED_BUILTIN, EasyLed::ActiveLevel::High);
 #endif
 
 #ifdef USE_DISPLAY
@@ -131,10 +137,10 @@ bool boardInit(InitType initType)
         case InitType::PostInitSerial:
             // Note: If enabled Serial port and display are already initialized here.
             // No actions required for this board.
-            break;           
+            break;       
     }
     return success;
 }
 
 
-#endif  // HELTEC_WIFILORA32_V1_H_
+#endif  // BSF_HELTEC_WIFI_LORA_32_V2_H_

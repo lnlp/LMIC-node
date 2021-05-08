@@ -1,8 +1,8 @@
 /*******************************************************************************
  * 
- *  File:         blackpill_f103c8.h
+ *  File:         bsf_bluepill_f103c8.h
  * 
- *  Function:     Board Support File for STM32 F103C8T6 'blackpill' 64k and 128k
+ *  Function:     Board Support File for STM32 F103C8T6 'bluepill' 64k and 128k
  *                with external SPI LoRa module.
  * 
  *  Copyright:    Copyright (c) 2021 Leonel Lopes Parente
@@ -11,10 +11,10 @@
  * 
  *  Author:       Leonel Lopes Parente
  * 
- *  Description:  This Board has onboard USB (provided by the MCU).
- *                However, the default bootloader does not support automatic 
- *                firmware upload and serial over USB.
- *                No onboard display. Optionally an external display can be connected.
+ *  Description:  Board has onboard USB but the default bootloader does not 
+ *                support automatic upload via USB and serial over USB.
+ *                No onboard display. Optionally an external display 
+ *                can be connected to the I2C pins.
  * 
  *                For firmware upload use a USB to serial adapter, STLink programmer,
  *                or special bootloader (not standard supported).
@@ -35,12 +35,12 @@
  *                Indentifiers between parentheses are defined in the board's 
  *                Board Support Package (BSP) which is part of the Arduino core. 
  * 
- *                Leds                GPIO         
- *                ----                ----
- *                LED   <――――――――――>  PB12 / 16  (LED_BUILTIN)  Active-low
+ *                Leds                GPIO
+ *                ----                ----        
+ *                LED   <――――――――――>  PC13 / 17  (LED_BUILTIN)  Active-low
  * 
- *                I2C [display]       GPIO 
- *                ---                 ---- 
+ *                I2C [display]       GPIO  
+ *                ---                 ----
  *                SDA   <――――――――――>  PB7 / 2    (SCA)
  *                SCL   <――――――――――>  PB6 / 3    (SCL)
  *
@@ -68,32 +68,32 @@
  *                USB                 GPIO
  *                ---                 ----
  *                D-    <――――――――――>  PA11 / 9
- *                D+    <――――――――――>  PA12 / 8       
+ *                D+    <――――――――――>  PA12 / 8      
  * 
- *  Docs:         https://docs.platformio.org/en/latest/boards/ststm32/blackpill_f103c8.html
- *                https://docs.platformio.org/en/latest/boards/ststm32/blackpill_f103c8_128.html
+ *  Docs:         https://docs.platformio.org/en/latest/boards/ststm32/bluepill_f103c8.html
+ *                https://docs.platformio.org/en/latest/boards/ststm32/bluepill_f103c8_128k.html
  *
  *  Identifiers:  LMIC-node
- *                    board-id:       blackpill_f103c8          (64k version)
- *                                    blackpill_f103c8_128k    (128k version)
+ *                    board-id:       bluepill_f103c8          (64k version)
+ *                                    bluepill_f103c8_128k    (128k version)
  *                PlatformIO
- *                    board:          blackpill_f103c8          (64k version)
- *                                    blackpill_f103c8_128k    (128k version)
+ *                    board:          bluepill_f103c8          (64k version)
+ *                                    bluepill_f103c8_128k    (128k version)
  *                    platform:       ststm32
  *                Arduino
- *                    board:          ARDUINO_BLACKPILL_F103C8
- *                    architecture:   ARDUINO_ARCH_STM32 
+ *                    board:          ARDUINO_BLUEPILL_F103C8
+ *                    architecture:   ARDUINO_ARCH_STM32
  * 
  ******************************************************************************/
 
 #pragma once
 
-#ifndef BLACKPILL_F103C8_H_
-#define BLACKPILL_F103C8_H_
+#ifndef BSF_BLUEPILL_F103C8_H_
+#define BSF_BLUEPILL_F103C8_H_
 
 #include "LMIC-node.h"
 
-#define DEVICEID_DEFAULT "blackpill"
+#define DEVICEID_DEFAULT "bluepill"
 
 // Wait for Serial
 // Can be useful for boards with MCU with integrated USB support.
@@ -125,7 +125,7 @@ const lmic_pinmap lmic_pins = {
 #endif   
 
 #ifdef USE_LED
-    EasyLed led(LED_BUILTIN, EasyLed::ActiveLevel::Low);
+    EasyLed led(PC13, EasyLed::ActiveLevel::Low);
 #endif
 
 #ifdef USE_DISPLAY
@@ -163,10 +163,10 @@ bool boardInit(InitType initType)
 #ifdef USE_SERIAL
             delay(STM32_POST_INITSERIAL_DELAY_MS);
 #endif            
-            break;
+            break;           
     }
     return success;
 }
 
 
-#endif  // BLACKPILL_F103C8_H_
+#endif  // BSF_BLUEPILL_F103C8_H_

@@ -1,8 +1,8 @@
 /*******************************************************************************
  * 
- *  File:         teensylc.h
+ *  File:         bsf_ttgo_t_beam.h
  * 
- *  Function:     Board Support File for Teensy LC with external SPI LoRa module.
+ *  Description:  Board Support File for TTGO T-Beam (aka T22) V0.5, V0.6 and V0.7.
  * 
  *  Copyright:    Copyright (c) 2021 Leonel Lopes Parente
  * 
@@ -10,69 +10,69 @@
  * 
  *  Author:       Leonel Lopes Parente
  * 
- *  Description:  This board has onboard USB (provided by the MCU).
- *                It supports automatic firmware upload and serial over USB.
+ *  Description:  This board has onboard USB (provided by onboard USB to serial).
+ *                It supports automatic firmware upload and serial over USB. 
  *                No onboard display. Optionally an external display con be connected.
- * 
- *                Onboard LED and SPI SCK use the same GPIO (13) which causes a hardware conflict.
- *                Fortunately SCK can be remapped to a different GPIO (14).
+ *                Also has onboard GPS which is not used by LMIC-node.
  * 
  *                Connect an optional display according to below connection details.
  * 
  *                CONNECTIONS AND PIN DEFINITIONS:
- * 
+ *                
  *                Indentifiers between parentheses are defined in the board's 
  *                Board Support Package (BSP) which is part of the Arduino core. 
  * 
  *                Leds                GPIO 
- *                ----                ----      
- *                LED   <――――――――――>  13  (LED_BUILTIN) (SCK) Hardware conflict. 
- *                                        Cannot use LED_BUILTIN and SCK together.
- * 
- *                I2C [display]       GPIO  
- *                ---                 ----
- *                SDA   <――――――――――>  18  (SDA)
- *                SCL   <――――――――――>  19  (SCL)
+ *                ----                ----
+ *                LED   <――――――――――>  14  (LED_BUILTIN)  Active-high
+ *  
+ *                I2C [display]       GPIO
+ *                ----                ----
+ *                SDA   <――――――――――>  21  (SDA)
+ *                SCL   <――――――――――>  22  (SCL)
+ *                RST                  -
  *
- *                SPI/LoRa module     GPIO
+ *                SPI/LoRa            GPIO
  *                ---                 ----
- *                MOSI  <――――――――――>  11  (MOSI)
- *                MISO  <――――――――――>  12  (MISO)
- *                SCK   <――――――――――>  14  NOT SCK! 
- *                                        SPI SCK is remapped to GPIO14 because
- *                                        SCK definition conflicts with onboard LED.
- *                NSS   <――――――――――>  10
- *                RST   <――――――――――>  9
- *                DIO0  <――――――――――>  8
- *                DIO1  <――――――――――>  7
- *                DIO2                -   Not needed for LoRa.
+ *                MOSI  <――――――――――>  27  (MOSI) (LORA_MOSI)
+ *                MISO  <――――――――――>  19  (MISO) (LORA_MISO)
+ *                SCK   <――――――――――>   5  (SCK)  (LORA_SCK)
+ *                NSS   <――――――――――>  18  (SS)   (LORA_CS)
+ *                RST   <――――――――――>  23         (LORA_RST)
+ *                DIO0  <――――――――――>  26         (LORA_IO0)
+ *                DIO1  <――――――――――>  33         (LORA_IO1)
+ *                DIO2  <――――――――――>  32         (LORA_IO2)
  * 
- *  Docs:         https://docs.platformio.org/en/latest/boards/teensy/teensylc.html
+ *                GPS                 GPIO
+ *                ---                 ----
+ *                RX    <――――――――――>  15
+ *                TX    <――――――――――>  12  
+ * 
+ *  Docs:         https://docs.platformio.org/en/latest/boards/espressif32/ttgo-t-beam.html
  *
  *  Identifiers:  LMIC-node
- *                    board:         teensylc
+ *                    board:         ttgo_t_beam
  *                PlatformIO
- *                    board:         teensylc
- *                    platform:      teensy
+ *                    board:         ttgo-t-beam
+ *                    platform:      espressif32
  *                Arduino
- *                    board:         ARDUINO_TEENSYLC
- *                    architecture:  <not defined>
+ *                    board:         ARDUINO_T_Beam
+ *                    architecture:  ARDUINO_ARCH_ESP32
  * 
  ******************************************************************************/
 
 #pragma once
 
-#ifndef TEENSYLC_H_
-#define TEENSYLC_H_
+#ifndef BSF_TTGO_T_BEAM_H_
+#define BSF_TTGO_T_BEAM_H_
 
 #include "LMIC-node.h"
-#include <SPI.h>
 
-#define DEVICEID_DEFAULT "teensylc"  // Default deviceid value
+#define DEVICEID_DEFAULT "ttgo-tbeam"  // Default deviceid value
 
 // Wait for Serial
 // Can be useful for boards with MCU with integrated USB support.
-#define WAITFOR_SERIAL_SECONDS_DEFAULT 10   // -1 waits indefinitely  
+// #define WAITFOR_SERIAL_SECONDS_DEFAULT 10   // -1 waits indefinitely  
 
 // LMIC Clock Error
 // This is only needed for slower 8-bit MCUs (e.g. 8MHz ATmega328 and ATmega32u4).
@@ -81,10 +81,10 @@
 
 // Pin mappings for LoRa tranceiver
 const lmic_pinmap lmic_pins = {
-    .nss = 10,
+    .nss = 18,
     .rxtx = LMIC_UNUSED_PIN,
-    .rst = 9,
-    .dio = { /*dio0*/ 8, /*dio1*/ 7, /*dio2*/ LMIC_UNUSED_PIN }
+    .rst = 23,
+    .dio = { /*dio0*/ 26, /*dio1*/ 33, /*dio2*/ 32 }
 #ifdef MCCI_LMIC
     ,
     .rxtx_rx_active = 0,
@@ -94,8 +94,8 @@ const lmic_pinmap lmic_pins = {
 };
 
 #ifdef USE_SERIAL
-    usb_serial_class& serial = Serial;
-#endif    
+    HardwareSerial& serial = Serial;
+#endif  
 
 #ifdef USE_LED
     EasyLed led(LED_BUILTIN, EasyLed::ActiveLevel::High);
@@ -120,8 +120,7 @@ bool boardInit(InitType initType)
     {
         case InitType::Hardware:
             // Note: Serial port and display are not yet initialized and cannot be used use here.
-            // SPI SCK needs to remapped to GPIO14 because it conflicts with LED_BUILTIN.
-            SPI.setSCK(14);
+            // No actions required for this board.
             break;
 
         case InitType::PostInitSerial:
@@ -133,4 +132,4 @@ bool boardInit(InitType initType)
 }
 
 
-#endif  // TEENSYLC_H_
+#endif  // BSF_TTGO_T_BEAM_H_

@@ -2,6 +2,7 @@ This repository contains LMIC-node, an example LoRaWAN application for a node fo
 Get your node quickly up and running with LMIC-node.
 
 # LMIC-node
+
 [![GitHub release](https://img.shields.io/github/release/lnlp/LMIC-node.svg)](https://github.com/lnlp/LMIC-node/releases/latest) [![GitHub commits](https://img.shields.io/github/commits-since/lnlp/LMIC-node/v1.1.0.svg)](https://github.com/lnlp/LMIC-node/compare/v1.1.0...main)  
 One example to rule them all
 
@@ -49,6 +50,8 @@ One example to rule them all
   - [6.2 The Things Network Forum](#62-the-things-network-forum)
   - [6.3 Not yet tested](#63-not-yet-tested)
   - [6.4 Known issues](#64-known-issues)
+    - [6.4.1 LMIC-node schedules uplinks while not yet joined](#641-lmic-node-schedules-uplinks-while-not-yet-joined)
+    - [6.4.2 LMIC debug output not working for Arduino Zero (USB)](#642-lmic-debug-output-not-working-for-arduino-zero-usb)
 - [7 Tips](#7-tips)
   - [7.1 Serial Monitor](#71-serial-monitor)
   - [7.2 Antenna](#72-antenna)
@@ -105,7 +108,6 @@ Once the node is up and running you can start to explore and customize the sourc
 - When using LMIC debugging, output is automatically routed to the correct serial port.
 *No need to set the `LMIC_PRINTF_TO` parameter to `Serial` or `SerialUSB` manually.*
 
-
 ### 1.3 Requirements
 
 The following is required to use LMIC-node:
@@ -133,21 +135,21 @@ Explanation of columns: MCU: microcontroller. Wiring required: yes means manual 
 
 The following LoRa development boards have onboard LoRa support. Most have onboard USB that supports automatic firmware upload and serial over USB for serial monitoring. Some boards require manual wiring of the LoRa DIO1 port. For boards without onboard display an external display can be optionally connected. For details and wiring instructions see the board's BSF.
 
-| Board name                        | MCU            | Wiring required | USB      | LED      | Display   | Board-id |
-| ----------                        | ---            | ---             | ---      | ---      | ---       | --- |  
-| Adafruit Feather M0 RFMx LoRa     | SAMD21         | yes _\*1_       | yes      | yes      | no        | adafruit_feather_m0_lora |
-| ST B-L072Z-LRWAN1 Discovery kit   | STM32L072CZ    | no              | yes      | yes      | no        | discovery_l072z_lrwan1 |
-| Heltec WiFi LoRa 32 V2            | ESP32          | no              | yes      | yes      | yes       | heltec_wifilora32_v2 |
-| Heltec WiFi LoRa 32 (1.x)         | ESP32          | no              | yes      | yes      | yes       | heltec_wifilora32 |
-| Heltec Wireless Stick             | ESP32          | no              | yes      | yes      | yes _\*6_ | heltec_wireless_stick |
-| Heltec Wireless Stick Lite        | ESP32          | no              | yes      | yes      | no        | heltec_wireless_stick_lite |
-| Pycom LoPy4                       | ESP32          | no              | no _\*4_ | no       | no        | lopy4 |
-| BSFrance LoRa32u4 II<br>*versions v1.0, v1.1, v1.2 and v1.3*  | ATmega32u4     | yes _\*2_       | yes      | yes      | no        | lora32u4II |
-| TTGO LoRa32 V1.3                  | ESP32          | no              | yes      | no       | yes       | ttgo_lora32_v1 |
-| TTGO LoRa32 V2.0                  | ESP32          | yes _\*3_       | yes      | no _\*5_ | yes       | ttgo_lora32_v2 |
-| TTGO LoRa32 V2.1.6                | ESP32          | no              | yes      | no       | yes       | ttgo_lora32_v21 |
-| TTGO T-Beam<br>*versions v0.5, v0.6 and v0.7* | ESP32          | no              | yes      | yes      | no        | ttgo_tbeam |
-| TTGO T-Beam<br>*versions v1.0 and v1.1*       | ESP32          | no              | yes      | no       | no        | ttgo_tbeam_v1 |
+| Board name                        | MCU               | Wiring required | USB      | LED      | Display   | Board-id |
+| ----------                        | ---               | ---             | ---      | ---      | ---       | --- |  
+| Adafruit Feather M0 RFMx LoRa     | SAMD21            | yes _\*1_       | yes      | yes      | no        | adafruit_feather_m0_lora |
+| ST B-L072Z-LRWAN1 Discovery kit   | STM32L072CZ       | no              | yes      | yes      | no        | discovery_l072z_lrwan1 |
+| Heltec WiFi LoRa 32 V2            | ESP32             | no              | yes      | yes      | yes       | heltec_wifilora32_v2 |
+| Heltec WiFi LoRa 32 (1.x)         | ESP32             | no              | yes      | yes      | yes       | heltec_wifilora32 |
+| Heltec Wireless Stick             | ESP32             | no              | yes      | yes      | yes _\*6_ | heltec_wireless_stick |
+| Heltec Wireless Stick Lite        | ESP32             | no              | yes      | yes      | no        | heltec_wireless_stick_lite |
+| Pycom LoPy4                       | ESP32             | no              | no _\*4_ | no       | no        | lopy4 |
+| BSFrance LoRa32u4 II<br>*versions v1.0, v1.1, v1.2 and v1.3* | ATmega32u4 | yes _\*2_ | yes | yes | no    | lora32u4II |
+| TTGO LoRa32 V1.3                  | ESP32             | no              | yes      | no       | yes       | ttgo_lora32_v1 |
+| TTGO LoRa32 V2.0                  | ESP32             | yes _\*3_       | yes      | no _\*5_ | yes       | ttgo_lora32_v2 |
+| TTGO LoRa32 V2.1.6                | ESP32             | no              | yes      | no       | yes       | ttgo_lora32_v21 |
+| TTGO T-Beam<br>*versions v0.5, v0.6 and v0.7* | ESP32 | no              | yes      | yes      | no        | ttgo_tbeam |
+| TTGO T-Beam<br>*versions v1.0 and v1.1*       | ESP32 | no              | yes      | no       | no        | ttgo_tbeam_v1 |
 
 _\*1_: DIO1 must be manually wired to GPIO6.  
 _\*2_: For versions 1.0, 1.1 and 1.2 DIO1 must be manually wired to GPIO5 (version 1.3 is already wired on the PCB).  
@@ -190,7 +192,6 @@ The uplink payload consists of the counter value, 2 bytes in msb format (most si
 The frame port number used for uplink messages is 10.
 Why 10? Because it shows that other port numbers than the default number 1 can be used.
 
-
 ### 3.2 Downlink messages
 
 There are two types of downlink messages. Downlink messages containing user data and downlink messages containing MAC commands. MAC commands are sent by the network server to set or query network related settings.
@@ -204,6 +205,7 @@ If the port number is greater than 0 and user data was received the data will be
 The reset-counter downlink uses 100 as frame port number.
 The reset command is represented by a single byte with hex value 0xC0 (for Counter 0).
 When a downlink message is received on port 100, the length of the data is 1 byte and the value is 0xC0 then the `resetCounter()` function will be called and the counter will be reset to 0. If the received payload data is longer than a single byte then the reset-counter command will not be performed.
+
 ### 3.3 Status information
 
 The following status information is shown:
@@ -262,13 +264,13 @@ LMIC-node will work out of the box without having to do any programming or modif
 To make LMIC-node do other, more useful things e.g. reading values from a temperature and humidity sensor or from a water-level sensor and sending these via uplink messages, requires modifying and extending the source code.
 
 Most of the source code is boiler plate code that does not need to be changed.
-Code for things like adding support for sensors or implement other downlink commands is called *user code*. Two sections in the source code are marked as *user code*. Try to put your user code in these sections (this will prevent accidentally messing things up).
+Code for things like adding support for sensors or implement other downlink commands is called *User Code*. In `LMIC-node.cpp` two sections in the source code are marked as *User Code*. In `platformio.ini` one section is marked for User Code where additional libraries for User Code can be added. Try to put your user code in these sections (this will prevent accidentally messing things up).
 
 If you are aware of what you are doing you are of course free to change every single line of code to your needs, but if this is new to you it might be safer to restrict modifications to the user code sections.
 
 Reading sensors (etc), preparing uplink payload and scheduling an uplink message for transmission can be done in function `processWork()`. Handling of downlink messages and adding your own downlink commands can be done in function `processDownlink()`.
 
-The user code sections are marked as follows:
+The User Code sections in `LMIC-node.cpp` are marked as follows:
 
 ```cpp
 //  █ █ █▀▀ █▀▀ █▀▄   █▀▀ █▀█ █▀▄ █▀▀   █▀▄ █▀▀ █▀▀ ▀█▀ █▀█
@@ -281,18 +283,24 @@ const uint8_t payloadBufferLength = 4;    // Adjust to fit max payload length
 
 //  █ █ █▀▀ █▀▀ █▀▄   █▀▀ █▀█ █▀▄ █▀▀   █▀▀ █▀█ █▀▄
 //  █ █ ▀▀█ █▀▀ █▀▄   █   █ █ █ █ █▀▀   █▀▀ █ █ █ █
-//  ▀▀▀ ▀▀▀ ▀▀▀ ▀ ▀   ▀▀▀ ▀▀▀ ▀▀  ▀▀▀   ▀▀▀ ▀ ▀ ▀▀    
+//  ▀▀▀ ▀▀▀ ▀▀▀ ▀ ▀   ▀▀▀ ▀▀▀ ▀▀  ▀▀▀   ▀▀▀ ▀ ▀ ▀▀
 ```
+
+The User code section in `platformio.ini` is marked as follows:
+
+```ini
+;   ███ Add additional libraries for User Code below this line ███
+```
+
+Names of libraries needed for User Code can be specified below above line.
 
 ### 3.5 Board-id
 
 LMIC-node uses a _board-id_ to identify a specific type of board. _board-id_ is similar to PlatformIO's _board_ but latter is limited to BSP's defined in Arduino cores. Unfortunately there does not exist a dedicated BSP for each board supported by LMIC-node. Therefore LMIC-node defines its own board identifiers.
 
-A Board Support Package (BSP) provides support for a specific board and provides standard pin definitions for a board. BSP's are part of an Arduino core, which contains a BSP for each supported board.
+_board-id_ is kept identical or as similar as possible to PlatformIO's _board_. For simplicity and consistency _board-id_ only uses underscores and lowercase characters (e.g. `heltec_wifi_lora_32_v2` and `ttgo_lora32_v2`) while PlatformIO's _board_ uses hyphens, underscores and mixed case characters (e.g. `heltec_wifi_lora_32_V2` and `ttgo-lora32-v2`). Board-id `lora32u4II` is an exception, the `II` is uppercase because it is a Roman numeral.  
 
-_board-id_ is kept identical or as similar as possible to PlatformIO's _board_. For simplicity and consistency _board-id_ only uses underscores and lowercase characters (e.g. heltec_wifi_lora_32_v2 and ttgo_lora32_v2) while PlatformIO's _board_ uses both hyphens and underscores and mixed case characters (e.g. heltec_wifi_lora_32_V2 and ttgo-lora32-v2). Where needed _board-id_ adds a version suffix (if a matching BSP does not yet exist) e.g. ttgo_tbeam_v1 (v1 stands for version 1.0), because there is only one single T-Beam BSP (and one PlatformIO board) for the T-Beam while there are important hardware differences between versions 0.x and 1.0 of the T-Beam board.  
-_(lora32u4II is an exception, it uses uppercase 'II' because this is a roman number.)_ 
-
+ If a proper _board_ definition and BSP for some version of a development board do currently not exist then LMIC-node defines its own board with its own _board-id_. In which case it will use the closest matching _board_ in PlatformIO and add a separate BSF for _board-id_ where the differences can be properly handled. In this case _board-id_ will be the same as _board_ but suffixed with a version e.g. `ttgo_t_beam_v1`. In this example there only exists a board `ttgo-t-beam` in PlatformIO but no `ttgo-t-beam-v1` while there are important hardware differences between v0.x and v1.x versions of these boards.
 
 ### 3.6 Device-id
 
@@ -300,12 +308,11 @@ LMIC-node uses a device-id to identify a device. The device-id is used for displ
 
 When creating a device in the TTN console one must specify a unique device identifier for the device. The device-id used in LMIC-node is only used for display purposes (and is not the same as the device identifier in the TTN Console) but it is useful to use the same device-id for LMIC-node as the device identifier in the TTN console (or at least make it similar). That will make it easier to recognize traffic in the TTN console because the device identifier displayed on the console and the device-id displayed on the node's display (or serial monitor) will match.
 
-In the BSF a default device-id (DEVICEID_DEFAULT) is defined per board type. The default device-id can be overriden by defining DEVICEID in lorawan-keys.h, or defining ABP_DEVICEID in lorawan-keys.h. If defined latter will be used when ABP activation is used.
+In the BSF a default device-id (`DEVICEID_DEFAULT`) is defined per board type. The default device-id can be overriden by defining `DEVICEID` in file `lorawan-keys.h`, or defining `ABP_DEVICEID` in `lorawan-keys.h`. If defined latter will be used when ABP activation is used.
 
-lorawan-keys.h can contain both the keys used for OTAA activation as well as the keys used for ABP activation. Keys used for OTAA and ABP are different and they have different names. Only the keys for the used actvation type (OTAA or ABP) need to be specified.
+`lorawan-keys.h` can contain both the keys used for OTAA activation as well as the keys used for ABP activation. Keys used for OTAA and ABP are different and they have different names. Only the keys for the used actvation type (OTAA or ABP) need to be specified.
 
-Tip: For testing purposes it is possible to create two different devices in the TTN console for the same hardware device, one for OTAA activation and the other for ABP activation. Both sets of keys can be added to lorawan-keys.h and for both a different device-id can be added to lorawan-keys.h. This way a single hardware device can be used for both OTAA and ABP (only one at a time). All that to needs to be done to switch the device from OTAA to ABP is to enable the `-D ABP_ACTIVATION` setting in the `[common]` section in platformio.ini (or vice versa) and then recompile and upload the firmware.
-
+Tip: For testing purposes it is possible to create two different devices in the TTN console for the same hardware device, one for OTAA activation and the other for ABP activation. Both sets of keys can be added to lorawan-keys.h and for both a different device-id can be added to lorawan-keys.h. This way a single hardware device can be used for both OTAA and ABP (only one at a time). All that to needs to be done to switch the device from OTAA to ABP is to enable the `-D ABP_ACTIVATION` setting in the `[common]` section in `platformio.ini` (or vice versa) and then recompile and upload the firmware.
 
 ### 3.7 platformio.ini
 
@@ -387,11 +394,17 @@ All files with name pattern `*lorawan-keys.h` and all files in folder `keyfiles`
 
 ### 3.9 Board Support Files (BSF)
 
-A Board Support File (BSF) isolates hardware dependencies for a board into a single file: the BSF. There is a separate BSF per board type.
+A Board Support File (BSF) isolates hardware dependencies for a board into a single file: the BSF. There is a separate BSF per board type.  
 
-A BSF acts like a mini Board Support Package (BSP). A BSF adds functionality on top of the BSP and can also contain corrections if pins are incorrectly defined in the BSP.
+A Board Support Package (BSP) provides support for a specific board and provides standard pin definitions for a board. BSP's are part of an Arduino core, which contains a BSP for each supported board.  
 
-A BSF has the same name as the board-id and is suffixed with `.h` extension. BSF's are located in the `src/boards` folder.
+A BSF acts like a mini Board Support Package (BSP). A BSF adds functionality on top of the BSP and can also contain corrections if pins are incorrectly defined in the BSP.  
+
+A BSF has the same name as the board-id, is prefixed with `bsf_` and suffixed with `.h` extension. BSF's are located in the `src/boards` folder.  
+Exceptions:
+
+- `lora32u4II` the `II` is uppercase because it is a Roman numeral.
+- `blackpill_f103c8_128k` and `bluepill_f103c8_128k` use the same BSF as their 64k versions.
 
 A BSF contains important information about a board (including connection/wiring details), contains a URL to PlatformIO's documentation for the board and provides the following functionality:
 
@@ -416,6 +429,7 @@ The `boardInit(initType)` function provides a generic mechanism for performing c
   - Inserts a delay after serial port initialization to prevent losing the first output printed to the serial port (if needed).
 
 Example of the `boardInit()` function for a board that does not require custom hardware initialization:
+
 ```cpp
 bool boardInit(InitType initType)
 {
@@ -471,17 +485,16 @@ function decodeUplink(input) {
 In the TTN Console this function should be added to the device (or application) as uplink payload formatter function.
 When this function is installed, the counter value will become visible in uplink messages in 'Live data' on the TTN Console.
 
-
 ### 3.11 External libraries
 
 LMIC-node uses the following external libraries:
 
 | Library name | Category | Repository URL |
 | --- | --- | --- |
-| MCCI LoRaWAN LMIC library | LoRaWAN | https://github.com/mcci-catena/arduino-lmic |
-| IBM LMIC framework | LoRaWAN | https://github.com/matthijskooijman/arduino-lmic |
-| U8g2 | Display | https://github.com/olikraus/u8g2 |
-| EasyLed | LED | https://github.com/lnlp/EasyLed |
+| MCCI LoRaWAN LMIC library | LoRaWAN | [https://github.com/mcci-catena/arduino-lmic](https://github.com/mcci-catena/arduino-lmic) |
+| IBM LMIC framework | LoRaWAN | [https://github.com/matthijskooijman/arduino-lmic](https://github.com/matthijskooijman/arduino-lmic) |
+| U8g2 | Display | [https://github.com/olikraus/u8g2](https://github.com/olikraus/u8g2) |
+| EasyLed | LED | [https://github.com/lnlp/EasyLed](https://github.com/lnlp/EasyLed) |
 
 ## 4 Settings
 
@@ -507,12 +520,12 @@ default_envs =
     ; heltec_wireless_stick_lite        ; Heltec Wireless Stick Lite
     ; heltec_wireless_stick             ; Heltec Wireless Stick
     ; lopy4                             ; Pycom Lopy4
-    ; lora32u4II                        ; BSFrance LoRa32u4 II
-    ; ttgo_lora32_v1                    ; TTGO LoRa32 V1.3
-    ; ttgo_lora32_v2                    ; TTGO LoRa32 V2.0
-    ; ttgo_lora32_v21                   ; TTGO LoRa32 V2.1.6
-    ; ttgo_tbeam                        ; TTGO T-Beam V0.7
-    ; ttgo_tbeam_v1                     ; TTGO T-Beam V1.0
+    ; lora32u4II                        ; BSFrance LoRa32u4 II v1.0, v1.1, v1.2, v1.3
+    ; ttgo_lora32_v1                    ; TTGO LoRa32 v1.3
+    ; ttgo_lora32_v2                    ; TTGO LoRa32 v2.0
+    ; ttgo_lora32_v21                   ; TTGO LoRa32 v2.1.6
+    ; ttgo_tbeam                        ; TTGO T-Beam v0.5, v0.6, v0.7
+    ; ttgo_tbeam_v1                     ; TTGO T-Beam v1.0, v1.1
 
     ; Development boards that require an external SPI LoRa module:
 
@@ -528,6 +541,7 @@ default_envs =
     ; nodemcu_32s                       ; NodeMCU-32S
     ; nodemcuv2                         ; NodeMCU V2
     ; pro8mhzatmega328                  ; Arduino Pro Mini 3.3V 8Mhz
+    ; teensylc                          ; Teensy LC
     ; zerousb                           ; Arduino Zero (USB)
 ```
 
@@ -552,6 +566,7 @@ build_flags =
 lib_deps =
     olikraus/U8g2                      ; OLED display library
     lnlp/EasyLed                       ; LED library
+;   ███ Add additional libraries for User Code below this line ███
 ```
 
 **monitor_speed**  
@@ -643,7 +658,6 @@ Be aware that enabling debug will increase memory requirements.
 Other settings are listed for information but are not further explained here.
 For more information see the MCCI LoRaWAN LMIC library documentation.
 
-
 #### 4.3.2 IBM LMIC framework settings
 
 ```ini
@@ -684,7 +698,7 @@ File `config.h` is located in these folders: `.pio/libdeps/<board-id>/IBM LMIC f
 
 Above settings cannot be changed in platformio.ini because they are defined in config.h in the library source code. The settings must be changed separately per board because PlatformIO downloads libraries separately for each board.
 
-**Do NOT use ABP activation when using the IBM LMIC framework library. 
+**Do NOT use ABP activation when using the IBM LMIC framework library.  
 On The Things Network V3 this will cause a downlink message for EVERY uplink message because it does NOT properly handle MAC commands.**
 
 ### 4.4 Board specific settings
@@ -797,6 +811,7 @@ Setting this value will cause LMIC timing to be less strict. This is only needed
 If there are any issues with timing then increasing this value could possibly help. All boards supported by LMIC-node have already been tested and for boards that need it LMIC_CLOCK_ERROR_PPM is already enabled with a value that has proven to be sufficient.
 
 For more information about Clock Error consult the MCCI LoRaWAN LMIC library documentation.
+
 ## 5 Instructions
 
 For prerequisites see [1.3 Requirements](#13-requirements)
@@ -808,7 +823,6 @@ In `platformio.ini`:
 **Step 1a**: Select exactly one supported board by uncommenting the line with its board-id and name.
 
 **Step 1b**: Comment the guard line to disable it. This is the line that starts with `<platformio.ini board selector guard>`.
-
 
 ### 5.2 Select your LoRaWAN region
 
@@ -852,7 +866,7 @@ When this function is installed, the counter value will be shown in uplink messa
 
 ### 6.1 Pinout diagrams
 
-Pinout diagrams for most supported boards can be found here: https://github.com/lnlp/pinout-diagrams
+Pinout diagrams for most supported boards can be found here: [https://github.com/lnlp/pinout-diagrams](https://github.com/lnlp/pinout-diagrams)
 
 ### 6.2 The Things Network Forum
 
@@ -887,8 +901,15 @@ It is currently unknown what the differences between V1.1 and V1.0 are._
 
 ### 6.4 Known issues
 
+#### 6.4.1 LMIC-node schedules uplinks while not yet joined
+
+If joining does not directly succeed and takes more time to complete, LMIC-node will try to schedule new uplink messages anyway which results in LMIC_ERROR_TX_BUSY errors (with every new attempt to schedule an uplink message, until the join has completed). This will have to be fixed in a new release. LMIC-node should not schedule uplink messages while the join has not yet successfully completed.
+
+#### 6.4.2 LMIC debug output not working for Arduino Zero (USB)
+
 The MCCI LoRaWAN LMIC library has a problem with SerialUSB on the Arduino Zero (USB) board.
 When defining `LMIC_DEBUG_LEVEL` with a value > 0, `LMIC_PRINTF_TO` will automatically be set to `serial` (which automatically points to SerialUSB) but no debug information arrives on the serial monitor. If (as alternative, to set LMIC_PRINTF_TO manually) `LMIC_PRINTF_TO` is set to `SerialUSB` in `platformio.ini` (`-D LMIC_PRINTF_TO=SerialUSB`) then the compiler gives an error that something is missing in the MCCI LMIC library. So it is currently not possible to print MCCI LMIC debug information for this board.
+
 ## 7 Tips
 
 ### 7.1 Serial Monitor

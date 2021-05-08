@@ -1,6 +1,6 @@
 /*******************************************************************************
  * 
- *  File:         adafruit_feather_m0_lora.h
+ *  File:         bsf_adafruit_feather_m0_lora.h
  * 
  *  Function:     Board Support File for Adafruit Feather M0 RFMx LoRa.
  * 
@@ -64,8 +64,8 @@
 
 #pragma once
 
-#ifndef ADAFRUIT_FEATHER_M0_LORA_H_
-#define ADAFRUIT_FEATHER_M0_LORA_H_
+#ifndef BSF_ADAFRUIT_FEATHER_M0_LORA_H_
+#define BSF_ADAFRUIT_FEATHER_M0_LORA_H_
 
 #include "LMIC-node.h"
 
@@ -133,4 +133,4 @@ bool boardInit(InitType initType)
 }
 
 
-#endif  // ADAFRUIT_FEATHER_M0_LORA_H_
+#endif  // BSF_ADAFRUIT_FEATHER_M0_LORA_H_

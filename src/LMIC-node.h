@@ -5,7 +5,7 @@
  *  Function:     LMIC-node main header file.
  * 
  *  Copyright:    Copyright (c) 2021 Leonel Lopes Parente
- *                Copyright (c) 2018 Terry Moore, MCCI
+ *                Portions Copyright (c) 2018 Terry Moore, MCCI
  *
  *                Permission is hereby granted, free of charge, to anyone 
  *                obtaining a copy of this document and accompanying files to do, 

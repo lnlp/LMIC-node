@@ -1,8 +1,8 @@
 /*******************************************************************************
  * 
- *  File:         lolin32.h
+ *  File:         bsf_lolin_d32.h
  * 
- *  Function:     Board Support File for Lolin32 with external SPI LoRa module.
+ *  Function:     Board Support File for Lolin D32 with external SPI LoRa module.
  * 
  *  Copyright:    Copyright (c) 2021 Leonel Lopes Parente
  * 
@@ -27,7 +27,7 @@
  *                LED   <――――――――――>   5  (LED_BUILTIN) (SS) Active-low
  *                                        Conflicts with SS.
  *  
- *                I2C [display]       GPIO
+ *                I2C [display]      GPIO
  *                ---                 ---- 
  *                SDA   <――――――――――>  21  (SDA)
  *                SCL   <――――――――――>  22  (SCL)
@@ -37,33 +37,33 @@
  *                MOSI  <――――――――――>  23  (MOSI)
  *                MISO  <――――――――――>  19  (MISO)
  *                SCK   <――――――――――>  18  (SCK)
- *                NSS   <――――――――――>  32  Do not use SS because conflicts with LED_BUILTIN.
- *                RST   <――――――――――>  33
- *                DIO0  <――――――――――>  34
- *                DIO1  <――――――――――>  35
+ *                NSS   <――――――――――>  27  Do not use SS because conflicts with LED_BUILTIN.
+ *                RST   <――――――――――>  32
+ *                DIO0  <――――――――――>  33
+ *                DIO1  <――――――――――>  34
  *                DIO2                 -  Not needed for LoRa.
  * 
- *  Docs:         https://docs.platformio.org/en/latest/boards/espressif32/lolin32.html
+ *  Docs:         https://docs.platformio.org/en/latest/boards/espressif32/lolin_d32.html
  *
  *  Identifiers:  LMIC-node
- *                    board:         lolin32
+ *                    board-id:      lolin_d32
  *                PlatformIO
- *                    board:         lolin32
+ *                    board:         lolin_d32
  *                    platform:      espressif32
  *                Arduino
- *                    board:         ARDUINO_LOLIN32
+ *                    board:         ARDUINO_LOLIN_D32
  *                    architecture:  ARDUINO_ARCH_ESP32
  * 
  ******************************************************************************/
 
 #pragma once
 
-#ifndef LOLIN32_H_
-#define LOLIN32_H_
+#ifndef BSF_LOLIN_D32_H_
+#define BSF_LOLIN_D32_H_
 
 #include "LMIC-node.h"
 
-#define DEVICEID_DEFAULT "lolin32"  // Default deviceid value
+#define DEVICEID_DEFAULT "lolin-d32"  // Default deviceid value
 
 // Wait for Serial
 // Can be useful for boards with MCU with integrated USB support.
@@ -76,10 +76,10 @@
 
 // Pin mappings for LoRa tranceiver
 const lmic_pinmap lmic_pins = {
-    .nss = 32,
+    .nss = 27,
     .rxtx = LMIC_UNUSED_PIN,
-    .rst =33,
-    .dio = { /*dio0*/ 34, /*dio1*/ 35, /*dio2*/ LMIC_UNUSED_PIN }
+    .rst =32,
+    .dio = { /*dio0*/ 33, /*dio1*/ 34, /*dio2*/ LMIC_UNUSED_PIN }
 #ifdef MCCI_LMIC
     ,
     .rxtx_rx_active = 0,
@@ -90,10 +90,10 @@ const lmic_pinmap lmic_pins = {
 
 #ifdef USE_SERIAL
     HardwareSerial& serial = Serial;
-#endif   
+#endif    
 
 #ifdef USE_LED
-    EasyLed led(5, EasyLed::ActiveLevel::Low);
+    EasyLed led(LED_BUILTIN, EasyLed::ActiveLevel::Low);
 #endif
 
 #ifdef USE_DISPLAY
@@ -127,4 +127,4 @@ bool boardInit(InitType initType)
 }
 
 
-#endif  // LOLIN32_H_
+#endif  // BSF_LOLIN_D32_H_

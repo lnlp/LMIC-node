@@ -1,8 +1,8 @@
 /*******************************************************************************
  * 
- *  File:         ttgo_lora32_v1.h
+ *  File:         bsf_heltec_wifi_lora_32.h
  * 
- *  Function:     Board Support File for TTGO LoRa32 (aka T3) v1.3.
+ *  Function:     Board Support File for Heltec Wifi LoRa 32 (1.x versions).
  * 
  *  Copyright:    Copyright (c) 2021 Leonel Lopes Parente
  * 
@@ -19,13 +19,6 @@
  *                the I2C Wire object is explicitly initialized with the
  *                correct pins (see boardInit() below).
  * 
- *                Schematic diagram and and pinout diagram show no onboard 
- *                user programmable LED while LED_BUILTIN is defined in BSP.
- *                Definition in BSP is incorrect.
- * 
- *                OLED_RST and LORA_RST are defined in BSP but neither is connected to GPIO.
- *                Definitions in BSP are incorrect.               
- * 
  *                CONNECTIONS AND PIN DEFINITIONS:
  *                
  *                Indentifiers between parentheses are defined in the board's 
@@ -33,54 +26,48 @@
  * 
  *                Leds                GPIO 
  *                ----                ----
- *                LED                 -            Incorrectly defined in BSP as LED_BUILTIN (2).
- * 
+ *                LED   <――――――――――>  25  (LED_BUILTIN)  Active-high
+ *  
  *                I2C/Display         GPIO
  *                ---                 ---- 
- *                SDA   <――――――――――>  4   Not SDA! (OLED_SDA)
- *                SCL   <――――――――――>  15  Not SCL! (OLED_SCL)
- *                RST                     OLED_RST is defined in BSP but not connected to GPIO.
+ *                SDA   <――――――――――>   4  (SDA_OLED) - NOT SDA!
+ *                SCL   <――――――――――>  15  (SCL_OLED) - NOT SCL!
+ *                RST   <――――――――――>  16  (RST_OLED)
+ *                -                   21  (SDA)
+ *                -                   22  (SCL)
  *
  *                SPI/LoRa            GPIO
- *                ---                 ---- 
- *                MOSI  <――――――――――>  27  (MOSI) (LORA_MOSI)
- *                MISO  <――――――――――>  19  (MISO) (LORA_MISO)
- *                SCK   <――――――――――>   5  (SCK)  (LORA_SCK)
- *                NSS   <――――――――――>  18  (SS)   (LORA_CS)
- *                RST   <――――――――――>  14         (LORA_RST)
- *                DIO0  <――――――――――>  26         (LORA_IRQ)
- *                DIO1  <――――――――――>  33
- *                DIO2  <――――――――――>  32
+ *                ---                 ----
+ *                MOSI  <――――――――――>  27  (MOSI)
+ *                MISO  <――――――――――>  19  (MISO)
+ *                SCK   <――――――――――>   5  (SCK)
+ *                NSS   <――――――――――>  18  (SS)
+ *                RST   <――――――――――>  14  (RST_LoRa)
+ *                DIO0  <――――――――――>  26  (DIO0)
+ *                DIO1  <――――――――――>  33  (DIO1)
+ *                DIO2  <――――――――――>  32  (DIO2)
  * 
- *                Button switches     GPIO
- *                ------              ---- 
- *                Button <―――――――――>  36  (V_SP) Active-low
- * 
- *                Battery measure     GPIO
- *                -------             ---- 
- *                VBAT  <――――――――――>  35  Battery voltage via 50% voltage divider
- * 
- *  Docs:         https://docs.platformio.org/en/latest/boards/espressif32/ttgo-lora32-v1.html
+ *  Docs:         https://docs.platformio.org/en/latest/boards/espressif32/heltec_wifi_lora_32.html
  *
- *  Identifiers:  LMIC-node
- *                    board:         ttgo_lora32_v1
+ *  Identifiers:  LMIC-node:
+ *                    board-id:      heltec_wifi_lora_32
  *                PlatformIO
- *                    board:         ttgo-lora32-v1
+ *                    board:         heltec_wifi_lora_32
  *                    platform:      espressif32
  *                Arduino
- *                    board:         ARDUINO_TTGO_LoRa32_V1
- *                    architecture:  ARDUINO_ARCH_ESP32
+ *                    board:         ARDUINO_HELTEC_WIFI_LORA_32
+ *                    architecture:  ARDUINO_ARCH_ESP32 
  * 
  ******************************************************************************/
 
 #pragma once
 
-#ifndef TTGO_LORA32_V1_H_
-#define TTGO_LORA32_V1_H_
+#ifndef BSF_HELTEC_WIFI_LORA_32_H_
+#define BSF_HELTEC_WIFI_LORA_32_H_
 
 #include "LMIC-node.h"
 
-#define DEVICEID_DEFAULT "ttgo-lora32-v1"  // Default deviceid value
+#define DEVICEID_DEFAULT "wifi-lora-32"  // Default deviceid value
 
 // Wait for Serial
 // Can be useful for boards with MCU with integrated USB support.
@@ -95,7 +82,7 @@
 const lmic_pinmap lmic_pins = {
     .nss = 18,
     .rxtx = LMIC_UNUSED_PIN,
-    .rst = 14,                      // See remark about LORA_RST above.
+    .rst =14,
     .dio = { /*dio0*/ 26, /*dio1*/ 33, /*dio2*/ 32 }
 #ifdef MCCI_LMIC
     ,
@@ -107,16 +94,15 @@ const lmic_pinmap lmic_pins = {
 
 #ifdef USE_SERIAL
     HardwareSerial& serial = Serial;
-#endif  
+#endif    
 
 #ifdef USE_LED
-    #error Invalid option: USE_LED. This board has no onboard user LED.
-    // EasyLed led(<external LED GPIO>, EasyLed::ActiveLevel::Low);
+    EasyLed led(25, EasyLed::ActiveLevel::High);
 #endif
 
 #ifdef USE_DISPLAY
-    // Create U8x8 instance for SSD1306 OLED display (no reset) using hardware I2C.
-    U8X8_SSD1306_128X64_NONAME_HW_I2C display(/*rst*/ U8X8_PIN_NONE, /*scl*/ 15, /*sda*/ 4);
+    // Create U8x8 instance for SSD1306 OLED display using hardware I2C.
+    U8X8_SSD1306_128X64_NONAME_HW_I2C display(/*rst*/ 16, /*scl*/ 15, /*sda*/ 4);
 #endif
 
 
@@ -138,17 +124,17 @@ bool boardInit(InitType initType)
                 // Initialize I2C Wire object with GPIO pins the display is connected to.
                 // These pins will be remembered and will not change if any library
                 // later calls Wire.begin() without parameters.
-                Wire.begin(4, 15);
+                Wire.begin(/*sda*/ 4, /*scl*/ 15);
             #endif
             break;
 
         case InitType::PostInitSerial:
             // Note: If enabled Serial port and display are already initialized here.
             // No actions required for this board.
-            break;
+            break;           
     }
     return success;
 }
 
 
-#endif  // TTGO_LORA32_V1_H_
+#endif  // BSF_HELTEC_WIFI_LORA_32_H_

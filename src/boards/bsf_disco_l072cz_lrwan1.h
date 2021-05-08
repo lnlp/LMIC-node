@@ -1,6 +1,6 @@
 /*******************************************************************************
  * 
- *  File:         disco_l072cz_lrwan1.h
+ *  File:         bsf_disco_l072cz_lrwan1.h
  * 
  *  Function:     Board Support File for ST B-L072Z-LRWAN1 Discovery kit.
  * 
@@ -91,8 +91,8 @@
 
 #pragma once
 
-#ifndef DISCO_L072CZ_LRWAN1_H_
-#define DISCO_L072CZ_LRWAN1_H_
+#ifndef BSF_DISCO_L072CZ_LRWAN1_H_
+#define BSF_DISCO_L072CZ_LRWAN1_H_
 
 #include <SPI.h>
 #include "LMIC-node.h"
@@ -181,4 +181,4 @@ bool boardInit(InitType initType)
 }
 
 
-#endif  // DISCO_L072CZ_LRWAN1_H_
+#endif  // BSF_DISCO_L072CZ_LRWAN1_H_

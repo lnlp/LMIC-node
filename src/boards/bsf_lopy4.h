@@ -1,6 +1,6 @@
 /*******************************************************************************
  * 
- *  File:         lopy4.h
+ *  File:         bsf_lopy4.h
  * 
  *  Description:  Board Support File for Pycom LoPy4.
  * 
@@ -98,8 +98,8 @@
 
 #pragma once
 
-#ifndef LOPY4_H_
-#define LOPY4_H_
+#ifndef BSF_LOPY4_H_
+#define BSF_LOPY4_H_
 
 #include <SPI.h>
 #include "LMIC-node.h"
@@ -172,4 +172,4 @@ bool boardInit(InitType initType)
 }
 
 
-#endif  // LOPY4_H_
+#endif  // BSF_LOPY4_H_
