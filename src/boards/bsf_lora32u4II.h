@@ -15,7 +15,11 @@
  *                No onboard display. Optionally an external display con be connected.
  * 
  *                ██ DIO1 MUST BE MANUALLY WIRED TO GPIO5 for versions < 1.3 (see below) ██
- *                   For version 1.3 (see label om PCB) DIO1 is already wired on PCB.
+ *                   For version 1.3 (see label on PCB) DIO1 is already wired on PCB.
+ * 
+ *                On versions 1.0 and 1.1 DIO1 is available as a separate pin. On
+ *                version 1.2 DIO1 is available on a solder pad (from a solder jumper) 
+ *                on the bottom side of the PCB. On version 1.3 DIO is already wired on the PCB.
  * 
  *                Connect DIO1 and optional display according to below connection details.
  * 
