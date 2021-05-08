@@ -3,7 +3,7 @@ Get your node quickly up and running with LMIC-node.
 
 # LMIC-node
 
-[![GitHub release](https://img.shields.io/github/release/lnlp/LMIC-node.svg)](https://github.com/lnlp/LMIC-node/releases/latest) [![GitHub commits](https://img.shields.io/github/commits-since/lnlp/LMIC-node/v1.1.0.svg)](https://github.com/lnlp/LMIC-node/compare/v1.1.0...main)  
+[![GitHub release](https://img.shields.io/github/release/lnlp/LMIC-node.svg)](https://github.com/lnlp/LMIC-node/releases/latest) [![GitHub commits](https://img.shields.io/github/commits-since/lnlp/LMIC-node/v1.2.0.svg)](https://github.com/lnlp/LMIC-node/compare/v1.2.0...main)  
 One example to rule them all
 
 ## Contents
@@ -879,31 +879,21 @@ The following topics on The Things Network Forum contain useful additional infor
 
 ### 6.3 Not yet tested
 
-All supported boards have been tested except for below boards for which hardware was not available.
-These boards should work but some may need some extra attention (see _remarks_ below).  
+All supported boards have been tested except below boards for which hardware was not available. 
 
-- Adafruit Feather M0 RFMx LoRa
-- Heltec Wireless Stick and Wireless Stick Lite  
-_It is assumed that the onboard LED is active-high (like the WiFi LoRa 32 boards).  
-If incorrect then in BSF file in the led constructor change activeLevel to EasyLed::ActiveLevel::Low._  
-- BSFrance LoRa32u4 II PCB versions 1.1 and 1.3  
-_PCB versions 1.0 and 1.2 were tested._  
-- TTGO LoRa32 V1.3  
-_It is unknown if this board has an onboard LED and if it is usable. USE_LED is therefore disabled._
-- TTGO LoRa32 V2.1.6  
-_Unknown if LED_BUILTIN is active-low or active-high. Active-low is assumed just like v2.  
-If incorrect then in BSF file in the led constructor change activeLevel to EasyLed::ActiveLevel::High._
-- Lolin D32  
-_Lolin D32 Pro was tested which is very similar._
-- TTGO T-Beam V1.1  
-_T-Beam V1.1 may work by using board-id ttgo_tbeam_v1 but this has not been tested.
-It is currently unknown what the differences between V1.1 and V1.0 are._
+- Adafruit Feather M0 RFMx LoRa.
+- Heltec Wireless Stick and Wireless Stick Lite.
+- BSFrance LoRa32u4 II v1.1 and v1.3 *(v1.0 and v1.2 were tested)*.
+- TTGO LoRa32 v1.3.
+- TTGO LoRa32 v2.1.6.  
+- Lolin D32 *(Lolink D32 Pro was tested)*.
+- TTGO T-Beam V1.1 *(T-Beam v1.0 was tested)*.
 
 ### 6.4 Known issues
 
 #### 6.4.1 LMIC-node schedules uplinks while not yet joined
 
-If joining does not directly succeed and takes more time to complete, LMIC-node will try to schedule new uplink messages anyway which results in LMIC_ERROR_TX_BUSY errors (with every new attempt to schedule an uplink message, until the join has completed). This will have to be fixed in a new release. LMIC-node should not schedule uplink messages while the join has not yet successfully completed.
+If joining does not directly succeed and joining takes more time to complete, LMIC-node will try to schedule new uplink messages anyway which results in LMIC_ERROR_TX_BUSY errors (with every new attempt to schedule an uplink message, until the join has completed). This will have to be fixed in a new release. LMIC-node should not schedule uplink messages while the join has not yet successfully completed.
 
 #### 6.4.2 LMIC debug output not working with Arduino Zero (USB) and Raspberry Pi Pico boards
 
@@ -937,7 +927,7 @@ Below are some examples of status output from serial monitor and display.
 ### 8.1 Serial Monitor
 
 Example output from Raspberry Pi Pico with RFM95 SPI LoRa module.  
-This is the first serial output after reset. It shows a join, the first two uplinks, then an uplink followed by a downlink containing a counter reset command, and then the next uplink where it is visible that the counter value has been reset. After the third uplink it shows that two downlinks have been received. One was for the reset counter command, the other downlink was for a MAC command that cannot be captured here because the sequence of up and downlinks all occur before the EV_TXCOMPLETE event is generated.
+This is the first serial output after reset. It shows a join, the first two uplinks, then an uplink followed by a downlink containing a counter reset command, and then the next uplink where it is visible that the counter value has been reset. After the third uplink it shows that two downlinks have been received. One was for the reset counter command, the other downlink was for a MAC command that cannot be output because the sequence of up and downlinks all occur before the EV_TXCOMPLETE event is generated.
 
 ```text
 LMIC-node
@@ -1000,21 +990,46 @@ To be added.
 
 ## 9 Release History
 
-- **v1.1.0 Maintenance release**  
-  - Update README.md and add Release History.
-  - Add support for SX1276 Low port and SX1272 in RSSI calculation.
-  - Add LMIC library and LMIC debug level (if >0) to print output.
-  - Add option to make possible to override in platformio.ini, the value of STM32_POST_INITSERIAL_DELAY_MS defined in BSF of STM32 boards.
-  - Add compile error when ABP is used with Classic LMIC because not compliant, generates downlink message for every uplink message because it does not properly handle MAC commands.
-  - For STM32 BSF's surround postInitSerial delay with #ifdef USE_SERIAL.
-  - In Adafruit Feather M0 LoRa BSF change DIO1 from pin 5 to pin 6 because that is what Adafruit instructs in their tutorial.
-  - Fix ABP_DEVICEID not being used if defined in lorawan-keys.h.
-  - Fix offset for RSSI calculation when using MCCI LMIC.
-  - Fix printEvent() error when no USE_DISPLAY and no USE_SERIAL are defined.
-  - Known issue: The MCCI LoRaWAN LMIC library has a problem with SerialUSB on the Arduino Zero (USB) board so LMIC debug output cannot be used.
+**Release v1.2.0**
 
-- **v1.0.0 Initial release**
-  - First release of LMIC-node.
+- Added
+  - Support for Raspberry Pi Pico board.
+  - Support for Teensy LC board.
+  - New [pinout diagrams](https://github.com/lnlp/pinout-diagrams) repository.
+  - Link to pinout diagrams in `README.md`.
+  - Links to forum topics in `README.md`.
+  - Example output for serial monitor in `README.md`.
+  - Improvements in `README.md`.
+  - Specify more version numbers for supported boards in `README.md` and platformio.ini.
+  - Compile error when `USE_LED` is defined for TTGO T-Beam v1.x boards.
+- Changed
+  - Prefix BSF file names with `bsf_`.
+  - Rename board-id `ttgo_tbeam` to `ttgo_t_beam`.
+  - Rename board-id `ttgo_tbeam_v1` to `ttgo_t_beam_v1`.
+  - Rename header guards in BSF files that slipped a previous rename action.
+  - Order of some chapters in `README.md`.
+- Fixed
+  - Casing in `#include "LMIC-node.h"` statement in .cpp and BSF files.
+- Known issues
+  - LMIC debug output currently does not work with Arduino Zero (USB) and Raspberry Pi Pico boards.
+
+**Release v1.1.0 - Maintenance release**
+
+- Update `README.md` and add Release History.
+- Add support for SX1276 Low port and SX1272 in RSSI calculation.
+- Add LMIC library and LMIC debug level (if >0) to print output.
+- Add option to make possible to override in `platformio.ini`, the value of `STM32_POST_INITSERIAL_DELAY_MS` defined in BSF of STM32 boards.
+- Add compile error when ABP is used with Classic LMIC because not compliant, generates downlink message for every uplink message because it does not properly handle MAC commands.
+- For STM32 BSF's surround postInitSerial delay with `#ifdef USE_SERIAL`.
+- In Adafruit Feather M0 LoRa BSF change DIO1 from pin 5 to pin 6 because that is what Adafruit instructs in their tutorial.
+- Fix `ABP_DEVICEID` not being used if defined in `lorawan-keys.h`.
+- Fix offset for RSSI calculation when using MCCI LMIC.
+- Fix printEvent() error when no `USE_DISPLAY` and no `USE_SERIAL` are defined.
+- Known issue: The MCCI LoRaWAN LMIC library has a problem with SerialUSB on the Arduino Zero (USB) board so LMIC debug output cannot be used.
+
+**Release v1.0.0 - Initial release**
+
+- First release of LMIC-node.
 
 ---
 
