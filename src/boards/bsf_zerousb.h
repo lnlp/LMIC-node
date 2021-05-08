@@ -20,7 +20,8 @@
  *                connector because the board has an ARM MCU (not AVR)
  *                So the SPI pins are not breadboard friendly.
  * 
- *                Connect an optional display according to below connection details.
+ *                Connect the LoRa module and optional display
+ *                according to below connection details.
  * 
  *                CONNECTIONS AND PIN DEFINITIONS:
  * 

@@ -17,7 +17,8 @@
  *                Onboard LED and SPI SCK use the same GPIO (13) which causes a hardware conflict.
  *                Fortunately SCK can be remapped to a different GPIO (14).
  * 
- *                Connect an optional display according to below connection details.
+ *                Connect the LoRa module and optional display
+ *                according to below connection details.
  * 
  *                CONNECTIONS AND PIN DEFINITIONS:
  * 
