@@ -51,7 +51,7 @@ One example to rule them all
   - [6.3 Not yet tested](#63-not-yet-tested)
   - [6.4 Known issues](#64-known-issues)
     - [6.4.1 LMIC-node schedules uplinks while not yet joined](#641-lmic-node-schedules-uplinks-while-not-yet-joined)
-    - [6.4.2 LMIC debug output not working for Arduino Zero (USB)](#642-lmic-debug-output-not-working-for-arduino-zero-usb)
+    - [6.4.2 LMIC debug output not working with Arduino Zero (USB) and Raspberry Pi Pico boards](#642-lmic-debug-output-not-working-with-arduino-zero-usb-and-raspberry-pi-pico-boards)
 - [7 Tips](#7-tips)
   - [7.1 Serial Monitor](#71-serial-monitor)
   - [7.2 Antenna](#72-antenna)
@@ -131,6 +131,7 @@ Not yet a requirement but this document assumes that you will be using The Thing
 The following tables list the boards currently supported by LMIC-node.
 
 Explanation of columns: MCU: microcontroller. Wiring required: yes means manual wiring of DIO1 is required. USB: has onboard USB. LED: yes: has onboard LED *and* is usable. Display: yes means has onboard display. Board-id: board identifier as used by LMIC-node.
+
 ### 2.1 LoRa development boards
 
 The following LoRa development boards have onboard LoRa support. Most have onboard USB that supports automatic firmware upload and serial over USB for serial monitoring. Some boards require manual wiring of the LoRa DIO1 port. For boards without onboard display an external display can be optionally connected. For details and wiring instructions see the board's BSF.
@@ -175,15 +176,14 @@ An external display can be optionally connected. For details and wiring instruct
 | Lolin32                           | ESP32          | yes             | yes       | yes | no      | lolin32 |
 | NodeMCU-32S                       | ESP32          | yes             | yes       | yes | no      | nodemcu_32 |
 | NodeMCU V2 (aka v1.0)             | ESP8266        | yes             | yes       | yes | no      | nodemcuv2 |
+| Raspberry Pi Pico                 | RP2040         | yes             | yes       | yes | no      | pico |
 | Arduino Pro Mini (ATmega328 8mHz) | ATmega328      | yes             | yes       | no  | no      | pro8mhzatmega328 |
 | Teensy LC                         | MKL26Z64VFT4   | yes             | yes       | yes | no      | teensylc |
 | Arduino Zero (USB)                | SAMD21         | yes             | yes       | yes | no      | zerousb |
 
 _\*7_: These boards have onboard USB but by default do not support firmware upload over USB or serial over USB. For upload use a STLink programmer or USB to serial adapter.
 
-
 ## 3 Details
-
 
 ### 3.1 Uplink messages
 
@@ -905,10 +905,9 @@ It is currently unknown what the differences between V1.1 and V1.0 are._
 
 If joining does not directly succeed and takes more time to complete, LMIC-node will try to schedule new uplink messages anyway which results in LMIC_ERROR_TX_BUSY errors (with every new attempt to schedule an uplink message, until the join has completed). This will have to be fixed in a new release. LMIC-node should not schedule uplink messages while the join has not yet successfully completed.
 
-#### 6.4.2 LMIC debug output not working for Arduino Zero (USB)
+#### 6.4.2 LMIC debug output not working with Arduino Zero (USB) and Raspberry Pi Pico boards
 
-The MCCI LoRaWAN LMIC library has a problem with SerialUSB on the Arduino Zero (USB) board.
-When defining `LMIC_DEBUG_LEVEL` with a value > 0, `LMIC_PRINTF_TO` will automatically be set to `serial` (which automatically points to SerialUSB) but no debug information arrives on the serial monitor. If (as alternative, to set LMIC_PRINTF_TO manually) `LMIC_PRINTF_TO` is set to `SerialUSB` in `platformio.ini` (`-D LMIC_PRINTF_TO=SerialUSB`) then the compiler gives an error that something is missing in the MCCI LMIC library. So it is currently not possible to print MCCI LMIC debug information for this board.
+LMIC debug output is currently not working with Arduino Zero (USB) and Raspberry Pi Pico boards. The problem appears to be related to the (MCCI) LMIC library and needs to be further investigated.
 
 ## 7 Tips
 
