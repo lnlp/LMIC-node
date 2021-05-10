@@ -532,6 +532,12 @@ void onEvent(ev_t ev)
             break;               
 #endif
         case EV_JOINED:
+            #ifdef USE_LED
+                led.off();
+            #endif
+            #ifdef USE_DISPLAY
+                displayTxSymbol(false);
+            #endif
             printEvent(timestamp, ev);
             printSessionKeys();
 
@@ -565,6 +571,17 @@ void onEvent(ev_t ev)
                 processDownlink(timestamp, fPort, LMIC.frame + LMIC.dataBeg, LMIC.dataLen);                
             }
             break;     
+
+        case EV_JOIN_TXCOMPLETE:
+        case EV_TXCANCELED:
+            #ifdef USE_LED
+                led.off();
+            #endif
+            #ifdef USE_DISPLAY
+                displayTxSymbol(false);
+            #endif
+            printEvent(timestamp, ev);
+            break;
           
         // Below events are printed only.
         case EV_SCAN_TIMEOUT:
@@ -583,8 +600,6 @@ void onEvent(ev_t ev)
 #ifdef MCCI_LMIC
         // Only supported in MCCI LMIC library:
         case EV_SCAN_FOUND:              // This event is defined but not used in code
-        case EV_TXCANCELED:
-        case EV_JOIN_TXCOMPLETE:    
 #endif
             printEvent(timestamp, ev);    
             break;
