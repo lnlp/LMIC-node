@@ -484,9 +484,10 @@ void initLmic() {
     // Set/override data rate and transmit power.
     // Should only be used if ADR is disabled.
     // Note: When using ABP activation below values will override those set in setAbpParameters();
-    #if adrEnabled == 0
-        // LMIC_setDrTxpow(DR_SF7, 14);
-    #endif
+    if (!adrEnabled)
+    {
+        LMIC_setDrTxpow(DR_SF7, 14);
+    }
 
     // Relax LMIC timing if defined
     #if defined(LMIC_CLOCK_ERROR_PPM) && LMIC_CLOCK_ERROR_PPM > 0
