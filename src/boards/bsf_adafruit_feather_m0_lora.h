@@ -85,7 +85,7 @@ const lmic_pinmap lmic_pins = {
     .nss = 8,
     .rxtx = LMIC_UNUSED_PIN,
     .rst = 4,
-    .dio = { /*dio0*/ 3, /*dio1*/ 5, /*dio2*/ LMIC_UNUSED_PIN }
+    .dio = { /*dio0*/ 3, /*dio1*/ 6, /*dio2*/ LMIC_UNUSED_PIN }
 #ifdef MCCI_LMIC
     ,
     .rxtx_rx_active = 0,
