@@ -378,7 +378,7 @@ void printHeader(void)
 
 
 #ifdef ABP_ACTIVATION
-    void setAbpParameters(void) 
+    void setAbpParameters(dr_t dataRate = DR_SF7, s1_t txPower = 14) 
     {
         // Set static session parameters. Instead of dynamically establishing a session
         // by joining the network, precomputed session parameters are be provided.
@@ -459,12 +459,12 @@ void printHeader(void)
         LMIC.dn2Dr = DR_SF9;
 
         // Set data rate and transmit power (note: txpow seems to be ignored by the library)
-        LMIC_setDrTxpow(DR_SF7, 14);    
+        LMIC_setDrTxpow(dataRate, txPower);    
     }
 #endif //ABP_ACTIVATION
 
 
-void initLmic() {
+void initLmic(bit_t adrEnabled = 1, dr_t dataRate = DR_SF7, s1_t txPower = 14, bool setDrTxPowForOtaaExplicit = false) {
 
     // Initialize LMIC runtime environment
     os_init();
@@ -472,21 +472,19 @@ void initLmic() {
     LMIC_reset();
 
     #ifdef ABP_ACTIVATION
-        setAbpParameters();
+        setAbpParameters(dataRate, txPower);
     #endif
 
     // Enable or disable ADR (data rate adaptation). 
     // Should be turned off if the device is not stationary (mobile).
     // 1 is on, 0 is off.
-    const bit_t adrEnabled = 1;    
     LMIC_setAdrMode(adrEnabled);
 
-    // Set/override data rate and transmit power.
-    // Should only be used if ADR is disabled.
-    // Note: When using ABP activation below values will override those set in setAbpParameters();
-    #if adrEnabled == 0
-        // LMIC_setDrTxpow(DR_SF7, 14);
-    #endif
+    // Optional: set/override data rate and transmit power for OTAA (only use if ADR is disabled).
+    if (setDrTxPowForOtaaExplicit && !adrEnabled && activationType == ActivationType::OTAA)
+    {
+        LMIC_setDrTxpow(dataRate, txPower);
+    }
 
     // Relax LMIC timing if defined
     #if defined(LMIC_CLOCK_ERROR_PPM) && LMIC_CLOCK_ERROR_PPM > 0

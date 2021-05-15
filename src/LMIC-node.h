@@ -65,6 +65,13 @@ void processDownlink(ostime_t eventTimestamp, uint8_t fPort, uint8_t* data, uint
     #define OTAA_ACTIVATION
 #endif
 
+enum class ActivationType {OTAA, ABP};
+#ifdef OTAA_ACTIVATION
+    const ActivationType activationType = ActivationType::OTAA;
+#else    
+    const ActivationType activationType = ActivationType::ABP;
+#endif    
+
 
 #include BSFILE // Include Board Support File
 #include "../keyfiles/lorawan-keys.h"
