@@ -464,7 +464,8 @@ void printHeader(void)
 #endif //ABP_ACTIVATION
 
 
-void initLmic(bit_t adrEnabled = 1, dr_t dataRate = DR_SF7, s1_t txPower = 14, bool setDrTxPowForOtaaExplicit = false) {
+void initLmic(bit_t adrEnabled = 1, dr_t dataRate = DR_SF7, s1_t txPower = 14, bool setDrTxPowForOtaaExplicit = false) 
+{
 
     // Initialize LMIC runtime environment
     os_init();
@@ -489,7 +490,7 @@ void initLmic(bit_t adrEnabled = 1, dr_t dataRate = DR_SF7, s1_t txPower = 14, b
             // https://github.com/TheThingsNetwork/gateway-conf/blob/master/US-global_conf.json
             LMIC_selectSubBand(1); 
         #endif
-            
+
         // Optional: set/override data rate and transmit power for OTAA (only use if ADR is disabled).
         if (setDrTxPowForOtaaExplicit && !adrEnabled)
         {
