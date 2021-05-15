@@ -87,7 +87,7 @@ const lmic_pinmap lmic_pins = {
 #ifdef MCCI_LMIC
     ,
     .rxtx_rx_active = 0,
-    .rssi_cal = 10,
+    .rssi_cal = 8,
     .spi_freq = 1000000     /* 1 MHz */
 #endif    
 };
