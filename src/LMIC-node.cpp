@@ -480,10 +480,21 @@ void initLmic(bit_t adrEnabled = 1, dr_t dataRate = DR_SF7, s1_t txPower = 14, b
     // 1 is on, 0 is off.
     LMIC_setAdrMode(adrEnabled);
 
-    // Optional: set/override data rate and transmit power for OTAA (only use if ADR is disabled).
-    if (setDrTxPowForOtaaExplicit && !adrEnabled && activationType == ActivationType::OTAA)
+    if (activationType == ActivationType::OTAA)
     {
-        LMIC_setDrTxpow(dataRate, txPower);
+        #if defined(CFG_us915) || defined(CFG_au915)
+            // NA-US and AU channels 0-71 are configured automatically
+            // but only one group of 8 should (a subband) should be active
+            // TTN recommends the second sub band, 1 in a zero based count.
+            // https://github.com/TheThingsNetwork/gateway-conf/blob/master/US-global_conf.json
+            LMIC_selectSubBand(1); 
+        #endif
+            
+        // Optional: set/override data rate and transmit power for OTAA (only use if ADR is disabled).
+        if (setDrTxPowForOtaaExplicit && !adrEnabled)
+        {
+            LMIC_setDrTxpow(dataRate, txPower);
+        }
     }
 
     // Relax LMIC timing if defined
