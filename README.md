@@ -190,7 +190,7 @@ _\*7_: These boards have onboard USB but by default do not support firmware uplo
 The counter is implemented as an unsigned 16 bit integer.
 The uplink payload consists of the counter value, 2 bytes in msb format (most significant byte first).
 The frame port number used for uplink messages is 10.
-Why 10? Because it shows that other port numbers than the default number 1 can be used.
+Port 10 is used to demonstrate that other port numbers than the default 1 can be used.
 
 ### 3.2 Downlink messages
 
@@ -233,7 +233,7 @@ When joined:
 
 Continuously:
 
-- During transmission of uplink and downlink messages a transmit symbol will be shown in the top-right of the display.
+- During transmission of uplink and downlink messages a transmit symbol will be shown in the top-right of the display. the transmit symbol and LED are called transmit indicators. For MCCI LMIC transmit indicators are set to on while handling the EV_TXSTART event. Classic LMIC does not generate this event however. For Classic LMIC the transmit indicators will be set to on after an uplink has been successfully scheduled (which is less precise).
 - A notification when the doWork job is started. *(on serial port only)*
 - A notification when input data was collected *(on serial port only)*
 - Message with Counter value. On display label is abbreviated to "Ctr".
@@ -255,7 +255,7 @@ For events and notifications a timestamp (`ostime`) will be shown. LMIC uses val
 
 #### 3.3.2 LED
 
-During transmission of uplink and downlink messages the LED will be on and on other moments it will be off (similar to the transmit symbol on the display).
+The LED is a transmit indicator similar to the transmit symbol on the display. For a description when the LED is on and off see the description for the transmit symbol above.
 
 ### 3.4 User modifiable code
 
@@ -264,7 +264,7 @@ LMIC-node will work out of the box without having to do any programming or modif
 To make LMIC-node do other, more useful things e.g. reading values from a temperature and humidity sensor or from a water-level sensor and sending these via uplink messages, requires modifying and extending the source code.
 
 Most of the source code is boiler plate code that does not need to be changed.
-Code for things like adding support for sensors or implement other downlink commands is called *User Code*. In `LMIC-node.cpp` two sections in the source code are marked as *User Code*. In `platformio.ini` one section is marked for User Code where additional libraries for User Code can be added. Try to put your user code in these sections (this will prevent accidentally messing things up).
+Code for things like adding support for sensors or implement other downlink commands is called *User Code*. In `LMIC-node.cpp` three sections in the source code are marked as *User Code*. In `platformio.ini` one section is marked for User Code where additional libraries for User Code can be added. Try to put your user code in these sections (this will prevent accidentally messing things up).
 
 If you are aware of what you are doing you are of course free to change every single line of code to your needs, but if this is new to you it might be safer to restrict modifications to the user code sections.
 
