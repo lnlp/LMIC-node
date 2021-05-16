@@ -198,7 +198,10 @@ void printEvent(ostime_t timestamp,
     #endif   
 }           
 
-void printEvent(ostime_t timestamp, ev_t ev, PrintTarget target = PrintTarget::All, bool clearDisplayStatusRow = true)
+void printEvent(ostime_t timestamp, 
+                ev_t ev, 
+                PrintTarget target = PrintTarget::All, 
+                bool clearDisplayStatusRow = true)
 {
     #if defined(USE_DISPLAY) || defined(USE_SERIAL)
         printEvent(timestamp, lmicEventNames[ev], target, clearDisplayStatusRow, true);
@@ -262,7 +265,7 @@ void printSessionKeys()
 }
 
 
-void printDownlinkInfo()
+void printDownlinkInfo(void)
 {
     #if defined(USE_SERIAL) || defined(USE_DISPLAY)
 
@@ -464,9 +467,11 @@ void printHeader(void)
 #endif //ABP_ACTIVATION
 
 
-void initLmic(bit_t adrEnabled = 1, dr_t dataRate = DR_SF7, s1_t txPower = 14, bool setDrTxPowForOtaaExplicit = false) 
+void initLmic(bit_t adrEnabled = 1, 
+              dr_t dataRate = DR_SF7, 
+              s1_t txPower = 14, 
+              bool setDrTxPowForOtaaExplicit = false) 
 {
-
     // Initialize LMIC runtime environment
     os_init();
     // Reset MAC state
@@ -532,16 +537,18 @@ void onEvent(ev_t ev)
             break;
 
         case EV_TXSTART:
-            #ifdef USE_LED
-                led.on();
-            #endif
-            #ifdef USE_DISPLAY
-                displayTxSymbol();
-            #endif
+            setTxIndicatorsOn();
             printEvent(timestamp, ev);            
+            break;               
+
+        case EV_JOIN_TXCOMPLETE:
+        case EV_TXCANCELED:
+            setTxIndicatorsOn(false);
+            printEvent(timestamp, ev);
             break;               
 #endif
         case EV_JOINED:
+            setTxIndicatorsOn(false);
             printEvent(timestamp, ev);
             printSessionKeys();
 
@@ -554,12 +561,7 @@ void onEvent(ev_t ev)
 
         case EV_TXCOMPLETE:
             // Transmit completed, includes waiting for RX windows.
-            #ifdef USE_LED
-                led.off();
-            #endif
-            #ifdef USE_DISPLAY
-                displayTxSymbol(false);
-            #endif   
+            setTxIndicatorsOn(false);   
             printEvent(timestamp, ev);
             printFrameCounters();
 
@@ -592,9 +594,7 @@ void onEvent(ev_t ev)
         case EV_LINK_ALIVE:
 #ifdef MCCI_LMIC
         // Only supported in MCCI LMIC library:
-        case EV_SCAN_FOUND:              // This event is defined but not used in code
-        case EV_TXCANCELED:
-        case EV_JOIN_TXCOMPLETE:    
+        case EV_SCAN_FOUND:              // This event is defined but not used in code 
 #endif
             printEvent(timestamp, ev);    
             break;
@@ -632,22 +632,20 @@ lmic_tx_error_t scheduleUplink(uint8_t fPort, uint8_t* data, uint8_t dataLength,
     // transmission of an uplink message that was prepared by processWork().
     // Transmission will be performed at the next possible time
 
-    #ifdef CLASSIC_LMIC
-        // For MCCI_LMIC this will be handled in EV_TXSTART        
-        #ifdef USE_LED
-            led.on();
-        #endif
-        #ifdef USE_DISPLAY
-            displayTxSymbol();
-        #endif     
-    #endif                 
     ostime_t timestamp = os_getTime();
     printEvent(timestamp, "Packet queued");
 
     lmic_tx_error_t retval = LMIC_setTxData2(fPort, data, dataLength, confirmed ? 1 : 0);
     timestamp = os_getTime();
 
-    if (retval != LMIC_ERROR_SUCCESS)
+    if (retval == LMIC_ERROR_SUCCESS)
+    {
+        #ifdef CLASSIC_LMIC
+            // For MCCI_LMIC this will be handled in EV_TXSTART        
+            setTxIndicatorsOn();  
+        #endif        
+    }
+    else
     {
         String errmsg; 
         #ifdef USE_SERIAL

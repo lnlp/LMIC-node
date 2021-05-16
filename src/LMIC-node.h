@@ -46,6 +46,7 @@ enum class PrintTarget { All, Serial, Display };
 // Forward declarations
 void processWork(ostime_t timestamp);
 void processDownlink(ostime_t eventTimestamp, uint8_t fPort, uint8_t* data, uint8_t dataLength);
+void displayTxSymbol(bool visible);
 
 #ifndef DO_WORK_INTERVAL_SECONDS            // Should be set in platformio.ini
     #define DO_WORK_INTERVAL_SECONDS 300    // Default 5 minutes if not set
@@ -224,6 +225,29 @@ enum class ActivationType {OTAA, ABP};
         {
             printer.println();
         }
+    }
+
+
+    void setTxIndicatorsOn(bool on = true)
+    {
+        if (on)
+        {
+            #ifdef USE_LED
+                led.on();
+            #endif
+            #ifdef USE_DISPLAY
+                displayTxSymbol(true);
+            #endif           
+        }
+        else
+        {
+            #ifdef USE_LED
+                led.off();
+            #endif
+            #ifdef USE_DISPLAY
+                displayTxSymbol(false);
+            #endif           
+        }        
     }
     
 #endif  // USE_SERIAL || USE_DISPLAY
