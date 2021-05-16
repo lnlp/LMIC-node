@@ -520,10 +520,20 @@ void initLmic(bit_t adrEnabled = 1,
             serial.println(")");            
         #endif
     #endif
+
+    #ifdef MCCI_LMIC
+        // Register a custom eventhandler and don't use default onEvent() to enable
+        // additional features (e.g. make EV_RXSTART available). User data pointer is omitted.
+        LMIC_registerEventCb(&onLmicEvent, nullptr);
+    #endif
 }
 
 
+#ifdef MCCI_LMIC 
+void onLmicEvent(void *pUserData, ev_t ev)
+#else
 void onEvent(ev_t ev) 
+#endif
 {
     // LMIC event handler
     ostime_t timestamp = os_getTime(); 

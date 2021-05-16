@@ -46,6 +46,7 @@ enum class PrintTarget { All, Serial, Display };
 // Forward declarations
 void processWork(ostime_t timestamp);
 void processDownlink(ostime_t eventTimestamp, uint8_t fPort, uint8_t* data, uint8_t dataLength);
+void onLmicEvent(void *pUserData, ev_t ev);
 void displayTxSymbol(bool visible);
 
 #ifndef DO_WORK_INTERVAL_SECONDS            // Should be set in platformio.ini
