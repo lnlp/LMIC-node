@@ -178,8 +178,8 @@ An external display can be optionally connected. For details and wiring instruct
 | NodeMCU V2 (aka v1.0)             | ESP8266        | yes             | yes       | yes | no      | nodemcuv2 |
 | Raspberry Pi Pico                 | RP2040         | yes             | yes       | yes | no      | pico |
 | Arduino Pro Mini (ATmega328 8mHz) | ATmega328      | yes             | yes       | no  | no      | pro8mhzatmega328 |
+| SAMD21 M0-Mini                    | SAMD21         | yes             | yes       | no  | no      | samd21_m0_mini |
 | Teensy LC                         | MKL26Z64VFT4   | yes             | yes       | yes | no      | teensylc |
-| Arduino Zero (USB)                | SAMD21         | yes             | yes       | yes | no      | zerousb |
 
 _\*7_: These boards have onboard USB but by default do not support firmware upload over USB or serial over USB. For upload use a STLink programmer or USB to serial adapter.
 

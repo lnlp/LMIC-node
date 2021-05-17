@@ -1,9 +1,9 @@
 /*******************************************************************************
  * 
- *  File:         bsf_zerousb.h
+ *  File:         bsf_samd21_m0_mini.h
  * 
- *  Function:     Board Support File for Arduino Zero (USB Native port)
- *                and SAMD21 M0-Mini, with external SPI LoRa module.
+ *  Function:     Board Support File for SAMD21 M0-Mini
+ *                with external SPI LoRa module.
  * 
  *  Copyright:    Copyright (c) 2021 Leonel Lopes Parente
  * 
@@ -14,6 +14,10 @@
  *  Description:  This board has onboard USB (provided by the MCU).
  *                It supports automatic firmware upload and serial over USB.
  *                No onboard display. Optionally an external display con be connected.
+ *
+ *                On some boards a user LED is present while on
+ *                others it PA17 / 13 which is shared which is also used for SPI SCK.
+ *                Therefore onboard LED is not supported by LMIC-node.
  * 
  *                The SPI pins are located on the top side of the PCB as part of 
  *                the ICSP connector. It is strange that this board has an ICSP 
@@ -30,7 +34,7 @@
  * 
  *                Leds                GPIO 
  *                ----                ----      
- *                LED   <――――――――――>  PA17 / 13  (LED_BUILTIN, PIN_LED, PIN_LED_13)
+ *                LED                 -          (LED_BUILTIN, PIN_LED, PIN_LED_13)
  *                LED2  <――――――――――>  PB03 / 25  (RX, PIN_LED2, PIN_LED_RXL)
  *                LED3  <――――――――――>  PA27 / 26  (TX, PIN_LED3, PIN_LED_TXL)
  * 
@@ -53,7 +57,7 @@
  *  Docs:         https://docs.platformio.org/en/latest/boards/atmelsam/zeroUSB.html
  *
  *  Identifiers:  LMIC-node
- *                    board:         zerousb
+ *                    board:         samd21_m0_mini
  *                PlatformIO
  *                    board:         zeroUSB
  *                    platform:      atmelsam
@@ -65,12 +69,12 @@
 
 #pragma once
 
-#ifndef BSF_ZEROUSB_H_
-#define BSF_ZEROUSB_H_
+#ifndef BSF_SAMD21_M0_MINI_
+#define BSF_SAMD21_M0_MINI_
 
 #include "LMIC-node.h"
 
-#define DEVICEID_DEFAULT "zero-usb"  // Default deviceid value
+#define DEVICEID_DEFAULT "samd21-m0-mini"  // Default deviceid value
 
 // Wait for Serial
 // Can be useful for boards with MCU with integrated USB support.
@@ -100,8 +104,9 @@ const lmic_pinmap lmic_pins = {
 #endif    
 
 #ifdef USE_LED
-    EasyLed led(LED_BUILTIN, EasyLed::ActiveLevel::High);
-#endif
+    #error Invalid option: USE_LED. Onboard LED is not supported.
+    // EasyLed led(<external LED GPIO>, EasyLed::ActiveLevel::Low);
+Endif    
 
 #ifdef USE_DISPLAY
     // Create U8x8 instance for SSD1306 OLED display (no reset) using hardware I2C.
@@ -134,4 +139,4 @@ bool boardInit(InitType initType)
 }
 
 
-#endif  // BSF_ZEROUSB_H_
+#endif  // BSF_SAMD21_M0_MINI_
