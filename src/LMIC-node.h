@@ -78,13 +78,6 @@ enum class ActivationMode {OTAA, ABP};
 #include BSFILE // Include Board Support File
 #include "../keyfiles/lorawan-keys.h"
 
-
-#if defined(LMIC_DEBUG_LEVEL) && LMIC_DEBUG_LEVEL > 0
-    // Do not overrule if already defined
-    #ifndef LMIC_PRINTF_TO
-        #define LMIC_PRINTF_TO serial
-    #endif
-#endif
     
 #if defined(ABP_ACTIVATION) && defined(OTAA_ACTIVATION)
     #error Only one of ABP_ACTIVATION and OTAA_ACTIVATION can be defined.
