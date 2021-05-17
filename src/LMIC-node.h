@@ -67,11 +67,11 @@ void displayTxSymbol(bool visible);
     #define OTAA_ACTIVATION
 #endif
 
-enum class ActivationType {OTAA, ABP};
+enum class ActivationMode {OTAA, ABP};
 #ifdef OTAA_ACTIVATION
-    const ActivationType activationType = ActivationType::OTAA;
+    const ActivationMode activationMode = ActivationMode::OTAA;
 #else    
-    const ActivationType activationType = ActivationType::ABP;
+    const ActivationMode activationMode = ActivationMode::ABP;
 #endif    
 
 

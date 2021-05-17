@@ -376,6 +376,10 @@ void printHeader(void)
         serial.print(F("Interval:      "));
         serial.print(doWorkIntervalSeconds);
         serial.println(F(" seconds"));
+        if (activationMode == ActivationMode::OTAA)
+        {
+            serial.println();
+        }
     #endif
 }     
 
@@ -486,7 +490,7 @@ void initLmic(bit_t adrEnabled = 1,
     // 1 is on, 0 is off.
     LMIC_setAdrMode(adrEnabled);
 
-    if (activationType == ActivationType::OTAA)
+    if (activationMode == ActivationMode::OTAA)
     {
         #if defined(CFG_us915) || defined(CFG_au915)
             // NA-US and AU channels 0-71 are configured automatically
@@ -706,60 +710,63 @@ void processWork(ostime_t doWorkJobTimeStamp)
     // Uses globals: payloadBuffer and LMIC data structure.
 
     // This is where the main work is performed like
-    // reading sensor, GPS data and schedule
-    // uplink messages is anything needs to be transmitted.
+    // reading sensor and GPS data and schedule uplink
+    // messages if anything needs to be transmitted.
 
-    // Gather data.
-    // For simplicity LMIC-node uses a counter to simulate a sensor. 
-    // The counter is increased automatically by getCounterValue()
-    // and can be reset with a 'reset counter' command downlink message.
-    
-    // Collect input data
-    uint16_t counterValue = getCounterValue();
-    ostime_t timestamp = os_getTime();
-
-    #ifdef USE_DISPLAY
-        // Interval and Counter values are combined on a single row.
-        // This allows to keep the 3rd row empty which makes the
-        // information better readable on the small display.
-        display.clearLine(INTERVAL_ROW);
-        display.setCursor(COL_0, INTERVAL_ROW);
-        display.print("I:");
-        display.print(doWorkIntervalSeconds);
-        display.print("s");        
-        display.print(" Ctr:");
-        display.print(counterValue);
-    #endif
-    #ifdef USE_SERIAL
-        printEvent(timestamp, "Input data collected", PrintTarget::Serial);
-        printSpaces(serial, MESSAGE_INDENT);
-        serial.print(F("COUNTER value: "));
-        serial.println(counterValue);
-    #endif    
-
-    // For simplicity LMIC-node will try to send an uplink
-    // message every time processWork() is executed.
-
-    // Schedule uplink message if possible
-    if (LMIC.opmode & OP_TXRXPEND)
+    // Skip processWork if using OTAA and still joining.
+    if (LMIC.devaddr != 0)
     {
-        // TxRx is currently pending, do not send.
-        #ifdef USE_SERIAL
-            printEvent(timestamp, "Uplink not scheduled because TxRx pending", PrintTarget::Serial);
-        #endif    
+        // Collect input data.
+        // For simplicity LMIC-node uses a counter to simulate a sensor. 
+        // The counter is increased automatically by getCounterValue()
+        // and can be reset with a 'reset counter' command downlink message.
+
+        uint16_t counterValue = getCounterValue();
+        ostime_t timestamp = os_getTime();
+
         #ifdef USE_DISPLAY
-            printEvent(timestamp, "UL not scheduled", PrintTarget::Display);
+            // Interval and Counter values are combined on a single row.
+            // This allows to keep the 3rd row empty which makes the
+            // information better readable on the small display.
+            display.clearLine(INTERVAL_ROW);
+            display.setCursor(COL_0, INTERVAL_ROW);
+            display.print("I:");
+            display.print(doWorkIntervalSeconds);
+            display.print("s");        
+            display.print(" Ctr:");
+            display.print(counterValue);
         #endif
-    }
-    else
-    {
-        // Prepare uplink payload.
-        uint8_t fPort = 10;
-        payloadBuffer[0] = counterValue >> 8;
-        payloadBuffer[1] = counterValue & 0xFF;
-        uint8_t payloadLength = 2;
+        #ifdef USE_SERIAL
+            printEvent(timestamp, "Input data collected", PrintTarget::Serial);
+            printSpaces(serial, MESSAGE_INDENT);
+            serial.print(F("COUNTER value: "));
+            serial.println(counterValue);
+        #endif    
 
-        scheduleUplink(fPort, payloadBuffer, payloadLength);
+        // For simplicity LMIC-node will try to send an uplink
+        // message every time processWork() is executed.
+
+        // Schedule uplink message if possible
+        if (LMIC.opmode & OP_TXRXPEND)
+        {
+            // TxRx is currently pending, do not send.
+            #ifdef USE_SERIAL
+                printEvent(timestamp, "Uplink not scheduled because TxRx pending", PrintTarget::Serial);
+            #endif    
+            #ifdef USE_DISPLAY
+                printEvent(timestamp, "UL not scheduled", PrintTarget::Display);
+            #endif
+        }
+        else
+        {
+            // Prepare uplink payload.
+            uint8_t fPort = 10;
+            payloadBuffer[0] = counterValue >> 8;
+            payloadBuffer[1] = counterValue & 0xFF;
+            uint8_t payloadLength = 2;
+
+            scheduleUplink(fPort, payloadBuffer, payloadLength);
+        }
     }
 }    
  
@@ -838,6 +845,11 @@ void setup()
 //  █ █ █▀▀ █▀▀ █▀▄   █▀▀ █▀█ █▀▄ █▀▀   █▀▀ █▀█ █▀▄
 //  █ █ ▀▀█ █▀▀ █▀▄   █   █ █ █ █ █▀▀   █▀▀ █ █ █ █
 //  ▀▀▀ ▀▀▀ ▀▀▀ ▀ ▀   ▀▀▀ ▀▀▀ ▀▀  ▀▀▀   ▀▀▀ ▀ ▀ ▀▀ 
+
+    if (activationMode == ActivationMode::OTAA)
+    {
+        LMIC_startJoining();
+    }
 
     // Schedule initial doWork job for immediate execution.
     os_setCallback(&doWorkJob, doWorkCallback);

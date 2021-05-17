@@ -938,51 +938,62 @@ LMIC library:  MCCI
 Activation:    OTAA      
 Interval:      60 seconds
 
-000000087349:  doWork job started
-000000090391:  Input data collected
-               COUNTER value: 1    
-000000091107:  Packet queued
-000000092608:  Event: EV_JOINING
-000000478864:  Event: EV_TXSTART
-000000801406:  Event: EV_JOINED
+000000087328:  Event: EV_JOINING 
+
+000000088779:  doWork job started
+000000115173:  Event: EV_TXSTART
+000000437671:  Event: EV_JOINED
                Network Id: 19
-               Device Address: 260BB630
-               Application Session Key: D0-24-1D-E6-CE-7B-8B-24-4B-B3-92-D9-83-59-B8-F8
-               Network Session Key:     9F-39-29-CE-14-FE-C1-53-63-32-4A-3E-D7-8B-5C-5B
-000000803598:  Event: EV_TXSTART
-000001184741:  Event: EV_TXCOMPLETE
+               Device Address: 260B9BA3
+               Application Session Key: BD-40-9E-1F-9C-36-BC-1C-0F-ED-A9-4C-90-27-84-8A
+               Network Session Key:     80-FC-6E-99-9C-67-63-3F-4D-61-70-E1-2C-1D-D6-8E
+
+000003838779:  doWork job started
+000003841831:  Input data collected
+               COUNTER value: 1    
+000003842567:  Packet queued
+000003844154:  Event: EV_TXSTART
+000004225330:  Event: EV_TXCOMPLETE
                Up: 1,  Down: 0     
 
-000003837350:  doWork job started
-000003840391:  Input data collected
+000007588779:  doWork job started
+000007591830:  Input data collected
                COUNTER value: 2    
-000003841129:  Packet queued
-000003842736:  Event: EV_TXSTART
-000004223911:  Event: EV_TXCOMPLETE
+000007592585:  Packet queued
+000007594181:  Event: EV_TXSTART
+000007975350:  Event: EV_TXCOMPLETE
                Up: 2,  Down: 0     
 
-000007587350:  doWork job started
-000007590391:  Input data collected
+000011338779:  doWork job started
+000011341830:  Input data collected
                COUNTER value: 3    
-000007591099:  Packet queued
-000007592698:  Event: EV_TXSTART
-000007912325:  Event: EV_TXCOMPLETE
-               Up: 3,  Down: 2     
+000011342539:  Packet queued
+000011344159:  Event: EV_TXSTART
+000011725339:  Event: EV_TXCOMPLETE
+               Up: 3,  Down: 0     
+
+000015088780:  doWork job started
+000015091771:  Input data collected
+               COUNTER value: 4    
+000015092467:  Packet queued
+000015094084:  Event: EV_TXSTART
+000015413725:  Event: EV_TXCOMPLETE
+               Up: 4,  Down: 2
                Downlink received
-               RSSI: -79 dBm,  SNR: 6.2 dB
+               RSSI: -68 dBm,  SNR: 7.2 dB
                Port: 100
                Length: 1
                Data: C0
                Reset cmd received
-000007916349:  Counter reset
+000015417949:  Counter reset
 
-000011337351:  doWork job started
-000011340391:  Input data collected
+000018838781:  doWork job started
+000018841831:  Input data collected
                COUNTER value: 1    
-000011341136:  Packet queued
-000011342754:  Event: EV_TXSTART
-000011723944:  Event: EV_TXCOMPLETE
-               Up: 4,  Down: 2
+000018842563:  Packet queued
+000018844177:  Event: EV_TXSTART
+000019225356:  Event: EV_TXCOMPLETE
+               Up: 5,  Down: 2     
 ```
 
 ### 8.2 Display
