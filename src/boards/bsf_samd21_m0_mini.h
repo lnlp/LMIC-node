@@ -106,7 +106,7 @@ const lmic_pinmap lmic_pins = {
 #ifdef USE_LED
     #error Invalid option: USE_LED. Onboard LED is not supported.
     // EasyLed led(<external LED GPIO>, EasyLed::ActiveLevel::Low);
-Endif    
+#endif    
 
 #ifdef USE_DISPLAY
     // Create U8x8 instance for SSD1306 OLED display (no reset) using hardware I2C.
