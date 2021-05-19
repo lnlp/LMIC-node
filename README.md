@@ -3,7 +3,7 @@ Get your node quickly up and running with LMIC-node.
 
 # LMIC-node
 
-[![GitHub release](https://img.shields.io/github/release/lnlp/LMIC-node.svg)](https://github.com/lnlp/LMIC-node/releases/latest) [![GitHub commits](https://img.shields.io/github/commits-since/lnlp/LMIC-node/v1.2.0.svg)](https://github.com/lnlp/LMIC-node/compare/v1.2.0...main)  
+[![GitHub release](https://img.shields.io/github/release/lnlp/LMIC-node.svg)](https://github.com/lnlp/LMIC-node/releases/latest) [![GitHub commits](https://img.shields.io/github/commits-since/lnlp/LMIC-node/v1.3.0.svg)](https://github.com/lnlp/LMIC-node/compare/v1.3.0...main)  
 One example to rule them all
 
 ## Contents
@@ -1031,6 +1031,36 @@ Interval:      60 seconds
 To be added.
 
 ## 9 Release History
+
+**Release v1.3.0**
+
+- Added
+  - Separate LMIC_PRINTF_TO definitions for each board that uses MCCI LMIC.
+  - Subband selection for US915 and AU915 for OTAA (fixes issue for AU915).
+  - Parameterization for `initLmic()` and `setAbpParameters()`.
+  - Custom event handler for MCCI LMIC to capture `EV_RXSTART`.
+  - User code markers in `setup()`.
+  - Description for `setup()`, `processWork()` and `processDownlink()` functions and `doWork` job in `README.md`.
+  
+- Changed
+  - Replace 'Arduino Zero (USB)' (`zerousb`) board with 'SAMD21 M0-Mini' (`samd21_m0_mini`).
+  - For Adafruit Feather M0 LoRa board, change `lmic_pins.rssi_cal` from 10 to 8.
+  - For BSFrance LoRa32u4 II board, change `lmic_pins.rssi_cal` from 10 to 8.
+  - Set Tx indicators off at `EV_JOINED`, `EV_JOIN_TXCOMPLETE` and `EV_TXCANCELLED`.
+  - Change Raspberry Pi Platform (GitHub URL) to official release (name, no URL).
+  - Remove `#include <Arduino.h>` from LMIC-node.cpp.
+
+- Fixed
+  - Do not schedule uplinks while still joining.  
+  `processWork()` will be skipped when still joining (counter will not be read).
+  - Incorrect DIO1 pin mapping (5 -> 6) for Adafruit Feather M0 LoRa board.
+  - Incorrect #if statement for `LMIC_setDrTxpow()` in `initLmic()`.
+  - AU915 joining fails because proper subband is not selected.
+  - LMIC_PRINTF_TO not working (properly) (at least on Windows) for boards with ARM based MCU.
+  - LMIC_PRINTF_TO not working for boards using SerialUSB.
+
+- Known issues
+  - None.
 
 **Release v1.2.0**
 
