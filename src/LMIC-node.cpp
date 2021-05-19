@@ -502,6 +502,7 @@ void initLmic(bit_t adrEnabled = 1,
         // Optional: set/override data rate and transmit power for OTAA (only use if ADR is disabled).
         if (setDrTxPowForOtaaExplicit && !adrEnabled)
         {
+            // Below dataRate will be overridden again when joined.
             LMIC_setDrTxpow(dataRate, txPower);
         }
     }
@@ -840,6 +841,8 @@ void setup()
 //  ▀▀▀ ▀▀▀ ▀▀▀ ▀ ▀   ▀▀▀ ▀▀▀ ▀▀  ▀▀▀   ▀▀  ▀▀▀ ▀▀▀ ▀▀▀ ▀ ▀
 
     // Place code for initializing sensors etc. here.
+
+    resetCounter();
 
 //  █ █ █▀▀ █▀▀ █▀▄   █▀▀ █▀█ █▀▄ █▀▀   █▀▀ █▀█ █▀▄
 //  █ █ ▀▀█ █▀▀ █▀▄   █   █ █ █ █ █▀▀   █▀▀ █ █ █ █

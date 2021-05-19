@@ -16,21 +16,25 @@ One example to rule them all
   - [2.1 LoRa development boards](#21-lora-development-boards)
   - [2.2 Development boards with external SPI LoRa module](#22-development-boards-with-external-spi-lora-module)
 - [3 Details](#3-details)
-  - [3.1 Uplink messages](#31-uplink-messages)
-  - [3.2 Downlink messages](#32-downlink-messages)
-    - [3.2.1  Reset-counter downlink command](#321--reset-counter-downlink-command)
-  - [3.3 Status information](#33-status-information)
-    - [3.3.1 Serial port and display](#331-serial-port-and-display)
-    - [3.3.2 LED](#332-led)
-  - [3.4 User modifiable code](#34-user-modifiable-code)
-  - [3.5 Board-id](#35-board-id)
-  - [3.6 Device-id](#36-device-id)
-  - [3.7 platformio.ini](#37-platformioini)
-  - [3.8 lorawan-keys.h](#38-lorawan-keysh)
-  - [3.9 Board Support Files (BSF)](#39-board-support-files-bsf)
-  - [3.10 Payload formatters](#310-payload-formatters)
-    - [3.10.1 Uplink decoder](#3101-uplink-decoder)
-  - [3.11 External libraries](#311-external-libraries)
+- [3.1 setup() function](#31-setup-function)
+- [3.2 doWork job](#32-dowork-job)
+- [3.3 processWork() function](#33-processwork-function)
+- [3.4 processDownlink() function](#34-processdownlink-function)
+  - [3.5 Uplink messages](#35-uplink-messages)
+  - [3.6 Downlink messages](#36-downlink-messages)
+    - [3.6.1  Reset-counter downlink command](#361--reset-counter-downlink-command)
+  - [3.7 Status information](#37-status-information)
+    - [3.7.1 Serial port and display](#371-serial-port-and-display)
+    - [3.7.2 LED](#372-led)
+  - [3.8 User modifiable code](#38-user-modifiable-code)
+  - [3.9 Board-id](#39-board-id)
+  - [3.10 Device-id](#310-device-id)
+  - [3.11 platformio.ini](#311-platformioini)
+  - [3.12 lorawan-keys.h](#312-lorawan-keysh)
+  - [3.13 Board Support Files (BSF)](#313-board-support-files-bsf)
+  - [3.14 Payload formatters](#314-payload-formatters)
+    - [3.14.1 Uplink decoder](#3141-uplink-decoder)
+  - [3.15 External libraries](#315-external-libraries)
 - [4 Settings](#4-settings)
   - [4.1 Board selection](#41-board-selection)
   - [4.2 Common settings](#42-common-settings)
@@ -50,8 +54,6 @@ One example to rule them all
   - [6.2 The Things Network Forum](#62-the-things-network-forum)
   - [6.3 Not yet tested](#63-not-yet-tested)
   - [6.4 Known issues](#64-known-issues)
-    - [6.4.1 LMIC-node schedules uplinks while not yet joined](#641-lmic-node-schedules-uplinks-while-not-yet-joined)
-    - [6.4.2 LMIC debug output not working with Arduino Zero (USB) and Raspberry Pi Pico boards](#642-lmic-debug-output-not-working-with-arduino-zero-usb-and-raspberry-pi-pico-boards)
 - [7 Tips](#7-tips)
   - [7.1 Serial Monitor](#71-serial-monitor)
   - [7.2 Antenna](#72-antenna)
@@ -74,7 +76,9 @@ Basic steps to get a node up and running with LMIC-node:
 
 ### 1.1 What does it do?
 
-- LMIC-node uses a counter to simulate a real sensor. The counter gets automatically incremented each time its value is read. The counter value is periodically (`DO_WORK_INTERVAL_SECONDS`) read and then transmitted via an uplink message to The Things Network (TTN).
+- During startup LMIC-node sends some information to the serial port (if enabled) and display (if present and enabled). If OTAA activation is used LMIC-node will explicitly start a join to setup a network session.
+- The main work like collecting input data and scheduling update messages is performed in the doWork job. This job runs at regular intervals (`DO_WORK_INTERVAL_SECONDS`).
+- LMIC-node uses a counter to simulate a real sensor. The counter gets automatically incremented each time its value is read. The counter value is read by the doWork job and then transmitted via an uplink message to The Things Network (TTN).
 - In addition LMIC-node also implements a downlink command to reset the counter. The command is sent to the node via a downlink message. When the 'reset counter' command is received by the node it will reset the counter value.
 - While all this is happening LMIC-node outputs status information to the serial port for viewing on the serial monitor and also outputs information to the display (if present). The status information will show time, events (e.g. EV_JOINED, EV_TXCOMPLETE), uplink and downlink framecounters, RSSI and SNR of received downlink messages and when a downlink contains data the data will be displayed as bytes.
 - The uplink messages can be viewed in the TTN Console. It is also possible to send the 'reset counter' downlink message from the console to the node. The effect of resetting the counter can be watched on the console as arriving uplink messages will show the new counter value.  
@@ -97,15 +101,15 @@ Once the node is up and running you can start to explore and customize the sourc
 - User modifiable code is clearly marked in the source code.
 - Supports two different LMIC libraries: MCCI LoRaWAN LMIC library and IBM LMIC framework.
 - Support for many popular (LoRa) development boards.
-- Cross-platform, tested on STM32, SAMD21, ESP32, ESP8266, ATmega32u4 and ATmega328 boards.
+- Cross-platform, tested on STM32, SAMD21, ESP32, ESP8266, RP2040, MKL26Z64VFT4, ATmega32u4 and ATmega328 boards.
 - Hardware dependencies are handled in separate Board Support Files (BSF).
-- Built-in 'wait for serial port ready' with adjustable timeout and countdown visible on display.  
-*Useful when using the serial monitor with boards with MCU with integrated USB support.*
+- Built-in 'wait for serial port ready' with adjustable timeout and countdown visible on display. *Useful when using the serial monitor with boards with MCU with integrated USB support.*
 - Abstraction of the serial port so code can print to `serial` without needing to know if it must print to `Serial` or `SerialUSB`.
 - Use correct GPIO pins for onboard LED, display, LoRa hardware, I2C and SPI ports even if these are incorrectly defined in the BSP.
 - Avoid hardware conflicts i.e. GPIO's shared between onboard LED, I2C, SPI and/or Vext.
 - Explicitly initialize I2C and SPI interfaces with correct pins if default pins are incorrectly defined in the BSP.
-- When using LMIC debugging, output is automatically routed to the correct serial port.
+- Select the proper subband for regions US915 and AU915.
+- For LMIC debugging, for each board, LMIC_PRINTF_TO is defined for the correct serial port.
 *No need to set the `LMIC_PRINTF_TO` parameter to `Serial` or `SerialUSB` manually.*
 
 ### 1.3 Requirements
@@ -185,14 +189,47 @@ _\*7_: These boards have onboard USB but by default do not support firmware uplo
 
 ## 3 Details
 
-### 3.1 Uplink messages
+This chapter contains detailed information about LMIC-node.
+
+## 3.1 setup() function
+
+During setup the following components and any corresponding libraries are initialized: serial port, display, LED, LoRa pin mappings, I2C, SPI, LMIC. Additionally other hardware like sensors and their libraries can be initialized (LMIC-node uses a counter to simulate a sensor).
+
+The first step in `setup()` is:
+
+```cpp
+// boardInit(InitType::Hardware) must be called at start of setup() before anything else.
+bool hardwareInitSucceeded = boardInit(InitType::Hardware);
+```
+
+The `boardInit()` function is defined in the board's Board Support File.  
+If OTAA activation is used then during setup a join will be explicitly started to establish a connection with the network.  
+The last step in `setup()` is scheduling the first run of the `doWork` job.
+
+## 3.2 doWork job
+
+The `doWork` job runs every `DO_WORK_INTERVAL_SECONDS`.  
+To run the job the `doWorkCallback()` function is executed by the LMIC scheduler.  
+`doWorkCallback()` calls the `processWork()` function where the actual work is performed.  
+The first `doWork` run is started in `setup()`. On completion `doWork` reschedules itself for the next run.
+
+## 3.3 processWork() function
+
+The `processWork()` function contains user code that performs the actual work like reading sensor data and scheduling uplink messages.
+
+## 3.4 processDownlink() function
+
+The `processDownlink()` function contains user code for processing a downlink message.  
+`processDownlink()` is called from the event handler function when an EV_TXCOMPLETE event is handled and a downlink message was received.
+
+### 3.5 Uplink messages
 
 The counter is implemented as an unsigned 16 bit integer.
 The uplink payload consists of the counter value, 2 bytes in msb format (most significant byte first).
 The frame port number used for uplink messages is 10.
 Port 10 is used to demonstrate that other port numbers than the default 1 can be used.
 
-### 3.2 Downlink messages
+### 3.6 Downlink messages
 
 There are two types of downlink messages. Downlink messages containing user data and downlink messages containing MAC commands. MAC commands are sent by the network server to set or query network related settings.
 
@@ -200,17 +237,17 @@ When a downlink message is received its RSSI and SNR values will be displayed as
 
 If the port number is greater than 0 and user data was received the data will be displayed as a sequence of byte values. Contents of downlink data will only be output to the serial port and not to the display because the display is too small to fit all information on a single screen.
 
-#### 3.2.1  Reset-counter downlink command
+#### 3.6.1  Reset-counter downlink command
 
 The reset-counter downlink uses 100 as frame port number.
 The reset command is represented by a single byte with hex value 0xC0 (for Counter 0).
 When a downlink message is received on port 100, the length of the data is 1 byte and the value is 0xC0 then the `resetCounter()` function will be called and the counter will be reset to 0. If the received payload data is longer than a single byte then the reset-counter command will not be performed.
 
-### 3.3 Status information
+### 3.7 Status information
 
 The following status information is shown:
 
-#### 3.3.1 Serial port and display
+#### 3.7.1 Serial port and display
 
 At the start:
 
@@ -253,11 +290,11 @@ Continuously:
 
 For events and notifications a timestamp (`ostime`) will be shown. LMIC uses values of the type ostime_t to represent time in ticks. The rate of these ticks defaults to 32768 ticks per second (but may be configured at compile time to any value between 10000 ticks per second and 64516 ticks per second).
 
-#### 3.3.2 LED
+#### 3.7.2 LED
 
 The LED is a transmit indicator similar to the transmit symbol on the display. For a description when the LED is on and off see the description for the transmit symbol above.
 
-### 3.4 User modifiable code
+### 3.8 User modifiable code
 
 LMIC-node will work out of the box without having to do any programming or modifying of source code. However, LMIC-node will only do a few tricks: Send counter value via uplink messages, handle reset-counter downlink command and show detailed status information.
 
@@ -294,7 +331,7 @@ The User code section in `platformio.ini` is marked as follows:
 
 Names of libraries needed for User Code can be specified below above line.
 
-### 3.5 Board-id
+### 3.9 Board-id
 
 LMIC-node uses a _board-id_ to identify a specific type of board. _board-id_ is similar to PlatformIO's _board_ but latter is limited to BSP's defined in Arduino cores. Unfortunately there does not exist a dedicated BSP for each board supported by LMIC-node. Therefore LMIC-node defines its own board identifiers.
 
@@ -302,7 +339,7 @@ _board-id_ is kept identical or as similar as possible to PlatformIO's _board_. 
 
  If a proper _board_ definition and BSP for some version of a development board do currently not exist then LMIC-node defines its own board with its own _board-id_. In which case it will use the closest matching _board_ in PlatformIO and add a separate BSF for _board-id_ where the differences can be properly handled. In this case _board-id_ will be the same as _board_ but suffixed with a version e.g. `ttgo_t_beam_v1`. In this example there only exists a board `ttgo-t-beam` in PlatformIO but no `ttgo-t-beam-v1` while there are important hardware differences between v0.x and v1.x versions of these boards.
 
-### 3.6 Device-id
+### 3.10 Device-id
 
 LMIC-node uses a device-id to identify a device. The device-id is used for display purposes in status information that is output to the serial port and display. Device-id's allow different devices to be easily recognized when they have different device-id's, because their device-id is shown on the display (if present) and/or serial monitor (serial port). The length of a device-id should be limited to max 16 characters long, otherwise it will not fit on a display.
 
@@ -314,7 +351,7 @@ In the BSF a default device-id (`DEVICEID_DEFAULT`) is defined per board type. T
 
 Tip: For testing purposes it is possible to create two different devices in the TTN console for the same hardware device, one for OTAA activation and the other for ABP activation. Both sets of keys can be added to lorawan-keys.h and for both a different device-id can be added to lorawan-keys.h. This way a single hardware device can be used for both OTAA and ABP (only one at a time). All that to needs to be done to switch the device from OTAA to ABP is to enable the `-D ABP_ACTIVATION` setting in the `[common]` section in `platformio.ini` (or vice versa) and then recompile and upload the firmware.
 
-### 3.7 platformio.ini
+### 3.11 platformio.ini
 
 `platformio.ini` is the project configuration file. This file contains all configuration settings like program options, names of libraries and build options. It contains below sections:
 
@@ -341,7 +378,7 @@ Tip: For testing purposes it is possible to create two different devices in the 
 
 Comments in platformio.ini start with a semicolon ( ; ) character. To uncomment a line  remove the semicolon prefix. To comment a line add a semicolon prefix.
 
-### 3.8 lorawan-keys.h
+### 3.12 lorawan-keys.h
 
 File `lorawan-keys.h` contains the LoRaWAN keys for a node. The keys are placed in a separate file for:
 
@@ -392,7 +429,7 @@ All files with name pattern `*lorawan-keys.h` and all files in folder `keyfiles`
 
 `loarawan-keys_example.h` is included as example for `lorawan-keys.h`.
 
-### 3.9 Board Support Files (BSF)
+### 3.13 Board Support Files (BSF)
 
 A Board Support File (BSF) isolates hardware dependencies for a board into a single file: the BSF. There is a separate BSF per board type.  
 
@@ -456,11 +493,11 @@ bool boardInit(InitType initType)
 }
 ```
 
-### 3.10 Payload formatters
+### 3.14 Payload formatters
 
 Payload formatter functions are located in the `payload-formatters` folder.
 
-#### 3.10.1 Uplink decoder
+#### 3.14.1 Uplink decoder
 
 LMIC-node comes with a JavaScript payload formatter function for decoding the uplink messages so the counter value gets displayed in 'Live data' on the TTN Console. The `decodeUplink()` function can be found in folder `payload-formatters` in file `lmic-node-uplink-formatters.js`.
 
@@ -485,7 +522,7 @@ function decodeUplink(input) {
 In the TTN Console this function should be added to the device (or application) as uplink payload formatter function.
 When this function is installed, the counter value will become visible in uplink messages in 'Live data' on the TTN Console.
 
-### 3.11 External libraries
+### 3.15 External libraries
 
 LMIC-node uses the following external libraries:
 
@@ -542,8 +579,8 @@ default_envs =
     ; nodemcuv2                         ; NodeMCU V2
     ; pico                              ; Raspberry Pi Pico
     ; pro8mhzatmega328                  ; Arduino Pro Mini 3.3V 8Mhz
+    ; samd21_m0_mini                    ; SAMD21 M0-Mini
     ; teensylc                          ; Teensy LC
-    ; zerousb                           ; Arduino Zero (USB)
 ```
 
 ### 4.2 Common settings
@@ -609,8 +646,8 @@ This value is defined in STM32 boards BSF but can be overridden in platformio.in
 ; Perform PlatformIO: Clean after changing library version and
 ; in case of issues remove the old version from .pio/libdeps/*.
 
-; If LMIC_DEBUG_LEVEL is set to value > 0 then LMIC_PRINTF_TO will 
-; be automatically set to serial (do not set it explicitly).  
+; Note: LMIC_PRINTF_TO is defined for each board separately
+;       in the board specific sections. Don't define it in this section.
 
 lib_deps =
     ; Only ONE of below LMIC libraries should be enabled.
@@ -676,9 +713,6 @@ For more information see the MCCI LoRaWAN LMIC library documentation.
 ; CONFIG.H MUST BE CHANGED FOR EACH BOARD SEPARATELY!
 ; (By default libraries are installed per project per build config/board.)
 
-; If LMIC_DEBUG_LEVEL is set to value > 0 then LMIC_PRINTF_TO will 
-; be automatically set to serial (do not set it explicitly).  
-
 lib_deps =
     matthijskooijman/IBM LMIC framework   ; [Deprecated] Classic LMIC library
 
@@ -710,10 +744,11 @@ Example board section for BSFrance LoRa32u4 II board:
 
 ```ini
 [env:lora32u4II]
-; BSFrance LoRa32u4 II (ATmega32u4)
-; Board versions 1.0 to 1.2 require manual wiring of DIO1 to GPIO5
-; 8-bit AVR MCU with limited memory, therefore IBM LMIC framework is used
-; No display
+; BSFrance LoRa32u4 II V1.0, V1.1, V1.2, V1.3 (ATmega32u4).
+; No display.
+; Board versions V1.0 to V1.2 require manual wiring of DIO1 to GPIO5.
+; 8-bit AVR MCU with limited memory, therefore Classic LMIC is used.
+; See limitations described in the [classic_lmic] section.
 platform = atmelavr
 board = lora32u4II
 framework = arduino
@@ -724,7 +759,7 @@ lib_deps =
 build_flags =
     ${common.build_flags}
     ${classic_lmic.build_flags}  ; [Deprecated] IBM LMIC Framework
-    -D BSFILE=\"boards/lora32u4II.h\"
+    -D BSFILE=\"boards/bsf_lora32u4II.h\"
     -D MONITOR_SPEED=${common.monitor_speed}
     -D USE_SERIAL
     -D USE_LED
@@ -735,9 +770,9 @@ Example board section for Blue Pill board with external LoRa module:
 
 ```ini
 [env:bluepill_f103c8]
-; Bluepill F103C8 (64k) (STMF103C8T6)
-; Select preferred upload protocol below
-; No display
+; Bluepill F103C8 (64k) (STMF103C8T6).
+; No display.
+; Select preferred upload protocol below.
 platform = ststm32
 board = bluepill_f103c8
 framework = arduino
@@ -751,8 +786,10 @@ lib_deps =
 build_flags =
     ${common.build_flags}
     ${mcci_lmic.build_flags} 
-    -D BSFILE=\"boards/bluepill_f103c8.h\"
+    -D BSFILE=\"boards/bsf_bluepill_f103c8.h\"
     -D MONITOR_SPEED=${common.monitor_speed}
+    -D _GNU_SOURCE    
+    -D LMIC_PRINTF_TO=Serial    
     -D USE_SERIAL
     -D USE_LED
     ; -D USE_DISPLAY             ; Requires external I2C OLED display
@@ -882,7 +919,6 @@ The following topics on The Things Network Forum contain useful additional infor
 
 All supported boards have been tested except below boards for which hardware was not available. 
 
-- Adafruit Feather M0 RFMx LoRa.
 - Heltec Wireless Stick and Wireless Stick Lite.
 - BSFrance LoRa32u4 II v1.1 and v1.3 *(v1.0 and v1.2 were tested)*.
 - TTGO LoRa32 v1.3.
@@ -892,13 +928,7 @@ All supported boards have been tested except below boards for which hardware was
 
 ### 6.4 Known issues
 
-#### 6.4.1 LMIC-node schedules uplinks while not yet joined
-
-If joining does not directly succeed and joining takes more time to complete, LMIC-node will try to schedule new uplink messages anyway which results in LMIC_ERROR_TX_BUSY errors (with every new attempt to schedule an uplink message, until the join has completed). This will have to be fixed in a new release. LMIC-node should not schedule uplink messages while the join has not yet successfully completed.
-
-#### 6.4.2 LMIC debug output not working with Arduino Zero (USB) and Raspberry Pi Pico boards
-
-LMIC debug output is currently not working with Arduino Zero (USB) and Raspberry Pi Pico boards. The problem appears to be related to the (MCCI) LMIC library and needs to be further investigated.
+There are no known issues in this release.
 
 ## 7 Tips
 
