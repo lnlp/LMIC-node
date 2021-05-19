@@ -16,10 +16,10 @@ One example to rule them all
   - [2.1 LoRa development boards](#21-lora-development-boards)
   - [2.2 Development boards with external SPI LoRa module](#22-development-boards-with-external-spi-lora-module)
 - [3 Details](#3-details)
-- [3.1 setup() function](#31-setup-function)
-- [3.2 doWork job](#32-dowork-job)
-- [3.3 processWork() function](#33-processwork-function)
-- [3.4 processDownlink() function](#34-processdownlink-function)
+  - [3.1 setup() function](#31-setup-function)
+  - [3.2 doWork job](#32-dowork-job)
+  - [3.3 processWork() function](#33-processwork-function)
+  - [3.4 processDownlink() function](#34-processdownlink-function)
   - [3.5 Uplink messages](#35-uplink-messages)
   - [3.6 Downlink messages](#36-downlink-messages)
     - [3.6.1  Reset-counter downlink command](#361--reset-counter-downlink-command)
@@ -191,7 +191,7 @@ _\*7_: These boards have onboard USB but by default do not support firmware uplo
 
 This chapter contains detailed information about LMIC-node.
 
-## 3.1 setup() function
+### 3.1 setup() function
 
 During setup the following components and any corresponding libraries are initialized: serial port, display, LED, LoRa pin mappings, I2C, SPI, LMIC. Additionally other hardware like sensors and their libraries can be initialized (LMIC-node uses a counter to simulate a sensor).
 
@@ -206,18 +206,18 @@ The `boardInit()` function is defined in the board's Board Support File.
 If OTAA activation is used then during setup a join will be explicitly started to establish a connection with the network.  
 The last step in `setup()` is scheduling the first run of the `doWork` job.
 
-## 3.2 doWork job
+### 3.2 doWork job
 
 The `doWork` job runs every `DO_WORK_INTERVAL_SECONDS`.  
 To run the job the `doWorkCallback()` function is executed by the LMIC scheduler.  
 `doWorkCallback()` calls the `processWork()` function where the actual work is performed.  
 The first `doWork` run is started in `setup()`. On completion `doWork` reschedules itself for the next run.
 
-## 3.3 processWork() function
+### 3.3 processWork() function
 
 The `processWork()` function contains user code that performs the actual work like reading sensor data and scheduling uplink messages.
 
-## 3.4 processDownlink() function
+### 3.4 processDownlink() function
 
 The `processDownlink()` function contains user code for processing a downlink message.  
 `processDownlink()` is called from the event handler function when an EV_TXCOMPLETE event is handled and a downlink message was received.
@@ -1041,7 +1041,6 @@ To be added.
   - Custom event handler for MCCI LMIC to capture `EV_RXSTART`.
   - User code markers in `setup()`.
   - Description for `setup()`, `processWork()` and `processDownlink()` functions and `doWork` job in `README.md`.
-  
 - Changed
   - Replace 'Arduino Zero (USB)' (`zerousb`) board with 'SAMD21 M0-Mini' (`samd21_m0_mini`).
   - For Adafruit Feather M0 LoRa board, change `lmic_pins.rssi_cal` from 10 to 8.
@@ -1049,7 +1048,6 @@ To be added.
   - Set Tx indicators off at `EV_JOINED`, `EV_JOIN_TXCOMPLETE` and `EV_TXCANCELLED`.
   - Change Raspberry Pi Platform (GitHub URL) to official release (name, no URL).
   - Remove `#include <Arduino.h>` from LMIC-node.cpp.
-
 - Fixed
   - Do not schedule uplinks while still joining.  
   `processWork()` will be skipped when still joining (counter will not be read).
@@ -1058,7 +1056,6 @@ To be added.
   - AU915 joining fails because proper subband is not selected.
   - LMIC_PRINTF_TO not working (properly) (at least on Windows) for boards with ARM based MCU.
   - LMIC_PRINTF_TO not working for boards using SerialUSB.
-
 - Known issues
   - None.
 
