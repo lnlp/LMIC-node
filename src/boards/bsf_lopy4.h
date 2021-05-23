@@ -134,7 +134,7 @@ const lmic_pinmap lmic_pins = {
 #endif    
 
 #ifdef USE_LED
-    #error "Invalid option: USE_LED. Onboard WS2812 RGB LED is not supported."
+    #error "Invalid option: USE_LED. Onboard WS2812 RGB LED is currently not supported."
 #endif
 
 #ifdef USE_DISPLAY
