@@ -134,7 +134,7 @@ Not yet a requirement but this document assumes that you will be using The Thing
 
 The following tables list the boards currently supported by LMIC-node.
 
-Explanation of columns: MCU: microcontroller. Wiring required: yes means manual wiring of DIO1 is required. USB: has onboard USB. LED: yes: has onboard LED *and* is usable. Display: yes means has onboard display. Board-id: board identifier as used by LMIC-node.
+Explanation of columns: MCU: microcontroller. Wiring required: yes means manual wiring of DIO1 is required. USB: has onboard USB. LED: yes: has onboard LED *and* is usable (no hardware conflicts). Display: yes means has onboard display. Board-id: board identifier as used by LMIC-node.
 
 ### 2.1 LoRa development boards
 
@@ -142,16 +142,16 @@ The following LoRa development boards have onboard LoRa support. Most have onboa
 
 | Board name                        | MCU               | Wiring required | USB      | LED      | Display   | Board-id |
 | ----------                        | ---               | ---             | ---      | ---      | ---       | --- |  
-| Adafruit Feather M0 RFMx LoRa     | SAMD21            | yes _\*1_       | yes      | yes      | no        | adafruit_feather_m0_lora |
+| Adafruit Feather M0 RFMx LoRa     | SAMD21G18         | yes _\*1_       | yes      | yes      | no        | adafruit_feather_m0_lora |
 | ST B-L072Z-LRWAN1 Discovery kit   | STM32L072CZ       | no              | yes      | yes      | no        | discovery_l072z_lrwan1 |
 | Heltec WiFi LoRa 32 V2            | ESP32             | no              | yes      | yes      | yes       | heltec_wifilora32_v2 |
 | Heltec WiFi LoRa 32 (1.x)         | ESP32             | no              | yes      | yes      | yes       | heltec_wifilora32 |
-| Heltec Wireless Stick             | ESP32             | no              | yes      | yes      | yes _\*6_ | heltec_wireless_stick |
+| Heltec Wireless Stick             | ESP32             | no              | yes      | yes      | yes _\*7_ | heltec_wireless_stick |
 | Heltec Wireless Stick Lite        | ESP32             | no              | yes      | yes      | no        | heltec_wireless_stick_lite |
-| Pycom LoPy4                       | ESP32             | no              | no _\*4_ | no       | no        | lopy4 |
+| Pycom LoPy4                       | ESP32             | no              | no _\*4_ | no _\*5_ | no        | lopy4 |
 | BSFrance LoRa32u4 II<br>*versions v1.0, v1.1, v1.2 and v1.3* | ATmega32u4 | yes _\*2_ | yes | yes | no    | lora32u4II |
 | TTGO LoRa32 V1.3                  | ESP32             | no              | yes      | no       | yes       | ttgo_lora32_v1 |
-| TTGO LoRa32 V2.0                  | ESP32             | yes _\*3_       | yes      | no _\*5_ | yes       | ttgo_lora32_v2 |
+| TTGO LoRa32 V2.0                  | ESP32             | yes _\*3_       | yes      | no _\*6_ | yes       | ttgo_lora32_v2 |
 | TTGO LoRa32 V2.1.6                | ESP32             | no              | yes      | no       | yes       | ttgo_lora32_v21 |
 | TTGO T-Beam<br>*versions v0.5, v0.6 and v0.7* | ESP32 | no              | yes      | yes      | no        | ttgo_tbeam |
 | TTGO T-Beam<br>*versions v1.0 and v1.1*       | ESP32 | no              | yes      | no       | no        | ttgo_tbeam_v1 |
@@ -160,8 +160,9 @@ _\*1_: DIO1 must be manually wired to GPIO6.
 _\*2_: For versions 1.0, 1.1 and 1.2 DIO1 must be manually wired to GPIO5 (version 1.3 is already wired on the PCB).  
 _\*3_: DIO1 must be manually wired to GPIO33.  
 _\*4_: Requires USB to Serial adapter or Pycom Expansion Board which is explained further below.  
-_\*5_: Either display (I2C) or LED can be used but not both at the same time. LED is default disabled.  
-_\*6_: Display (64x32) not supported by LMIC-node because resolution is too small.
+_\*5_: Has onboard Neopixel RGB LED but is currently not supported by LMIC-node.  
+_\*6_: Either display (I2C) or LED can be used but not both at the same time. LED is default disabled.  
+_\*7_: Display (64x32) not supported by LMIC-node because resolution is too small.
 
 ### 2.2 Development boards with external SPI LoRa module
 
@@ -169,23 +170,25 @@ The following development boards require an external SX127x or RFM9x SPI LoRa mo
 Most boards have onboard USB that supports automatic firmware upload and serial over USB for serial monitoring.
 An external display can be optionally connected. For details and wiring instructions see the board's BSF.
 
-| Board name                        | MCU            | Wiring required | USB       | LED | Display | Board-id |
-| ----------                        | ---            | ---             | ---       | --- | ---     | -------- |
-| Black Pill STM32F103C8 128k       | STM32F103C8T6  | yes             | yes _\*7_ | yes | no      | blackpill_f103c8_128k |
-| Black Pill STM32F103C8 64k        | STM32F103C8T6  | yes             | yes _\*7_ | yes | no      | blackill_f103c8 |
-| Blue Pill STM32F103C8 128k        | STM32F103C8T6  | yes             | yes _\*7_ | yes | no      | bluepill_f103c8_128k |
-| Blue Pill STM32F103C8 64k         | STM32F103C8T6  | yes             | yes _\*7_ | yes | no      | bluepill_f103c8 |
-| Lolin D32 Pro                     | ESP32          | yes             | yes       | yes | no      | lolin_d32_pro |
-| Lolin D32                         | ESP32          | yes             | yes       | yes | no      | lolin_d32 |
-| Lolin32                           | ESP32          | yes             | yes       | yes | no      | lolin32 |
-| NodeMCU-32S                       | ESP32          | yes             | yes       | yes | no      | nodemcu_32 |
-| NodeMCU V2 (aka v1.0)             | ESP8266        | yes             | yes       | yes | no      | nodemcuv2 |
-| Raspberry Pi Pico                 | RP2040         | yes             | yes       | yes | no      | pico |
-| Arduino Pro Mini (ATmega328 8mHz) | ATmega328      | yes             | yes       | no  | no      | pro8mhzatmega328 |
-| SAMD21 M0-Mini                    | SAMD21         | yes             | yes       | no  | no      | samd21_m0_mini |
-| Teensy LC                         | MKL26Z64VFT4   | yes             | yes       | yes | no      | teensylc |
+| Board name                        | MCU            | Wiring required | USB       | LED      | Display | Board-id |
+| ----------                        | ---            | ---             | ---       | ---      | ---     | -------- |
+| Adafruit QT PY                    | SAMD21E18      | yes             | yes       | no _\*5_ | no      | adafruit_qt_py_m0 |
+| Black Pill STM32F103C8 128k       | STM32F103C8T6  | yes             | yes _\*8_ | yes      | no      | blackpill_f103c8_128k |
+| Black Pill STM32F103C8 64k        | STM32F103C8T6  | yes             | yes _\*8_ | yes      | no      | blackill_f103c8 |
+| Blue Pill STM32F103C8 128k        | STM32F103C8T6  | yes             | yes _\*8_ | yes      | no      | bluepill_f103c8_128k |
+| Blue Pill STM32F103C8 64k         | STM32F103C8T6  | yes             | yes _\*8_ | yes      | no      | bluepill_f103c8 |
+| Lolin D32 Pro                     | ESP32          | yes             | yes       | yes      | no      | lolin_d32_pro |
+| Lolin D32                         | ESP32          | yes             | yes       | yes      | no      | lolin_d32 |
+| Lolin32                           | ESP32          | yes             | yes       | yes      | no      | lolin32 |
+| NodeMCU-32S                       | ESP32          | yes             | yes       | yes      | no      | nodemcu_32 |
+| NodeMCU V2 (aka v1.0)             | ESP8266        | yes             | yes       | yes      | no      | nodemcuv2 |
+| Raspberry Pi Pico                 | RP2040         | yes             | yes       | yes      | no      | pico |
+| Arduino Pro Mini (ATmega328 8mHz) | ATmega328      | yes             | yes       | no       | no      | pro8mhzatmega328 |
+| SAMD21 M0-Mini                    | SAMD21G18      | yes             | yes       | no       | no      | samd21_m0_mini |
+| Teensy LC                         | MKL26Z64VFT4   | yes             | yes       | yes      | no      | teensylc |
 
-_\*7_: These boards have onboard USB but by default do not support firmware upload over USB or serial over USB. For upload use a STLink programmer or USB to serial adapter.
+_\*5_: Has onboard Neopixel RGB LED but is currently not supported by LMIC-node.  
+_\*8_: These boards have onboard USB but by default do not support firmware upload over USB or serial over USB. For upload use a STLink programmer or USB to serial adapter.
 
 ## 3 Details
 
@@ -567,7 +570,8 @@ default_envs =
     ; Development boards that require an external SPI LoRa module:
 
     ; Board-id                            Board name
-    ;---------                            ----------    
+    ;---------                            ----------
+    ; adafruit_qt_py_m0                 ; Adafruit QT Py    
     ; blackpill_f103c8_128k             ; Black Pill 128k
     ; blackpill_f103c8                  ; Black Pill  64k
     ; bluepill_f103c8_128k              ; Blue Pill 128k
