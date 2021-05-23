@@ -571,6 +571,14 @@ void onEvent(ev_t ev)
             // during join, but because slow data rates change
             // max TX size, it is not used in this example.                    
             LMIC_setLinkCheckMode(0);
+
+            // The doWork job has probably run already (while
+            // the node was still joining) and have rescheduled itself.
+            // Cancel the next scheduled doWork job and re-schedule
+            // for immediate execution to prevent that any uplink will
+            // have to wait until the current doWork interval ends.
+            os_clearCallback(&doWorkJob);
+            os_setCallback(&doWorkJob, doWorkCallback);
             break;
 
         case EV_TXCOMPLETE:

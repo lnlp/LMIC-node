@@ -216,9 +216,14 @@ To run the job the `doWorkCallback()` function is executed by the LMIC scheduler
 `doWorkCallback()` calls the `processWork()` function where the actual work is performed.  
 The first `doWork` run is started in `setup()`. On completion `doWork` reschedules itself for the next run.
 
+When the node has joined and the `EV_JOINED` event is handled by the event handler, the next scheduled doWork job is cancelled and is re-scheduled for immediate execution. This is done to prevent that any uplink will have to wait until the current doWork interval ends. `processWork()` skips doing any work while the node is still joining. As a result sending the first uplink message may have to wait until the current doWork interval ends (max `DO_WORK_INTERVAL_SECONDS` seconds). Directly running the doWork job after a join prevents the in this case unnecessary and unwanted delay.
+
 ### 3.3 processWork() function
 
-The `processWork()` function contains user code that performs the actual work like reading sensor data and scheduling uplink messages.
+The `processWork()` function contains user code that performs the actual work like reading sensor data and scheduling uplink messages. In LMIC-node `processWork()` will skip doing any work if the node is still joining for two reasons:
+
+1. To prevent unnecessary incrementing of the counter.
+2. Uplink messages cannot yet be sent.
 
 ### 3.4 processDownlink() function
 

@@ -44,6 +44,7 @@ enum class InitType { Hardware, PostInitSerial };
 enum class PrintTarget { All, Serial, Display };
 
 // Forward declarations
+static void doWorkCallback(osjob_t* job);
 void processWork(ostime_t timestamp);
 void processDownlink(ostime_t eventTimestamp, uint8_t fPort, uint8_t* data, uint8_t dataLength);
 void onLmicEvent(void *pUserData, ev_t ev);
