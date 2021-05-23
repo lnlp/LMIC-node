@@ -28,7 +28,7 @@
  *                Leds                 GPIO 
  *                ----                 ----        
  *                                     13  (LED_BUILTIN) defined but there is no LED
- *                NEOPIX <――――――――――>  11  (PIN_NEOPIXEL) Neopixel LED
+ *                NEOPIX <――――――――――>  11  (PIN_NEOPIXEL) WS2812B Neopixel LED
  *                                     12  Neopixel enable. Default enabled = HIGH.
  * 
  *                I2C [display]        GPIO
