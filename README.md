@@ -116,7 +116,7 @@ Once the node is up and running you can start to explore and customize the sourc
 
 The following is required to use LMIC-node:
 
-- **A supported** LoRa **development board** or development board with external SX127x or RFM9x SPI LoRa module.
+- **A supported** LoRa **development board** or development board with external Semtech SX127*x*, HopeRF RFM9*x* or HPDTek HPD1*x*A SPI LoRa module.
 - **A computer with [PlatformIO](https://platformio.org/) installed**. PlatformIO is used instead of Arduino IDE because more flexible, more powerful and it better supports cross-platform development. For installation see [PlatformIO installation instructions](https://docs.platformio.org/en/latest/integration/ide/vscode.html).
 - **Internet connection**. PlatformIO will automatically download and install packages (Arduino cores, toolchains and libraries) as needed.  
 If PlatformIO is freshly installed the downloading may take some time. Once installed it will be possible to work offline.
@@ -166,7 +166,7 @@ _\*7_: Display (64x32) not supported by LMIC-node because resolution is too smal
 
 ### 2.2 Development boards with external SPI LoRa module
 
-The following development boards require an external SX127x or RFM9x SPI LoRa module.
+The following development boards require an external Semtech SX127*x*, HopeRF RFM9*x* or HPDTek HPD1*x*A SPI LoRa module *(Semtech SX1262 is currently not supported by the LMIC library)*.
 Most boards have onboard USB that supports automatic firmware upload and serial over USB for serial monitoring.
 An external display can be optionally connected. For details and wiring instructions see the board's BSF.
 
@@ -545,9 +545,12 @@ LMIC-node uses the following external libraries:
 
 ### 4.1 Board selection
 
-In platformio.ini the board must be selected. Select only a single board by uncommenting the line with its board-id. Comment the line starting with "\<platformio.ini board selector guard\>". The guard meant to cause a meaningful error message if no board is selected.
+In platformio.ini the board must be selected. Select only a single board by uncommenting the line with its board-id. Comment the line starting with "\<platformio.ini board selector guard\>". The guard is explicitly added to prevent that PlatformIO will compile LMIC-node for ALL listed boards, when no board is selected.
 
-Warning: If no board is selected (and the guard is disabled) PlatformIO will compile ALL listed boards.
+Warnings:
+
+- When the guard is disabled and no board is selected then PlatformIO will compile for ALL listed boards!
+- The Serial Monitor can only be started when a board has been selected in `platformio.ini`.
 
 ```ini
 [platformio]
@@ -847,11 +850,11 @@ Each BSF contains the following settings. Except for DEVICEID_DEFAULT these sett
 
 **DEVICEID_DEFAULT**  
 If no `DEVICEID` is defined and no `ABP_DEVICEID` is defined when ABP activation is used then `DEVICEID_DEFAULT` is used.  
-There is no need to change this value in the BSP. `DEVICEID` and `ABP_DEVICEID` can be defined in file `lorawan-keys.h` where they are kept nicely together the LoRaWAN keys of the same device.
+There is no need to change this value in the BSF. `DEVICEID` and `ABP_DEVICEID` can be defined in file `lorawan-keys.h` where they are kept nicely together with the LoRaWAN keys of the same device.
 
 **WAITFOR_SERIAL_SECONDS_DEFAULT**  
-Defines the default value used for the 'wait for serial' timeout. This value is only defined in the BSP for boards where USB support is integrated into the MCU. It has no use for other boards.  
-If there is need to change this value then don't change the default value in the BSP and change `WAITFOR_SERIAL_SECONDS` in the `[common]` section in `platformio.ini` instead.
+Defines the default value used for the 'wait for serial' timeout. This value is only defined in the BSF for boards where USB support is integrated into the MCU. It has no use for other boards.  
+If there is need to change this value then don't change the default value in the BSF and change `WAITFOR_SERIAL_SECONDS` in the `[common]` section in `platformio.ini` instead.
 
 **LMIC_CLOCK_ERROR_PPM**  
 Setting this value will cause LMIC timing to be less strict. This is only needed for some boards (usually 8-bit AVR based boards). This value should normally not be changed especially for 32-bit MCU boards.  
@@ -933,7 +936,6 @@ All supported boards have been tested except below boards for which hardware was
 - TTGO LoRa32 v1.3.
 - TTGO LoRa32 v2.1.6.  
 - Lolin D32 *(Lolin D32 Pro was tested)*.
-- TTGO T-Beam V1.1 *(T-Beam v1.0 was tested)*.
 
 ### 6.4 Known issues
 
