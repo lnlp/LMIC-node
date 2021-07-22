@@ -31,8 +31,8 @@
  * 
  *                I2C [display]       GPIO  
  *                ---                 ---- 
- *                SDA   <――――――――――>   2  (SDA)
- *                SCL   <――――――――――>   3  (SCL)
+ *                SDA   <――――――――――>   2  (SDA)  This is labeled A4 on the PCB.
+ *                SCL   <――――――――――>   3  (SCL)  This is labeled A5 on the PCB.
  *
  *                SPI/LoRa module     GPIO
  *                ----                ----
