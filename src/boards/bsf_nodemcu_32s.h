@@ -71,7 +71,9 @@
 // LMIC Clock Error
 // This is only needed for slower 8-bit MCUs (e.g. 8MHz ATmega328 and ATmega32u4).
 // Value is defined in parts per million (of MAX_CLOCK_ERROR).
-// #define LMIC_CLOCK_ERROR_PPM 0
+// #ifndef LMIC_CLOCK_ERROR_PPM
+//     #define LMIC_CLOCK_ERROR_PPM 0
+// #endif   
 
 // Pin mappings for LoRa tranceiver
 const lmic_pinmap lmic_pins = {

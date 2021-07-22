@@ -502,13 +502,16 @@ void initLmic(bit_t adrEnabled = 1,
     }
 
     // Relax LMIC timing if defined
-    #if defined(LMIC_CLOCK_ERROR_PPM) && LMIC_CLOCK_ERROR_PPM > 0
-        #if defined(MCCI_LMIC) && LMIC_CLOCK_ERROR_PPM > 4000
-            // Allow clock error percentage to be > 0.4%
-            #define LMIC_ENABLE_arbitrary_clock_error 1
-        #endif    
-        uint32_t clockError = (LMIC_CLOCK_ERROR_PPM / 100) * (MAX_CLOCK_ERROR / 100) / 100;
-        LMIC_setClockError(clockError);
+    #if defined(LMIC_CLOCK_ERROR_PPM)
+        uint32_t clockError = 0;
+        #if LMIC_CLOCK_ERROR_PPM > 0
+            #if defined(MCCI_LMIC) && LMIC_CLOCK_ERROR_PPM > 4000
+                // Allow clock error percentage to be > 0.4%
+                #define LMIC_ENABLE_arbitrary_clock_error 1
+            #endif    
+            clockError = (LMIC_CLOCK_ERROR_PPM / 100) * (MAX_CLOCK_ERROR / 100) / 100;
+            LMIC_setClockError(clockError);
+        #endif
 
         #ifdef USE_SERIAL
             serial.print(F("Clock Error:   "));
