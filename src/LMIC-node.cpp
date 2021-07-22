@@ -384,7 +384,7 @@ void printHeader(void)
 
 
 #ifdef ABP_ACTIVATION
-    void setAbpParameters(dr_t dataRate = DR_SF7, s1_t txPower = 14) 
+    void setAbpParameters(dr_t dataRate = DefaultABPDataRate, s1_t txPower = DefaultABPTxPower) 
     {
         // Set static session parameters. Instead of dynamically establishing a session
         // by joining the network, precomputed session parameters are be provided.
@@ -464,24 +464,25 @@ void printHeader(void)
         // TTN uses SF9 for its RX2 window.
         LMIC.dn2Dr = DR_SF9;
 
-        // Set data rate and transmit power (note: txpow seems to be ignored by the library)
+        // Set data rate and transmit power (note: txpow is possibly ignored by the library)
         LMIC_setDrTxpow(dataRate, txPower);    
     }
 #endif //ABP_ACTIVATION
 
 
-void initLmic(bit_t adrEnabled = 1, 
-              dr_t dataRate = DR_SF7, 
-              s1_t txPower = 14, 
-              bool setDrTxPowForOtaaExplicit = false) 
+void initLmic(bit_t adrEnabled = 1,
+              dr_t abpDataRate = DefaultABPDataRate, 
+              s1_t abpTxPower = DefaultABPTxPower) 
 {
+    // ostime_t timestamp = os_getTime();
+
     // Initialize LMIC runtime environment
     os_init();
     // Reset MAC state
     LMIC_reset();
 
     #ifdef ABP_ACTIVATION
-        setAbpParameters(dataRate, txPower);
+        setAbpParameters(abpDataRate, abpTxPower);
     #endif
 
     // Enable or disable ADR (data rate adaptation). 
@@ -498,13 +499,6 @@ void initLmic(bit_t adrEnabled = 1,
             // https://github.com/TheThingsNetwork/gateway-conf/blob/master/US-global_conf.json
             LMIC_selectSubBand(1); 
         #endif
-
-        // Optional: set/override data rate and transmit power for OTAA (only use if ADR is disabled).
-        if (setDrTxPowForOtaaExplicit && !adrEnabled)
-        {
-            // Below dataRate will be overridden again when joined.
-            LMIC_setDrTxpow(dataRate, txPower);
-        }
     }
 
     // Relax LMIC timing if defined
