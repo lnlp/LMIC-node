@@ -2,7 +2,7 @@
  * 
  *  File:         bsf_ttgo_t_beam_v1.h
  * 
- *  Description:  Board Support File for TTGO T-Beam (aka T22) V1.0.
+ *  Description:  Board Support File for TTGO T-Beam (aka T22) V1.0 and V1.1.
  * 
  *  Copyright:    Copyright (c) 2021 Leonel Lopes Parente
  * 
@@ -12,7 +12,7 @@
  * 
  *  Description:  This board has onboard USB (provided by onboard USB to serial).
  *                It supports automatic firmware upload and serial over USB. 
- *                No onboard display. Optionally an external display con be connected.
+ *                No onboard display. Optionally an external display can be connected.
  *                No onboard user programmable LED. Onboard GPS not used by LMIC-node.
  * 
  *                This board uses an AXP192 power management chip to power
