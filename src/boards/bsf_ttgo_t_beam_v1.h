@@ -159,7 +159,7 @@ bool boardInit(InitType initType)
                 // Explicitly set voltages because AXP192 power-on values may be lower.
                 axp.setDCDC1Voltage(3300);  // 3.3V pin
                 axp.setLDO2Voltage (3300);  // LoRa
-                axp.setLDO3Voltage (3000);  // GPS (unknown if this must be 3.0 or 3.3V)                
+                axp.setLDO3Voltage (3300);  // GPS                
             }
             break;
 
