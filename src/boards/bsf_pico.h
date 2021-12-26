@@ -61,7 +61,7 @@
  *                DIO1  <――――――――――>  10
  *                DIO2                -          Not needed for LoRa.
  * 
- *  Docs:         https://docs.platformio.org/en/latest/boards/atmelsam/zeroUSB.html
+ *  Docs:         https://docs.platformio.org/en/latest/boards/raspberrypi/pico.html
  *
  *  Identifiers:  LMIC-node
  *                    board:         pico
