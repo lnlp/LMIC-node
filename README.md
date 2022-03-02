@@ -77,7 +77,7 @@ Basic steps to get a node up and running with LMIC-node:
 ### 1.1 What does it do?
 
 - During startup LMIC-node sends some information to the serial port (if enabled) and display (if present and enabled). If OTAA activation is used LMIC-node will explicitly start a join to setup a network session.
-- The main work like collecting input data and scheduling update messages is performed in the doWork job. This job runs at regular intervals (`DO_WORK_INTERVAL_SECONDS`).
+- The main work like collecting input data and scheduling uplink messages is performed in the doWork job. This job runs at regular intervals (`DO_WORK_INTERVAL_SECONDS`).
 - LMIC-node uses a counter to simulate a real sensor. The counter gets automatically incremented each time its value is read. The counter value is read by the doWork job and then transmitted via an uplink message to The Things Network (TTN).
 - In addition LMIC-node also implements a downlink command to reset the counter. The command is sent to the node via a downlink message. When the 'reset counter' command is received by the node it will reset the counter value.
 - While all this is happening LMIC-node outputs status information to the serial port for viewing on the serial monitor and also outputs information to the display (if present). The status information will show time, events (e.g. EV_JOINED, EV_TXCOMPLETE), uplink and downlink framecounters, RSSI and SNR of received downlink messages and when a downlink contains data the data will be displayed as bytes.
