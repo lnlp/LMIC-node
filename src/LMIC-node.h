@@ -148,7 +148,7 @@ enum class ActivationMode {OTAA, ABP};
     #Error No valid LoRaWAN region defined
 #endif   
 
-#ifndef LMIC_MCCI
+#ifndef MCCI_LMIC
     #define LMIC_ERROR_SUCCESS 0
     typedef int lmic_tx_error_t;
 
