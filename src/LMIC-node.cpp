@@ -858,8 +858,16 @@ void setup()
         LMIC_startJoining();
     }
 
-    // Schedule initial doWork job for immediate execution.
-    os_setCallback(&doWorkJob, doWorkCallback);
+    #ifdef ABP_ACTIVATION
+        // Schedule initial doWork job for immediate execution.
+        //
+        // This is not done for OTAA activation because the job
+        // will be run before the join completes, but can't send
+        // an uplink, assuming it takes less than about 6 seconds
+        // to run. The EV_JOINED event already schedules the job
+        // to run immediately after it.
+        os_setCallback(&doWorkJob, doWorkCallback);
+    #endif
 }
 
 
