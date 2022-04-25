@@ -475,7 +475,8 @@ void initLmic(bit_t adrEnabled = 1,
               s1_t abpTxPower = DefaultABPTxPower) 
 {
     // ostime_t timestamp = os_getTime();
-
+Serial.print("abpDataRate: ");
+Serial.println(abpDataRate);
     // Initialize LMIC runtime environment
     os_init();
     // Reset MAC state
@@ -691,7 +692,7 @@ lmic_tx_error_t scheduleUplink(uint8_t fPort, uint8_t* data, uint8_t dataLength,
 //  ▀▀▀ ▀▀▀ ▀▀▀ ▀ ▀   ▀▀▀ ▀▀▀ ▀▀  ▀▀▀   ▀▀  ▀▀▀ ▀▀▀ ▀▀▀ ▀ ▀
 
 
-static volatile uint16_t counter_ = 0;
+static volatile uint16_t counter_ = 7757;
 
 uint16_t getCounterValue()
 {
@@ -703,7 +704,7 @@ uint16_t getCounterValue()
 void resetCounter()
 {
     // Reset counter to 0
-    counter_ = 0;
+    counter_ = 7757;
 }
 
 
@@ -769,7 +770,7 @@ void processWork(ostime_t doWorkJobTimeStamp)
             payloadBuffer[0] = counterValue >> 8;
             payloadBuffer[1] = counterValue & 0xFF;
             uint8_t payloadLength = 2;
-
+LMIC_setDrTxpow(DR_SF12,14);
             scheduleUplink(fPort, payloadBuffer, payloadLength);
         }
     }
@@ -839,7 +840,7 @@ void setup()
         abort();
     }
 
-    initLmic();
+    initLmic(1,DR_SF12, DefaultABPTxPower);
 
 //  █ █ █▀▀ █▀▀ █▀▄   █▀▀ █▀█ █▀▄ █▀▀   █▀▄ █▀▀ █▀▀ ▀█▀ █▀█
 //  █ █ ▀▀█ █▀▀ █▀▄   █   █ █ █ █ █▀▀   █▀▄ █▀▀ █ █  █  █ █
