@@ -33,13 +33,13 @@
  * 
  *                Leds                GPIO 
  *                ----                ----
- *                LED                 -            Incorrectly defined in BSP as LED_BUILTIN (2).
+ *                LED                 2            Incorrectly defined in BSP as LED_BUILTIN (2).
  * 
  *                I2C/Display         GPIO
  *                ---                 ---- 
  *                SDA   <――――――――――>  4   Not SDA! (OLED_SDA)
  *                SCL   <――――――――――>  15  Not SCL! (OLED_SCL)
- *                RST                     OLED_RST is defined in BSP but not connected to GPIO.
+ *                RST   <――――――――――>  16  OLED_RST is defined in BSP but not connected to GPIO.
  *
  *                SPI/LoRa            GPIO
  *                ---                 ---- 
@@ -112,13 +112,12 @@ const lmic_pinmap lmic_pins = {
 #endif  
 
 #ifdef USE_LED
-    #error Invalid option: USE_LED. This board has no onboard user LED.
-    // EasyLed led(<external LED GPIO>, EasyLed::ActiveLevel::Low);
+    EasyLed led(2, EasyLed::ActiveLevel::High);
 #endif
 
 #ifdef USE_DISPLAY
     // Create U8x8 instance for SSD1306 OLED display (no reset) using hardware I2C.
-    U8X8_SSD1306_128X64_NONAME_HW_I2C display(/*rst*/ U8X8_PIN_NONE, /*scl*/ 15, /*sda*/ 4);
+    U8X8_SSD1306_128X64_NONAME_HW_I2C display(/*rst*/ 16, /*scl*/ 15, /*sda*/ 4);
 #endif
 
 
