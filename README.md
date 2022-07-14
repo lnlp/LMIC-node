@@ -435,7 +435,7 @@ The `lorawan-keys.h` file is located in folder `keyfiles`.
 
 All files with name pattern `*lorawan-keys.h` and all files in folder `keyfiles` (except for file `lorawan-keys_example.h`) are excluded from the Git(Hub) repository (defined in file `.gitignore`) to prevent that LoRaWAN keys will be accidentally committed to a public repository.
 
-`loarawan-keys_example.h` is included as example for `lorawan-keys.h`.
+`lorawan-keys_example.h` is included as example for `lorawan-keys.h`.
 
 ### 3.13 Board Support Files (BSF)
 
