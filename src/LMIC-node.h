@@ -224,8 +224,11 @@ enum class ActivationMode {OTAA, ABP};
             printer.println();
         }
     }
+    
+#endif  // USE_SERIAL || USE_DISPLAY
 
 
+#if defined(USE_LED) || defined(USE_DISPLAY)
     void setTxIndicatorsOn(bool on = true)
     {
         if (on)
@@ -247,8 +250,7 @@ enum class ActivationMode {OTAA, ABP};
             #endif           
         }        
     }
-    
-#endif  // USE_SERIAL || USE_DISPLAY
+#endif  // USE_LED || USE_DISPLAY
 
 
 #ifdef USE_DISPLAY 
