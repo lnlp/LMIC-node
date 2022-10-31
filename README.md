@@ -155,6 +155,7 @@ The following LoRa development boards have onboard LoRa support. Most have onboa
 | TTGO LoRa32 V2.1.6                | ESP32             | no              | yes      | no       | yes       | ttgo_lora32_v21 |
 | TTGO T-Beam<br>*versions v0.5, v0.6 and v0.7* | ESP32 | no              | yes      | yes      | no        | ttgo_tbeam |
 | TTGO T-Beam<br>*versions v1.0 and v1.1*       | ESP32 | no              | yes      | no       | no        | ttgo_tbeam_v1 |
+| unPhone9                          | ESP32S3           | no              | yes      | yes      | yes       | unphone9 |
 
 _\*1_: DIO1 must be manually wired to GPIO6.  
 _\*2_: For versions 1.0, 1.1 and 1.2 DIO1 must be manually wired to GPIO5 (version 1.3 is already wired on the PCB).  
@@ -574,6 +575,7 @@ default_envs =
     ; ttgo_lora32_v21                   ; TTGO LoRa32 v2.1.6
     ; ttgo_t_beam                       ; TTGO T-Beam v0.5, v0.6, v0.7
     ; ttgo_t_beam_v1                    ; TTGO T-Beam v1.0, v1.1
+    ; unphone9                          ; unPhone9
 
     ; Development boards that require an external SPI LoRa module:
 
