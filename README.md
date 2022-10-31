@@ -101,7 +101,7 @@ Once the node is up and running you can start to explore and customize the sourc
 - User modifiable code is clearly marked in the source code.
 - Supports two different LMIC libraries: MCCI LoRaWAN LMIC library and IBM LMIC framework.
 - Support for many popular (LoRa) development boards.
-- Cross-platform, tested on STM32, SAMD21, ESP32, ESP8266, RP2040, MKL26Z64VFT4, ATmega32u4 and ATmega328 boards.
+- Cross-platform, tested on STM32, SAMD21, ESP32, ESP32S3, ESP8266, RP2040, MKL26Z64VFT4, ATmega32u4 and ATmega328 boards.
 - Hardware dependencies are handled in separate Board Support Files (BSF).
 - Built-in 'wait for serial port ready' with adjustable timeout and countdown visible on display. *Useful when using the serial monitor with boards with MCU with integrated USB support.*
 - Abstraction of the serial port so code can print to `serial` without needing to know if it must print to `Serial` or `SerialUSB`.

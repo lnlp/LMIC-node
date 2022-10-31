@@ -83,14 +83,14 @@ const lmic_pinmap lmic_pins = {
     .dio = { /*dio0*/ 10, /*dio1*/ 11, /*dio2*/ LMIC_UNUSED_PIN },
 #ifdef MCCI_LMIC
     .rxtx_rx_active = 0,
-    .rssi_cal = 8, // TODO should be 0?
+    .rssi_cal = 8, // TODO in unphone library code is 0; 8 works here though...
     .spi_freq = 8000000     /* 8 MHz */
 #endif    
 };
 
 #ifdef USE_SERIAL
 #  define serial Serial
-// Serial_& serial = Serial;
+// Serial_& serial = Serial;  (creates compile errors)
 #endif
 
 #ifdef USE_LED
